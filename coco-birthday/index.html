@@ -71,7 +71,11 @@
     .modal-icon { width:48px; height:48px; flex:0 0 auto; border-radius:16px; display:grid; place-items:center; background:var(--yellow); font-size:1.55rem; transform:rotate(-4deg); }
     .modal h2 { font-family:'Gaegu',cursive; font-size:2rem; margin:0; line-height:1; }
     .modal p { line-height:1.75; margin:14px 0; }
-    .transition-art { width:calc(100% + 52px); max-height:270px; object-fit:cover; display:block; margin:-26px -26px 22px; border-radius:24px 24px 0 0; }
+    .transition-art { width:100%; max-height:270px; object-fit:cover; display:block; margin:2px 0 20px; border-radius:18px; box-shadow:0 10px 28px rgba(13,86,84,.12); }
+    .ending-art { width:100%; max-height:430px; object-fit:cover; display:block; margin:0 0 18px; border-radius:20px; box-shadow:0 14px 34px rgba(13,86,84,.16); }
+    .ending-copy { text-align:center; }
+    .ending-copy h3 { font-family:'Gaegu',cursive; font-size:2rem; margin:8px 0 6px; color:var(--teal); }
+    .ending-copy p { margin:8px 0; }
     .close { margin-left:auto; border:0; background:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:1.35rem; }
     .modal-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:9px; margin-top:20px; }
     .primary, .secondary { min-height:46px; border-radius:13px; padding:0 17px; font-weight:700; cursor:pointer; }
@@ -107,7 +111,8 @@
       .footerline { padding:0 4px; }
       .footerline span:first-child { display:none; }
       .modal { padding:20px; }
-      .transition-art { width:calc(100% + 40px); margin:-20px -20px 18px; max-height:220px; }
+      .transition-art { width:100%; margin:2px 0 18px; max-height:220px; }
+      .ending-art { max-height:360px; }
     }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
   </style>
@@ -273,13 +278,24 @@
         {label:'나중에',action:()=>dialog.close()},{label:'열어 보기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">챙기기</button>';$('#continue').onclick=()=>{dialog.close();checkAdvance();render();};}else{beep(220,.15);showToast('자물쇠가 꿈쩍도 하지 않는다냥…');}}}
       ]);setTimeout(()=>$('#code')?.focus(),80);
     }
+    function shuffledOptions(options){
+      const list=options.map((icon,index)=>({icon,index}));
+      for(let i=list.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [list[i],list[j]]=[list[j],list[i]];
+      }
+      // 우연히 원래 순서 그대로면 한 번 회전시켜 정답이 눈에 보이지 않게 한다.
+      if(list.length>1 && list.every((item,pos)=>item.index===pos)) list.push(list.shift());
+      return list;
+    }
+
     function sequencePuzzle(s){
-      selected=[];const icons=s.options;
-      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${icons.map((i,n)=>`<button data-i="${n}" aria-label="${i}">${i}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p>`,[
+      selected=[];const icons=s.options;const shuffled=shuffledOptions(icons);
+      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p>`,[
         {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';}},
         {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'파티 시작!':'챙기기'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();checkAdvance();render();};}else{beep(220,.15);showToast('순서가 다른 것 같다냥!');}}}
       ]);
-      modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length)return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');beep(600+selected.length*70);});
+      modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length||b.classList.contains('selected'))return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');beep(600+selected.length*70);});
     }
     function checkAdvance(){
       if(advancePending)return;
@@ -295,7 +311,13 @@
     }
     function ending(){
       confetti();
-      openModal('🎉','깜짝 파티 대성공!',`<div class="start-card"><p>“나나야, 생일 축하해!”</p><p>나나는 왕관을 쓴 채 골골송을 불렀고, 코코는 케이크보다 더 뿌듯한 표정을 지었다.</p><p><b>오늘의 진짜 보물은 함께 준비한 즐거운 시간!</b></p><div class="items"><div class="item">🐾<br>단서 ${Math.min(state.found.length,14)}개</div><div class="item">🧩<br>퍼즐 6개</div><div class="item">💛<br>우정 +100</div></div></div>`,[{label:'다시 플레이',action:()=>restart()},{label:'엔딩 감상하기',primary:true,action:()=>dialog.close()}]);
+      modalLocked=false;
+      openModal('🎉','깜짝 파티 대성공!',`<div class="start-card"><p>“나나야, 생일 축하해!”</p><p>나나는 왕관을 쓴 채 골골송을 불렀고, 코코는 케이크보다 더 뿌듯한 표정을 지었다.</p><p><b>오늘의 진짜 보물은 함께 준비한 즐거운 시간!</b></p><div class="items"><div class="item">🐾<br>단서 ${Math.min(state.found.length,14)}개</div><div class="item">🧩<br>퍼즐 6개</div><div class="item">💛<br>우정 +100</div></div></div>`,[{label:'다시 플레이',action:()=>restart()},{label:'엔딩 감상하기',primary:true,action:()=>showEndingArt()}]);
+    }
+    function showEndingArt(){
+      const endingSrc='images/ending.webp';
+      modalLocked=false;
+      openModal('💛','코코와 나나의 생일 저녁',`<img class="ending-art" src="${endingSrc}" alt="생일파티를 마치고 함께 있는 코코와 나나" onerror="this.onerror=null;this.src='images/rooftop-party.webp';"><div class="ending-copy"><h3>HAPPY BIRTHDAY, NANA!</h3><p>몰래 준비한 파티는 대성공!<br>코코와 나나는 오래오래 오늘을 기억하기로 했어요.</p><p><b>게임을 끝까지 플레이해줘서 고마워요 🐾</b></p></div>`,[{label:'처음부터 다시',action:()=>restart()},{label:'엔딩 닫기',primary:true,action:()=>dialog.close()}]);
     }
     function confetti(){const colors=['#ffd75e','#ff8171','#73c8de','#0f7774','#fff'];for(let i=0;i<65;i++){const e=document.createElement('i');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.background=colors[i%colors.length];e.style.animationDelay=Math.random()*1.1+'s';e.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(e);setTimeout(()=>e.remove(),4200);}}
     function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();intro();}
