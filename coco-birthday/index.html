@@ -177,6 +177,7 @@
     const initial = {chapter:0, found:[], items:[], sound:false, finished:false};
     let state = load();
     let selected=[];
+    let modalLocked=false,hotspotBusy=false,advancePending=false;
     const $=s=>document.querySelector(s);
     const dialog=$('#dialog'), modal=$('#modal'), toast=$('#toast');
 
@@ -243,16 +244,20 @@
       renderHeader();
     }
     function activateHotspot(button,spot){
+      if(hotspotBusy||dialog.open)return;
+      hotspotBusy=true;
       button.classList.remove('activating');void button.offsetWidth;button.classList.add('activating');
-      setTimeout(()=>{button.classList.remove('activating');inspect(spot);},180);
+      setTimeout(()=>{button.classList.remove('activating');hotspotBusy=false;if(!dialog.open)inspect(spot);},180);
     }
-    function openModal(icon,title,html,actions=[]){
-      modal.innerHTML=`<div class="modal-head"><div class="modal-icon">${icon}</div><div><div class="eyebrow">코코의 조사 기록</div><h2>${title}</h2></div><button class="close" aria-label="닫기">×</button></div><div class="modal-body">${html}</div><div class="modal-actions"></div>`;
-      modal.querySelector('.close').onclick=()=>dialog.close();
+    function openModal(icon,title,html,actions=[],options={}){
+      modalLocked=Boolean(options.locked);
+      modal.innerHTML=`<div class="modal-head"><div class="modal-icon">${icon}</div><div><div class="eyebrow">코코의 조사 기록</div><h2>${title}</h2></div>${modalLocked?'':'<button class="close" aria-label="닫기">×</button>'}</div><div class="modal-body">${html}</div><div class="modal-actions"></div>`;
+      const close=modal.querySelector('.close');if(close)close.onclick=()=>dialog.close();
       const area=modal.querySelector('.modal-actions');actions.forEach(a=>{const b=document.createElement('button');b.className=a.primary?'primary':'secondary';b.textContent=a.label;b.onclick=a.action;area.appendChild(b);});
-      dialog.showModal();
+      if(!dialog.open)dialog.showModal();
     }
     function inspect(s){
+      if(dialog.open)return;
       beep(520);
       if(s.type==='code') return codePuzzle(s);
       if(s.id==='table'&&!state.found.includes('2-garland')){showToast('가랜드를 먼저 완성해야 한다냥!');return;}
@@ -277,11 +282,15 @@
       modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length)return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');beep(600+selected.length*70);});
     }
     function checkAdvance(){
+      if(advancePending)return;
       if(state.chapter===0&&state.found.includes('0-drawer')&&state.found.includes('0-ribbon')){
-        setTimeout(()=>openModal('🚪','거실 임무 완료!',`<img class="transition-art" src="images/living-to-kitchen.webp" alt="왕관과 선물을 챙겨 주방으로 달려가는 코코"><p>왕관과 선물 포장을 모두 챙겼다. 이제 케이크가 기다리는 주방으로 가자!</p><div class="items"><div class="item">👑<br>왕관</div><div class="item">🎁<br>포장 선물</div></div>`,[{label:'주방으로 가기 →',primary:true,action:()=>{state.chapter=1;save();dialog.close();render();showToast('두 번째 장소, 주방으로 이동!');}}]),250);
+        advancePending=true;
+        setTimeout(()=>openModal('🚪','거실 임무 완료!',`<img class="transition-art" src="images/living-to-kitchen.webp" alt="왕관과 선물을 챙겨 주방으로 달려가는 코코"><p>왕관과 선물 포장을 모두 챙겼다. 이제 케이크가 기다리는 주방으로 가자!</p><div class="items"><div class="item">👑<br>왕관</div><div class="item">🎁<br>포장 선물</div></div>`,[{label:'주방으로 가기 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('두 번째 장소, 주방으로 이동!');}}],{locked:true}),250);
+        return;
       }
       if(state.chapter===1&&state.found.includes('1-box')&&state.found.includes('1-cupboard')&&state.found.includes('1-vacuum')){
-        setTimeout(()=>openModal('🚪','주방 임무 완료!',`<img class="transition-art" src="images/kitchen-to-rooftop.webp" alt="케이크와 장식을 싣고 옥상으로 향하는 코코와 로봇청소기"><p>케이크, 생일 초, 장식을 전부 챙겼다. 나나가 오기 전에 옥상으로 출발!</p><div class="items"><div class="item">🎂<br>케이크</div><div class="item">🕯️<br>생일 초</div><div class="item">🎏<br>장식</div></div>`,[{label:'옥상으로 가기 →',primary:true,action:()=>{state.chapter=2;save();dialog.close();render();}}]),250);
+        advancePending=true;
+        setTimeout(()=>openModal('🚪','주방 임무 완료!',`<img class="transition-art" src="images/kitchen-to-rooftop.webp" alt="케이크와 장식을 싣고 옥상으로 향하는 코코와 로봇청소기"><p>케이크, 생일 초, 장식을 전부 챙겼다. 나나가 오기 전에 옥상으로 출발!</p><div class="items"><div class="item">🎂<br>케이크</div><div class="item">🕯️<br>생일 초</div><div class="item">🎏<br>장식</div></div>`,[{label:'옥상으로 가기 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();}}],{locked:true}),250);
       }
     }
     function ending(){
@@ -298,10 +307,11 @@
       save();renderHeader();
     };
     $('#reset').onclick=()=>openModal('↩️','처음부터 다시 할까?',`<p>발견한 단서와 진행 상황이 모두 초기화돼요.</p>`,[{label:'계속할래',action:()=>dialog.close()},{label:'처음부터',primary:true,action:restart}]);
-    dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});
+    dialog.addEventListener('click',e=>{if(e.target===dialog&&!modalLocked)dialog.close();});
+    dialog.addEventListener('cancel',e=>{if(modalLocked)e.preventDefault();});
     render();
     if(state.sound){state.sound=false;save();renderHeader();}
-    if(state.finished)setTimeout(ending,250); else if(state.found.length===0)setTimeout(intro,250);
+    if(state.finished)setTimeout(ending,250); else if(state.found.length===0)setTimeout(intro,250); else checkAdvance();
   </script>
 </body>
 </html>
