@@ -71,7 +71,7 @@
     .modal-icon { width:48px; height:48px; flex:0 0 auto; border-radius:16px; display:grid; place-items:center; background:var(--yellow); font-size:1.55rem; transform:rotate(-4deg); }
     .modal h2 { font-family:'Gaegu',cursive; font-size:2rem; margin:0; line-height:1; }
     .modal p { line-height:1.75; margin:14px 0; }
-    .transition-art { width:100%; max-height:270px; object-fit:cover; display:block; margin:2px 0 20px; border-radius:18px; box-shadow:0 10px 28px rgba(13,86,84,.12); }
+    .transition-art { width:100%; max-height:270px; object-fit:cover; display:block; margin:18px 0 20px; border-radius:18px; box-shadow:0 10px 28px rgba(13,86,84,.12); }
     .ending-art { width:100%; max-height:430px; object-fit:cover; display:block; margin:0 0 18px; border-radius:20px; box-shadow:0 14px 34px rgba(13,86,84,.16); }
     .ending-copy { text-align:center; }
     .ending-copy h3 { font-family:'Gaegu',cursive; font-size:2rem; margin:8px 0 6px; color:var(--teal); }
@@ -86,6 +86,8 @@
     .sequence { display:flex; gap:9px; flex-wrap:wrap; margin:15px 0; }
     .sequence button { width:56px; height:56px; border:2px solid #bad8d4; background:#fff; border-radius:16px; font-size:1.45rem; cursor:pointer; }
     .sequence button.selected { border-color:var(--coral); background:#fff0ed; transform:translateY(-3px); }
+    .puzzle-feedback { min-height:24px; margin:8px 0 0; font-size:.9rem; font-weight:700; color:var(--coral); }
+    .puzzle-feedback.ok { color:var(--teal); }
     .toast { position:fixed; left:50%; bottom:max(18px,env(safe-area-inset-bottom)); z-index:20; transform:translate(-50%,30px); opacity:0; max-width:calc(100% - 28px); background:#103f40; color:#fff; padding:12px 18px; border-radius:999px; box-shadow:0 12px 30px rgba(0,0,0,.25); font-weight:700; transition:.3s; pointer-events:none; text-align:center; }
     .toast.show { transform:translate(-50%,0); opacity:1; }
     .confetti { position:fixed; top:-20px; width:10px; height:16px; z-index:30; animation:fall 2.7s linear forwards; }
@@ -95,7 +97,7 @@
     .start-card h2 { font-size:2.3rem; margin:8px 0; }
     .start-card p { margin:8px auto 18px; max-width:390px; }
     .items { display:flex; justify-content:center; gap:8px; margin:15px 0; }
-    .item { min-width:68px; padding:9px; border-radius:14px; background:#fff; border:1px solid var(--line); font-size:.82rem; }
+    .item { min-width:68px; padding:9px; border-radius:14px; background:#fff; border:1px solid var(--line); font-size:.82rem; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; }
     @media (max-width:720px) {
       .shell { padding:10px 8px 20px; }
       .topbar { flex-wrap:wrap; }
@@ -111,7 +113,7 @@
       .footerline { padding:0 4px; }
       .footerline span:first-child { display:none; }
       .modal { padding:20px; }
-      .transition-art { width:100%; margin:2px 0 18px; max-height:220px; }
+      .transition-art { width:100%; margin:16px 0 18px; max-height:220px; }
       .ending-art { max-height:360px; }
     }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
@@ -180,14 +182,14 @@
       }
     ];
     const initial = {chapter:0, found:[], items:[], sound:false, finished:false};
-    let state = load();
+    localStorage.removeItem('coco-party-game-v2');
+    let state = {...initial, found:[], items:[]};
     let selected=[];
     let modalLocked=false,hotspotBusy=false,advancePending=false;
     const $=s=>document.querySelector(s);
     const dialog=$('#dialog'), modal=$('#modal'), toast=$('#toast');
 
-    function load(){ try { return {...initial,...JSON.parse(localStorage.getItem('coco-party-game-v2')||'{}')}; } catch { return {...initial}; } }
-    function save(){ localStorage.setItem('coco-party-game-v2',JSON.stringify(state)); }
+    function save(){ /* 진행 상황은 현재 페이지에서만 유지하고 새로고침 시 초기화 */ }
     let audioCtx=null,musicBus=null,musicTimer=null,nextNoteTime=0,musicStep=0;
     const melody=[659.25,783.99,880,783.99,659.25,523.25,587.33,659.25,698.46,880,1046.5,880,783.99,659.25,587.33,null,659.25,783.99,987.77,880,783.99,659.25,587.33,523.25,587.33,698.46,880,783.99,698.46,659.25,523.25,null];
     const bass=[261.63,349.23,220,392];
@@ -274,8 +276,8 @@
     }
     function codePuzzle(s){
       const zeros='0'.repeat(s.digits);
-      openModal(s.icon,s.title,`<p>${s.text}</p><div class="code-row"><input id="code" inputmode="numeric" maxlength="${s.digits}" placeholder="${zeros}" aria-label="${s.digits}자리 암호"></div>`,[
-        {label:'나중에',action:()=>dialog.close()},{label:'열어 보기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">챙기기</button>';$('#continue').onclick=()=>{dialog.close();checkAdvance();render();};}else{beep(220,.15);showToast('자물쇠가 꿈쩍도 하지 않는다냥…');}}}
+      openModal(s.icon,s.title,`<p>${s.text}</p><div class="code-row"><input id="code" inputmode="numeric" maxlength="${s.digits}" placeholder="${zeros}" aria-label="${s.digits}자리 암호"></div><p class="puzzle-feedback" id="codeFeedback" aria-live="polite"></p>`,[
+        {label:'나중에',action:()=>dialog.close()},{label:'열어 보기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">챙기기</button>';$('#continue').onclick=()=>{dialog.close();checkAdvance();render();};}else{beep(220,.15);const feedback=$('#codeFeedback');if(feedback)feedback.textContent='앗, 암호가 아닌 것 같다냥! 단서를 다시 살펴보자.';}}}
       ]);setTimeout(()=>$('#code')?.focus(),80);
     }
     function shuffledOptions(options){
@@ -291,11 +293,11 @@
 
     function sequencePuzzle(s){
       selected=[];const icons=s.options;const shuffled=shuffledOptions(icons);
-      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p>`,[
-        {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';}},
-        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'파티 시작!':'챙기기'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();checkAdvance();render();};}else{beep(220,.15);showToast('순서가 다른 것 같다냥!');}}}
+      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>`,[
+        {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';}},
+        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'파티 시작!':'챙기기'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 다시 골라보자.';}}}
       ]);
-      modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length||b.classList.contains('selected'))return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');beep(600+selected.length*70);});
+      modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length||b.classList.contains('selected'))return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';beep(600+selected.length*70);});
     }
     function checkAdvance(){
       if(advancePending)return;
@@ -332,8 +334,7 @@
     dialog.addEventListener('click',e=>{if(e.target===dialog&&!modalLocked)dialog.close();});
     dialog.addEventListener('cancel',e=>{if(modalLocked)e.preventDefault();});
     render();
-    if(state.sound){state.sound=false;save();renderHeader();}
-    if(state.finished)setTimeout(ending,250); else if(state.found.length===0)setTimeout(intro,250); else checkAdvance();
+    setTimeout(intro,250);
   </script>
 </body>
 </html>
