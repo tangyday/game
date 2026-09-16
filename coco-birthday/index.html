@@ -274,10 +274,20 @@
       save();
       openModal(s.icon,s.title,`<p>${s.text.replaceAll('\n','</p><p>')}</p>`,[{label:'좋아!',primary:true,action:()=>{dialog.close();checkAdvance();render();}}]);
     }
+    function kitchenPuzzlesComplete(){
+      return state.chapter===1 && state.found.includes('1-box') && state.found.includes('1-cupboard');
+    }
+    function showKitchenComplete(){
+      if(advancePending)return;
+      advancePending=true;
+      modalLocked=true;
+      openModal('🚪','주방 임무 완료!',`<img class="transition-art" src="images/kitchen-to-rooftop.webp" alt="케이크와 장식을 싣고 옥상으로 향하는 코코와 로봇청소기"><p>케이크와 생일 초를 모두 챙겼다. 나나가 오기 전에 옥상으로 출발!</p><div class="items"><div class="item">🎂<br>케이크</div><div class="item">🕯️<br>생일 초</div></div>`,[{label:'옥상으로 가기 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();}}],{locked:true});
+    }
+
     function codePuzzle(s){
       const zeros='0'.repeat(s.digits);
       openModal(s.icon,s.title,`<p>${s.text}</p><div class="code-row"><input id="code" inputmode="numeric" maxlength="${s.digits}" placeholder="${zeros}" aria-label="${s.digits}자리 암호"></div><p class="puzzle-feedback" id="codeFeedback" aria-live="polite"></p>`,[
-        {label:'나중에',action:()=>dialog.close()},{label:'열어 보기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">챙기기</button>';$('#continue').onclick=()=>{dialog.close();checkAdvance();render();};}else{beep(220,.15);const feedback=$('#codeFeedback');if(feedback)feedback.textContent='앗, 암호가 아닌 것 같다냥! 단서를 다시 살펴보자.';}}}
+        {label:'나중에',action:()=>dialog.close()},{label:'열어 보기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">챙기기</button>';$('#continue').onclick=()=>{dialog.close();if(kitchenPuzzlesComplete()){showKitchenComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#codeFeedback');if(feedback)feedback.textContent='앗, 암호가 아닌 것 같다냥! 단서를 다시 살펴보자.';}}}
       ]);setTimeout(()=>$('#code')?.focus(),80);
     }
     function shuffledOptions(options){
@@ -295,7 +305,7 @@
       selected=[];const icons=s.options;const shuffled=shuffledOptions(icons);
       openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>`,[
         {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';}},
-        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'파티 시작!':'챙기기'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 다시 골라보자.';}}}
+        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'파티 시작!':'챙기기'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();if(kitchenPuzzlesComplete()){showKitchenComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 다시 골라보자.';}}}
       ]);
       modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length||b.classList.contains('selected'))return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';beep(600+selected.length*70);});
     }
@@ -306,9 +316,8 @@
         setTimeout(()=>openModal('🚪','거실 임무 완료!',`<img class="transition-art" src="images/living-to-kitchen.webp" alt="왕관과 선물을 챙겨 주방으로 달려가는 코코"><p>왕관과 선물 포장을 모두 챙겼다. 이제 케이크가 기다리는 주방으로 가자!</p><div class="items"><div class="item">👑<br>왕관</div><div class="item">🎁<br>포장 선물</div></div>`,[{label:'주방으로 가기 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('두 번째 장소, 주방으로 이동!');}}],{locked:true}),420);
         return;
       }
-      if(state.chapter===1&&state.found.includes('1-box')&&state.found.includes('1-cupboard')&&state.found.includes('1-vacuum')){
-        advancePending=true;
-        setTimeout(()=>openModal('🚪','주방 임무 완료!',`<img class="transition-art" src="images/kitchen-to-rooftop.webp" alt="케이크와 장식을 싣고 옥상으로 향하는 코코와 로봇청소기"><p>케이크, 생일 초, 장식을 전부 챙겼다. 나나가 오기 전에 옥상으로 출발!</p><div class="items"><div class="item">🎂<br>케이크</div><div class="item">🕯️<br>생일 초</div><div class="item">🎏<br>장식</div></div>`,[{label:'옥상으로 가기 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();}}],{locked:true}),10);
+      if(kitchenPuzzlesComplete()){
+        showKitchenComplete();
       }
     }
     function ending(){
