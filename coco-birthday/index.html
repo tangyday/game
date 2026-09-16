@@ -44,7 +44,7 @@
     .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:#dff1ef; }
     .scene img { display:block; width:100%; height:100%; object-fit:cover; transition:opacity .35s,transform .7s; }
     .scene.loading img { opacity:.25; transform:scale(1.015); }
-    .chapter-tag { position:absolute; left:18px; top:18px; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
+    .chapter-tag { position:absolute; left:18px; bottom:18px; top:auto; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
     .hotspot { position:absolute; width:clamp(54px,6vw,76px); aspect-ratio:1; border:1px solid transparent; border-radius:50%; cursor:pointer; background:transparent; box-shadow:none; padding:0; transition:transform .2s,background .2s,box-shadow .2s,border-color .2s; }
     .hotspot::before { content:''; position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,255,255,.22); box-shadow:0 0 14px rgba(255,255,255,.16); opacity:.35; animation:soft-glint 2.8s ease-in-out infinite; }
     .hotspot:hover, .hotspot:focus-visible, .hotspot.activating { transform:scale(1.08); outline:0; border-color:rgba(255,255,255,.92); background:radial-gradient(circle,rgba(255,239,159,.46),rgba(255,215,94,.12) 48%,transparent 70%); box-shadow:0 0 0 8px rgba(255,215,94,.2),0 0 30px rgba(255,239,159,.78); }
@@ -106,7 +106,7 @@
       .eyebrow { font-size:.68rem; }
       .game-card { border-radius:18px; }
       .scene { aspect-ratio:16/10; }
-      .chapter-tag { left:10px; top:10px; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.82); box-shadow:0 2px 8px rgba(0,0,0,.08); }
+      .chapter-tag { left:10px; bottom:10px; top:auto; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.82); box-shadow:0 2px 8px rgba(0,0,0,.08); }
       .hotspot { width:56px; }
       .hotspot::after { display:none; }
       .storybar { grid-template-columns:1fr; padding:15px; gap:12px; }
