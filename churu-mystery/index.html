@@ -81,13 +81,13 @@
     .primary, .secondary { min-height:46px; border-radius:13px; padding:0 17px; font-weight:700; cursor:pointer; }
     .primary { border:0; color:#fff; background:var(--teal); box-shadow:0 5px 0 var(--deep); }
     .secondary { border:1px solid var(--line); background:#fff; }
-    .case-result { padding:20px 22px; }
+    .case-result { padding:26px; min-height:610px; }
     .case-result .start-card { padding-top:0; }
-    .case-result .start-card p { margin:4px auto 7px; line-height:1.5; }
-    .case-result .items { margin:9px 0 5px; }
-    .case-result .item { min-width:62px; padding:6px; }
-    .case-result .modal-actions { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; margin-top:12px; }
-    .case-result .modal-actions button { width:100%; min-width:0; padding:0 8px; white-space:nowrap; font-size:.9rem; }
+    .case-result .start-card p { margin:14px auto; line-height:1.75; font-size:1rem; }
+    .case-result .items { margin:18px 0 8px; }
+    .case-result .item { min-width:68px; padding:9px; }
+    .case-result .modal-actions { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:9px; margin-top:20px; }
+    .case-result .modal-actions button { width:100%; min-width:0; padding:0 12px; white-space:nowrap; font-size:1rem; }
     .code-row { display:flex; gap:9px; margin:15px 0 4px; }
     .code-row input { width:100%; min-height:52px; border:2px solid #b9d7d2; border-radius:13px; text-align:center; font-size:1.35rem; letter-spacing:.25em; background:#fff; }
     .sequence { display:flex; gap:9px; flex-wrap:wrap; margin:15px 0; }
@@ -128,13 +128,13 @@
       .close { width:38px; height:38px; font-size:1.2rem; }
       .transition-art { width:100%; margin:16px 0 18px; max-height:220px; }
       .ending-art { max-height:360px; margin-top:17px; }
-      .case-result { padding:16px; }
+      .case-result { padding:20px; min-height:min(650px,calc(100dvh - 26px)); }
       .case-result .modal-head { margin-bottom:2px; }
-      .case-result .start-card p { margin:2px auto 5px; font-size:.84rem; line-height:1.4; }
-      .case-result .items { margin:7px 0 3px; gap:5px; }
-      .case-result .item { min-width:0; flex:1; padding:4px 3px; font-size:.72rem; border-radius:10px; }
-      .case-result .modal-actions { margin-top:9px; gap:6px; }
-      .case-result .modal-actions button { min-height:43px; padding:0 5px; font-size:.78rem; }
+      .case-result .start-card p { margin:12px auto; font-size:1rem; line-height:1.75; }
+      .case-result .items { margin:15px 0 8px; gap:8px; }
+      .case-result .item { min-width:0; flex:1; padding:8px 5px; font-size:.82rem; border-radius:12px; }
+      .case-result .modal-actions { margin-top:18px; gap:8px; }
+      .case-result .modal-actions button { min-height:46px; padding:0 8px; font-size:.9rem; }
     }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
   </style>
