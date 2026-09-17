@@ -41,7 +41,9 @@
     .paw { width:13px; height:13px; border:2px solid var(--teal); border-radius:50% 50% 45% 45%; opacity:.28; transition:.25s; }
     .paw.found { background:var(--yellow); border-color:#ca9621; opacity:1; transform:scale(1.08); }
     .game-card { overflow:hidden; border:1px solid rgba(255,255,255,.9); border-radius:26px; background:#fff; box-shadow:0 24px 70px rgba(13,86,84,.2); }
+    .scene-viewport { width:100%; overflow:hidden; background:#dff1ef; }
     .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:#dff1ef; }
+    .pan-guide { display:none; }
     .scene img { display:block; width:100%; height:100%; object-fit:cover; transition:opacity .35s,transform .7s; }
     .scene.loading img { opacity:.25; transform:scale(1.015); }
     .chapter-tag { position:absolute; left:18px; bottom:18px; top:auto; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
@@ -105,8 +107,42 @@
       h1 { font-size:1.55rem; line-height:1.08; }
       .eyebrow { font-size:.68rem; }
       .game-card { border-radius:18px; }
-      .scene { aspect-ratio:16/10; }
-      .chapter-tag { left:10px; bottom:10px; top:auto; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.82); box-shadow:0 2px 8px rgba(0,0,0,.08); }
+      .scene-viewport {
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        scrollbar-width:none;
+        touch-action:pan-x pan-y;
+        scroll-snap-type:x proximity;
+        background:#dff1ef;
+      }
+      .scene-viewport::-webkit-scrollbar { display:none; }
+      .scene {
+        width:180vw;
+        min-width:720px;
+        max-width:920px;
+        aspect-ratio:16/9;
+        flex:none;
+        scroll-snap-align:center;
+      }
+      .scene img { object-fit:cover; }
+      .pan-guide {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:6px;
+        min-height:34px;
+        padding:7px 12px 8px;
+        border-top:1px solid rgba(33,74,75,.08);
+        border-bottom:1px solid rgba(33,74,75,.08);
+        background:#fffcf3;
+        color:#6f8585;
+        font-size:.73rem;
+        font-weight:700;
+        letter-spacing:-.01em;
+      }
+      .chapter-tag { left:10px; bottom:10px; top:auto; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.86); box-shadow:0 2px 8px rgba(0,0,0,.08); }
       .hotspot { width:56px; }
       .hotspot::after { display:none; }
       .storybar { grid-template-columns:1fr; padding:15px; gap:12px; }
@@ -134,11 +170,14 @@
     </header>
 
     <section class="game-card" aria-live="polite">
-      <div class="scene" id="scene">
-        <img id="sceneImage" src="images/living-room.webp" alt="햇살이 가득한 거실에서 코코가 파티 준비를 하는 모습">
-        <div class="chapter-tag" id="chapterTag">01 · 거실</div>
-        <div id="hotspots"></div>
+      <div class="scene-viewport" id="sceneViewport" aria-label="게임 장면 · 모바일에서는 좌우로 밀어 전체 장면을 볼 수 있어요">
+        <div class="scene" id="scene">
+          <img id="sceneImage" src="images/living-room.webp" alt="햇살이 가득한 거실에서 코코가 파티 준비를 하는 모습">
+          <div class="chapter-tag" id="chapterTag">01 · 거실</div>
+          <div id="hotspots"></div>
+        </div>
       </div>
+      <div class="pan-guide" aria-hidden="true">↔ 좌우로 밀어 장면 전체를 둘러보세요</div>
       <div class="storybar">
         <div><div class="chapter-kicker" id="kicker">오늘의 비밀 임무</div><p class="objective" id="objective">나나가 돌아오기 전에 파티에 필요한 왕관을 찾아야 해!</p></div>
         <button class="hint-btn" id="hint" type="button">코코의 힌트 🐾</button>
@@ -243,6 +282,16 @@
       $('#count').textContent=Math.min(state.found.length,14);
       const sound=$('#sound');sound.textContent='🎵';sound.classList.toggle('playing',state.sound);sound.setAttribute('aria-pressed',state.sound);sound.setAttribute('aria-label',state.sound?'배경음악과 효과음 끄기':'배경음악과 효과음 켜기');sound.title=state.sound?'음악 끄기':'음악 켜기';
     }
+    function resetSceneScroll(){
+      const viewport=$('#sceneViewport');
+      if(!viewport)return;
+      if(window.matchMedia('(max-width:720px)').matches){
+        requestAnimationFrame(()=>{ viewport.scrollLeft=0; });
+      }else{
+        viewport.scrollLeft=0;
+      }
+    }
+
     function render(){
       const c=chapters[state.chapter];
       $('#scene').classList.add('loading');
