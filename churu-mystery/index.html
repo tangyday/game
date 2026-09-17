@@ -81,6 +81,13 @@
     .primary, .secondary { min-height:46px; border-radius:13px; padding:0 17px; font-weight:700; cursor:pointer; }
     .primary { border:0; color:#fff; background:var(--teal); box-shadow:0 5px 0 var(--deep); }
     .secondary { border:1px solid var(--line); background:#fff; }
+    .case-result { padding:20px 22px; }
+    .case-result .start-card { padding-top:0; }
+    .case-result .start-card p { margin:4px auto 7px; line-height:1.5; }
+    .case-result .items { margin:9px 0 5px; }
+    .case-result .item { min-width:62px; padding:6px; }
+    .case-result .modal-actions { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px; margin-top:12px; }
+    .case-result .modal-actions button { width:100%; min-width:0; padding:0 8px; white-space:nowrap; font-size:.9rem; }
     .code-row { display:flex; gap:9px; margin:15px 0 4px; }
     .code-row input { width:100%; min-height:52px; border:2px solid #b9d7d2; border-radius:13px; text-align:center; font-size:1.35rem; letter-spacing:.25em; background:#fff; }
     .sequence { display:flex; gap:9px; flex-wrap:wrap; margin:15px 0; }
@@ -121,6 +128,13 @@
       .close { width:38px; height:38px; font-size:1.2rem; }
       .transition-art { width:100%; margin:16px 0 18px; max-height:220px; }
       .ending-art { max-height:360px; margin-top:17px; }
+      .case-result { padding:16px; }
+      .case-result .modal-head { margin-bottom:2px; }
+      .case-result .start-card p { margin:2px auto 5px; font-size:.84rem; line-height:1.4; }
+      .case-result .items { margin:7px 0 3px; gap:5px; }
+      .case-result .item { min-width:0; flex:1; padding:4px 3px; font-size:.72rem; border-radius:10px; }
+      .case-result .modal-actions { margin-top:9px; gap:6px; }
+      .case-result .modal-actions button { min-height:43px; padding:0 5px; font-size:.78rem; }
     }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
   </style>
@@ -264,6 +278,7 @@
     }
     function openModal(icon,title,html,actions=[],options={}){
       modalLocked=Boolean(options.locked);
+      modal.className='modal'+(options.className?` ${options.className}`:'');
       modal.innerHTML=`<div class="modal-head"><div class="modal-icon">${icon}</div><div><div class="eyebrow">탐정 코코의 수사 기록</div><h2>${title}</h2></div>${modalLocked?'':'<button class="close" aria-label="닫기">×</button>'}</div><div class="modal-body">${html}</div><div class="modal-actions"></div>`;
       const close=modal.querySelector('.close');if(close)close.onclick=()=>dialog.close();
       const area=modal.querySelector('.modal-actions');actions.forEach(a=>{const b=document.createElement('button');b.className=a.primary?'primary':'secondary';b.textContent=a.label;b.onclick=a.action;area.appendChild(b);});
@@ -329,7 +344,7 @@
     function ending(){
       confetti();
       modalLocked=false;
-      openModal('🎉','사라진 츄르 사건 해결!',`<img class="transition-art" src="images/success-deduction.webp" alt="나나와 로봇청소기, 집사의 동선을 연결해 사건의 전말을 밝혀낸 코코"><div class="start-card"><p>코코는 냉장고 맨 아래 칸을 열었다.</p><p>그곳에는 사라진 연어맛 츄르가 차갑고 안전하게 누워 있었다!</p><p><b>범인은 없었다. 모두가 조금씩 수상했을 뿐!</b></p><div class="items"><div class="item">🐾<br>단서 ${Math.min(state.found.length,14)}개</div><div class="item">🧩<br>퍼즐 6개</div><div class="item">😼<br>명탐정 +100</div></div></div>`,[{label:'다시 수사하기',action:()=>restart()},{label:'사건의 결말 보기',primary:true,action:()=>showEndingArt()}]);
+      openModal('🎉','사라진 츄르 사건 해결!',`<img class="transition-art" src="images/success-deduction.webp" alt="나나와 로봇청소기, 집사의 동선을 연결해 사건의 전말을 밝혀낸 코코"><div class="start-card"><p>코코는 냉장고 맨 아래 칸을 열었다.</p><p>그곳에는 사라진 연어맛 츄르가 차갑고 안전하게 누워 있었다!</p><p><b>범인은 없었다. 모두가 조금씩 수상했을 뿐!</b></p><div class="items"><div class="item">🐾<br>단서 ${Math.min(state.found.length,14)}개</div><div class="item">🧩<br>퍼즐 6개</div><div class="item">😼<br>명탐정 +100</div></div></div>`,[{label:'다시 수사하기',action:()=>restart()},{label:'사건의 결말 보기',primary:true,action:()=>showEndingArt()}],{className:'case-result'});
     }
     function showEndingArt(){
       const endingSrc='images/ending-churu.webp';
