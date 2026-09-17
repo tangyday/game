@@ -41,8 +41,10 @@
     .paw { width:13px; height:13px; border:2px solid var(--teal); border-radius:50% 50% 45% 45%; opacity:.28; transition:.25s; }
     .paw.found { background:var(--yellow); border-color:#ca9621; opacity:1; transform:scale(1.08); }
     .game-card { overflow:hidden; border:1px solid rgba(255,255,255,.9); border-radius:26px; background:#fff; box-shadow:0 24px 70px rgba(13,86,84,.2); }
+    .scene-scroll { position:relative; overflow:hidden; }
     .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:#dff1ef; }
     .scene img { display:block; width:100%; height:100%; object-fit:cover; transition:opacity .35s,transform .7s; }
+    .pan-guide { display:none; }
     .scene.loading img { opacity:.25; transform:scale(1.015); }
     .chapter-tag { position:absolute; left:18px; bottom:18px; top:auto; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
     .hotspot { position:absolute; width:clamp(54px,6vw,76px); aspect-ratio:1; border:1px solid transparent; border-radius:50%; cursor:pointer; background:transparent; box-shadow:none; padding:0; transition:transform .2s,background .2s,box-shadow .2s,border-color .2s; }
@@ -112,7 +114,36 @@
       h1 { font-size:1.55rem; line-height:1.08; }
       .eyebrow { font-size:.68rem; }
       .game-card { border-radius:18px; }
-      .scene { aspect-ratio:16/10; }
+      .scene-scroll {
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        scrollbar-width:none;
+        touch-action:pan-x pan-y;
+        background:#dff1ef;
+      }
+      .scene-scroll::-webkit-scrollbar { display:none; }
+      .scene {
+        width:180vw;
+        min-width:180vw;
+        max-width:none;
+        aspect-ratio:16/9;
+        overflow:hidden;
+      }
+      .scene img { width:100%; height:100%; object-fit:cover; }
+      .pan-guide {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:6px;
+        padding:8px 12px;
+        background:#fffdf7;
+        border-top:1px solid var(--line);
+        color:#648080;
+        font-size:.72rem;
+        font-weight:700;
+      }
       .chapter-tag { left:10px; bottom:10px; top:auto; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.82); box-shadow:0 2px 8px rgba(0,0,0,.08); }
       .hotspot { width:56px; }
       .hotspot::after { display:none; }
@@ -148,11 +179,14 @@
     </header>
 
     <section class="game-card" aria-live="polite">
-      <div class="scene" id="scene">
-        <img id="sceneImage" src="images/living-room.webp" alt="코코가 사라진 츄르의 단서를 찾는 거실">
-        <div class="chapter-tag" id="chapterTag">01 · 사건 현장</div>
-        <div id="hotspots"></div>
+      <div class="scene-scroll" id="sceneScroll">
+        <div class="scene" id="scene">
+          <img id="sceneImage" src="images/living-room.webp" alt="코코가 사라진 츄르의 단서를 찾는 거실">
+          <div class="chapter-tag" id="chapterTag">01 · 사건 현장</div>
+          <div id="hotspots"></div>
+        </div>
       </div>
+      <div class="pan-guide" aria-hidden="true">↔ 좌우로 밀어 장면 전체를 둘러보세요</div>
       <div class="storybar">
         <div><div class="chapter-kicker" id="kicker">첫 번째 수사</div><p class="objective" id="objective">사건 현장을 조사해 세 용의자의 흔적을 찾아내자!</p></div>
         <button class="hint-btn" id="hint" type="button">탐정 코코의 힌트 🐾</button>
@@ -261,6 +295,7 @@
       const c=chapters[state.chapter];
       $('#scene').classList.add('loading');
       $('#sceneImage').src=c.image;$('#sceneImage').alt=c.alt;$('#sceneImage').onload=()=>$('#scene').classList.remove('loading');
+      const sceneScroll=$('#sceneScroll');if(sceneScroll)sceneScroll.scrollLeft=0;
       $('#chapterTag').textContent=c.tag;$('#kicker').textContent=c.kicker;$('#objective').textContent=c.objective;
       const hs=$('#hotspots'),ma=$('#mobileActions');hs.innerHTML='';ma.innerHTML='';
       c.spots.forEach(s=>{
