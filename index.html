@@ -94,11 +94,38 @@
     }
 
     .brand-mark{
-      width:10px;
-      height:10px;
-      border-radius:50%;
+      position:relative;
+      width:18px;
+      height:18px;
+      flex:0 0 auto;
+    }
+
+    .brand-mark::before{
+      content:"";
+      position:absolute;
+      left:5px;
+      bottom:1px;
+      width:9px;
+      height:8px;
+      border-radius:55% 55% 48% 48%;
       background:linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow:0 0 18px rgba(127,149,255,.7);
+      transform:rotate(-8deg);
+      box-shadow:0 0 16px rgba(127,149,255,.5);
+    }
+
+    .brand-mark::after{
+      content:"";
+      position:absolute;
+      left:1px;
+      top:1px;
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:var(--accent);
+      box-shadow:
+        6px -1px 0 -0.2px #9cafff,
+        11px 2px 0 -0.3px #879cff;
+      transform:rotate(-7deg);
     }
 
     .top-label{
@@ -304,24 +331,6 @@
       filter:brightness(1.03);
     }
 
-    .thumb-tag{
-      position:absolute;
-      top:16px;
-      left:16px;
-      z-index:2;
-      padding:7px 10px;
-      border:1px solid rgba(255,255,255,.13);
-      border-radius:999px;
-      background:rgba(8,10,15,.6);
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
-      color:#d9dfeb;
-      font-size:10px;
-      font-weight:800;
-      letter-spacing:.11em;
-      text-transform:uppercase;
-    }
-
     .card-body{
       display:flex;
       align-items:center;
@@ -499,11 +508,6 @@
         font-size:11px;
       }
 
-      .thumb-tag{
-        top:12px;
-        left:12px;
-      }
-
       .card-body{
         gap:12px;
       }
@@ -557,7 +561,7 @@
         <div class="section-head">
           <div class="section-title-wrap">
             <span class="creator-badge">SH</span>
-            <h2 class="section-title">SH 제작</h2>
+            <h2 class="section-title">냥이 제작</h2>
           </div>
           <span class="section-count">01 GAME</span>
         </div>
@@ -566,7 +570,6 @@
           <a class="game-card" href="https://nyamplay.pages.dev/remembered-you/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="remembered-you/sleep-memory.png" alt="언니의 기억 게임 썸네일" />
-              <span class="thumb-tag">Online Escape</span>
             </div>
 
             <div class="card-body">
@@ -586,7 +589,7 @@
         <div class="section-head">
           <div class="section-title-wrap">
             <span class="creator-badge">JH</span>
-            <h2 class="section-title">JH 제작</h2>
+            <h2 class="section-title">멍이 제작</h2>
           </div>
           <span class="section-count">02 GAMES</span>
         </div>
@@ -595,7 +598,6 @@
           <a class="game-card" href="https://nyamplay.pages.dev/coco-birthday/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="coco-birthday/images/og.png" alt="코코의 몰래 생일파티 대작전 게임 썸네일" />
-              <span class="thumb-tag">Online Escape</span>
             </div>
 
             <div class="card-body">
@@ -610,7 +612,6 @@
           <a class="game-card" href="https://nyamplay.pages.dev/churu-mystery/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="churu-mystery/images/og-churu.png" alt="사라진 츄르를 찾아서 게임 썸네일" />
-              <span class="thumb-tag">Online Escape</span>
             </div>
 
             <div class="card-body">
