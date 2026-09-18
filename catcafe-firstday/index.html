@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#eef8e9">
+  <meta name="description" content="초보 바리스타 나나의 주문받기, 자리 안내, 디저트 배달 직장 체험형 방탈출 게임">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="고양이 카페 첫 출근">
+  <meta property="og:description" content="초보 고양이 나나와 함께 카페의 세 가지 임무를 해결해 보세요!">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="images/og-cafe-first-day.png">
+  <meta property="og:image:width" content="1672">
+  <meta property="og:image:height" content="941">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="고양이 카페 첫 출근">
+  <meta name="twitter:description" content="주문받기부터 디저트 배달까지, 나나의 첫 출근을 도와주세요!">
+  <meta name="twitter:image" content="images/og-cafe-first-day.png">
+  <title>고양이 카페 첫 출근</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ffd75e'/%3E%3Ccircle cx='24' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='40' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='18' cy='39' r='7' fill='%230f7774'/%3E%3Ccircle cx='46' cy='39' r='7' fill='%230f7774'/%3E%3Cellipse cx='32' cy='45' rx='13' ry='11' fill='%230f7774'/%3E%3C/svg%3E">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+    :root { --ink:#3f554f; --teal:#5d927d; --deep:#3f725f; --yellow:#ffd986; --cream:#fffaf1; --coral:#e98678; --sky:#89c9d7; --line:rgba(63,85,79,.16); }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; }
+    body { font-family:'Noto Sans KR',system-ui,sans-serif; color:var(--ink); background:radial-gradient(circle at 10% 0%,#fff0c8 0,transparent 28%),linear-gradient(145deg,#fffdf7,#eaf7ef); }
+    button, input { font:inherit; }
+    button { color:inherit; }
+    .shell { width:min(1240px,100%); min-height:100vh; margin:auto; padding:18px clamp(12px,3vw,36px) 28px; }
+    .topbar { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .brand { margin-right:auto; }
+    .eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.13em; color:var(--teal); }
+    h1 { margin:1px 0 0; font-family:'Gaegu',cursive; font-size:clamp(1.75rem,4vw,2.7rem); line-height:1; }
+    .pill { border:1px solid var(--line); background:rgba(255,255,255,.78); border-radius:999px; min-height:44px; padding:0 14px; display:inline-flex; align-items:center; gap:7px; font-weight:700; box-shadow:0 6px 18px rgba(20,91,91,.08); }
+    button.pill { cursor:pointer; }
+    button.pill:hover { background:#fff; transform:translateY(-1px); }
+    #sound { width:44px; min-width:44px; padding:0; justify-content:center; font-size:1.1rem; }
+    button.pill.playing { color:#075454; background:#fff8d5; border-color:#e9c852; animation:bounce-note .8s ease-in-out infinite alternate; }
+    @keyframes bounce-note { to { transform:translateY(-2px) rotate(5deg); } }
+    .progress { display:flex; align-items:center; gap:5px; }
+    .paw { width:13px; height:13px; border:2px solid var(--teal); border-radius:50% 50% 45% 45%; opacity:.28; transition:.25s; }
+    .paw.found { background:var(--yellow); border-color:#ca9621; opacity:1; transform:scale(1.08); }
+    .game-card { overflow:hidden; border:1px solid rgba(255,255,255,.9); border-radius:26px; background:#fff; box-shadow:0 24px 70px rgba(13,86,84,.2); }
+    .scene-scroll { position:relative; overflow:hidden; }
+    .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:#dff1ef; }
+    .scene img { display:block; width:100%; height:100%; object-fit:cover; transition:opacity .35s,transform .7s; }
+    .pan-guide { display:none; }
+    .scene.loading img { opacity:.25; transform:scale(1.015); }
+    .chapter-tag { position:absolute; left:18px; bottom:18px; top:auto; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
+    .hotspot { position:absolute; width:clamp(54px,6vw,76px); aspect-ratio:1; border:1px solid transparent; border-radius:50%; cursor:pointer; background:transparent; box-shadow:none; padding:0; transition:transform .2s,background .2s,box-shadow .2s,border-color .2s; }
+    .hotspot::before { content:''; position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,255,255,.22); box-shadow:0 0 14px rgba(255,255,255,.16); opacity:.35; animation:soft-glint 2.8s ease-in-out infinite; }
+    .hotspot:hover, .hotspot:focus-visible, .hotspot.activating { transform:scale(1.08); outline:0; border-color:rgba(255,255,255,.92); background:radial-gradient(circle,rgba(255,239,159,.46),rgba(255,215,94,.12) 48%,transparent 70%); box-shadow:0 0 0 8px rgba(255,215,94,.2),0 0 30px rgba(255,239,159,.78); }
+    .hotspot:hover::before, .hotspot:focus-visible::before, .hotspot.activating::before { inset:4%; border-color:rgba(255,255,255,.9); opacity:1; animation:tap-spark .42s ease-out; }
+    .hotspot.done::before { border-color:rgba(255,255,255,.25); box-shadow:0 0 16px rgba(15,119,116,.2); }
+    .hotspot.done:hover, .hotspot.done:focus-visible { background:radial-gradient(circle,rgba(122,222,209,.34),rgba(15,119,116,.08) 52%,transparent 72%); box-shadow:0 0 0 8px rgba(15,119,116,.14),0 0 26px rgba(122,222,209,.5); }
+    .hotspot::after { content:attr(data-label); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); white-space:nowrap; padding:6px 10px; border-radius:9px; background:rgba(9,61,61,.92); color:#fff; font-size:.74rem; opacity:0; pointer-events:none; transition:.2s; }
+    .hotspot:hover::after, .hotspot:focus-visible::after { opacity:1; }
+    @keyframes soft-glint { 50% { opacity:.7; box-shadow:0 0 19px rgba(255,255,255,.38); } }
+    @keyframes tap-spark { from { transform:scale(.55); opacity:.2; } to { transform:scale(1); opacity:1; } }
+    .storybar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:18px; align-items:center; min-height:104px; padding:18px 22px; background:#fff; border-top:1px solid #edf3ef; }
+    .chapter-kicker { color:var(--coral); font-weight:700; font-size:.78rem; letter-spacing:.08em; }
+    .objective { margin:4px 0 0; font-size:clamp(1rem,2vw,1.15rem); line-height:1.65; }
+    .hint-btn { border:0; border-radius:14px; background:var(--teal); color:#fff; padding:13px 16px; font-weight:700; cursor:pointer; box-shadow:0 7px 0 var(--deep); }
+    .hint-btn:active { transform:translateY(4px); box-shadow:0 3px 0 var(--deep); }
+    .mobile-actions { display:none; padding:14px; gap:8px; overflow-x:auto; border-top:1px solid var(--line); background:#fffcf3; }
+    .mobile-actions button { white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:#fff; padding:10px 13px; font-weight:700; }
+    .footerline { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:13px; color:#5c7777; font-size:.82rem; }
+    .reset { border:0; background:transparent; text-decoration:underline; cursor:pointer; color:inherit; }
+    dialog { width:min(520px,calc(100% - 26px)); max-height:calc(100dvh - 26px); overflow:auto; border:0; border-radius:24px; padding:0; color:var(--ink); background:var(--cream); box-shadow:0 30px 100px rgba(0,35,35,.38); }
+    dialog::backdrop { background:rgba(7,57,57,.67); backdrop-filter:blur(5px); }
+    .modal { padding:26px; }
+    .modal-head { display:flex; gap:12px; align-items:flex-start; }
+    .modal-icon { width:48px; height:48px; flex:0 0 auto; border-radius:16px; display:grid; place-items:center; background:var(--yellow); font-size:1.55rem; transform:rotate(-4deg); }
+    .modal h2 { font-family:'Gaegu',cursive; font-size:2rem; margin:0; line-height:1; }
+    .modal p { line-height:1.75; margin:14px 0; }
+    .transition-art { width:100%; max-height:270px; object-fit:cover; display:block; margin:18px 0 20px; border-radius:18px; box-shadow:0 10px 28px rgba(13,86,84,.12); }
+    .ending-art { width:100%; max-height:430px; object-fit:cover; display:block; margin:20px 0 18px; border-radius:20px; box-shadow:0 14px 34px rgba(13,86,84,.16); }
+    .ending-copy { text-align:center; }
+    .ending-copy h3 { font-family:'Gaegu',cursive; font-size:2rem; margin:8px 0 6px; color:var(--teal); }
+    .ending-copy p { margin:8px 0; }
+    .close { margin-left:auto; border:0; background:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:1.35rem; }
+    .modal-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:9px; margin-top:20px; }
+    .primary, .secondary { min-height:46px; border-radius:13px; padding:0 17px; font-weight:700; cursor:pointer; }
+    .primary { border:0; color:#fff; background:var(--teal); box-shadow:0 5px 0 var(--deep); }
+    .secondary { border:1px solid var(--line); background:#fff; }
+    .case-result { padding:26px; min-height:610px; }
+    .case-result .start-card { padding-top:0; }
+    .case-result .start-card p { margin:14px auto; line-height:1.75; font-size:1rem; }
+    .case-result .items { margin:18px 0 8px; }
+    .case-result .item { min-width:68px; padding:9px; }
+    .case-result .modal-actions { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:9px; margin-top:20px; }
+    .case-result .modal-actions button { width:100%; min-width:0; padding:0 12px; white-space:nowrap; font-size:1rem; }
+    .code-row { display:flex; gap:9px; margin:15px 0 4px; }
+    .code-row input { width:100%; min-height:52px; border:2px solid #b9d7d2; border-radius:13px; text-align:center; font-size:1.35rem; letter-spacing:.25em; background:#fff; }
+    .sequence { display:flex; gap:9px; flex-wrap:wrap; margin:15px 0; }
+    .sequence button { width:56px; height:56px; border:2px solid #bad8d4; background:#fff; border-radius:16px; font-size:1.45rem; cursor:pointer; }
+    .sequence button.selected { border-color:var(--coral); background:#fff0ed; transform:translateY(-3px); }
+    .puzzle-feedback { min-height:24px; margin:8px 0 0; font-size:.9rem; font-weight:700; color:var(--coral); }
+    .puzzle-feedback.ok { color:var(--teal); }
+    .toast { position:fixed; left:50%; bottom:max(18px,env(safe-area-inset-bottom)); z-index:20; transform:translate(-50%,30px); opacity:0; max-width:calc(100% - 28px); background:#103f40; color:#fff; padding:12px 18px; border-radius:999px; box-shadow:0 12px 30px rgba(0,0,0,.25); font-weight:700; transition:.3s; pointer-events:none; text-align:center; }
+    .toast.show { transform:translate(-50%,0); opacity:1; }
+    .confetti { position:fixed; top:-20px; width:10px; height:16px; z-index:30; animation:fall 2.7s linear forwards; }
+    @keyframes fall { to { transform:translateY(110vh) rotate(720deg); } }
+    .start-card { text-align:center; padding:5px 0 0; }
+    .start-card .cat { font-size:4.5rem; filter:drop-shadow(0 8px 0 rgba(15,119,116,.12)); }
+    .start-card h2 { font-size:2.3rem; margin:8px 0; }
+    .start-card p { margin:8px auto 18px; max-width:390px; }
+    .items { display:flex; justify-content:center; gap:8px; margin:15px 0; }
+    .item { min-width:68px; padding:9px; border-radius:14px; background:#fff; border:1px solid var(--line); font-size:.82rem; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    @media (max-width:720px) {
+      .shell { padding:10px 8px 20px; }
+      .topbar { flex-wrap:wrap; }
+      .brand { width:100%; }
+      h1 { font-size:1.55rem; line-height:1.08; }
+      .eyebrow { font-size:.68rem; }
+      .game-card { border-radius:18px; }
+      .scene-scroll {
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        scrollbar-width:none;
+        touch-action:pan-x pan-y;
+        background:#dff1ef;
+      }
+      .scene-scroll::-webkit-scrollbar { display:none; }
+      .scene {
+        width:180vw;
+        min-width:180vw;
+        max-width:none;
+        aspect-ratio:16/9;
+        overflow:hidden;
+      }
+      .scene img { width:100%; height:100%; object-fit:cover; }
+      .pan-guide {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:6px;
+        padding:8px 12px;
+        background:#fffdf7;
+        border-top:1px solid var(--line);
+        color:#648080;
+        font-size:.72rem;
+        font-weight:700;
+      }
+      .chapter-tag { left:10px; bottom:10px; top:auto; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.82); box-shadow:0 2px 8px rgba(0,0,0,.08); }
+      .hotspot { width:56px; }
+      .hotspot::after { display:none; }
+      .storybar { grid-template-columns:1fr; padding:15px; gap:12px; }
+      .hint-btn { width:100%; }
+      .mobile-actions { display:flex; }
+      .footerline { padding:0 4px; }
+      .footerline span:first-child { display:none; }
+      .modal { padding:20px; }
+      .modal h2 { font-size:1.55rem; line-height:1.08; }
+      .modal-head { gap:9px; }
+      .modal-icon { width:42px; height:42px; font-size:1.3rem; border-radius:13px; }
+      .close { width:38px; height:38px; font-size:1.2rem; }
+      .transition-art { width:100%; margin:16px 0 18px; max-height:220px; }
+      .ending-art { max-height:360px; margin-top:17px; }
+      .case-result { padding:20px; min-height:min(650px,calc(100dvh - 26px)); }
+      .case-result .modal-head { margin-bottom:2px; }
+      .case-result .start-card p { margin:12px auto; font-size:1rem; line-height:1.75; }
+      .case-result .items { margin:15px 0 8px; gap:8px; }
+      .case-result .item { min-width:0; flex:1; padding:8px 5px; font-size:.82rem; border-radius:12px; }
+      .case-result .modal-actions { margin-top:18px; gap:8px; }
+      .case-result .modal-actions button { min-height:46px; padding:0 8px; font-size:.9rem; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="eyebrow">NANA'S FIRST DAY AT THE CAFÉ</div><h1>고양이 카페 첫 출근</h1></div>
+      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 14</span></div>
+      <button class="pill" id="sound" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기" title="음악 켜기">🎵</button>
+    </header>
+
+    <section class="game-card" aria-live="polite">
+      <div class="scene-scroll" id="sceneScroll">
+        <div class="scene" id="scene">
+          <img id="sceneImage" src="images/cafe-counter.webp" alt="고양이 카페 주문 카운터에 처음 선 나나">
+          <div class="chapter-tag" id="chapterTag">01 · 주문 카운터</div>
+          <div id="hotspots"></div>
+        </div>
+      </div>
+      <div class="pan-guide" aria-hidden="true">↔ 좌우로 밀어 장면 전체를 둘러보세요</div>
+      <div class="storybar">
+        <div><div class="chapter-kicker" id="kicker">첫 번째 임무</div><p class="objective" id="objective">메뉴와 주문표를 확인해 첫 주문을 정확히 접수하자!</p></div>
+        <button class="hint-btn" id="hint" type="button">선배 직원의 힌트 🐾</button>
+      </div>
+      <div class="mobile-actions" id="mobileActions" aria-label="살펴볼 곳"></div>
+    </section>
+
+    <div class="footerline"><span>카페의 물건을 누르면 나나의 업무가 시작돼요.</span><button class="reset" id="reset" type="button">처음부터 다시 하기</button></div>
+  </main>
+
+  <dialog id="dialog"><div class="modal" id="modal"></div></dialog>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    const chapters = [
+      {
+        tag:'01 · 주문 카운터', image:'images/cafe-counter.webp', alt:'고양이 카페 주문 카운터에서 첫 주문을 준비하는 나나',
+        kicker:'첫 번째 임무 · 주문받기', objective:'메뉴와 주문표를 확인해 첫 주문을 정확히 접수하자!', hint:'주문표에 적힌 메뉴의 가격을 메뉴판에서 찾아 순서대로 이어 붙여 봐. 주문 확인은 손님이 말한 순서가 중요해!',
+        spots:[
+          {id:'menu',label:'메뉴판',icon:'📋',x:58,y:18,title:'오늘의 메뉴판',text:'메뉴판의 가격을 살펴보자.\n<b>따뜻한 라떼 5 · 딸기 케이크 4 · 발바닥 초코케이크 4 · 블루베리 머핀 4</b>\n첫 주문표와 맞춰 보면 계산대 암호를 알 수 있을 것 같다.',type:'clue'},
+          {id:'order',label:'첫 주문표',icon:'🧾',x:20,y:66,title:'첫 손님의 주문',text:'첫 손님의 요청이 적혀 있다.\n<b>“따뜻한 라떼와 딸기 케이크를 주세요. 냅킨도 마지막에 부탁해요.”</b>\n메뉴 가격은 주문한 순서대로 입력해야 한다.',type:'clue'},
+          {id:'register',label:'계산대',icon:'🔢',x:62,y:58,title:'주문 금액 입력',text:'따뜻한 라떼와 딸기 케이크의 가격을 주문 순서대로 이어 붙여 두 자리 암호를 입력하자!',type:'code',answer:'54',digits:2,reward:'첫 주문 영수증',success:'띵동! 첫 주문이 정확히 접수됐다. 라떼 1잔과 딸기 케이크 1조각 주문 완료!'},
+          {id:'display',label:'디저트 진열대',icon:'🍰',x:87,y:59,title:'세 가지 디저트',text:'진열대에는 <b>딸기 케이크 · 발바닥 초코케이크 · 블루베리 머핀</b>이 차례로 놓여 있다. 손님이 고른 디저트는 가장 왼쪽이다.',type:'clue'},
+          {id:'confirm',label:'주문 확인 벨',icon:'🔔',x:43,y:75,title:'주문 순서 확인',text:'손님이 말한 순서대로 주문 내용을 다시 확인해 보자!',type:'sequence',options:['☕','🍰','🧻'],solution:[0,1,2],reward:'정확한 주문표',success:'따뜻한 라떼 → 딸기 케이크 → 냅킨. 첫 주문 확인까지 완벽하다!'}
+        ]
+      },
+      {
+        tag:'02 · 카페 홀', image:'images/cafe-seating.webp', alt:'카페에 손님으로 온 코코를 맞이하는 나나',
+        kicker:'두 번째 임무 · 자리 안내', objective:'손님 코코의 요청을 확인하고 가장 알맞은 자리로 안내하자!', hint:'코코는 햇살이 들고 파란 쿠션이 있는 조용한 자리를 원해. 자리 번호와 안내 순서를 함께 확인해 봐!',
+        spots:[
+          {id:'reservation',label:'예약 명단',icon:'📒',x:12,y:56,title:'오늘의 예약 손님',text:'예약 명단 첫 줄에 반가운 이름이 있다.\n<b>코코 · 햇살이 잘 드는 조용한 자리 희망</b>\n나나의 첫 손님이 코코라니, 조금 긴장이 풀린다!',type:'clue'},
+          {id:'seatmap',label:'좌석 안내도',icon:'🗺️',x:25,y:61,title:'세 가지 좌석',text:'좌석표에는 세 자리가 표시돼 있다.\n<b>1번: 창가·파란 쿠션 / 2번: 책장·초록 쿠션 / 3번: 중앙·분홍 쿠션</b>',type:'clue'},
+          {id:'seatcode',label:'좌석 번호표',icon:'🔢',x:46,y:59,title:'코코의 좌석 번호',text:'햇살이 잘 들고 파란 쿠션이 있는 조용한 창가 자리는 몇 번일까?',type:'code',answer:'1',digits:1,reward:'코코의 좌석표',success:'정답! 코코의 자리는 햇살이 드는 1번 창가석이다.'},
+          {id:'coco',label:'손님 코코',icon:'🐱',x:82,y:55,title:'반가운 첫 손님',text:'“나나야, 첫 출근 축하해! 창밖을 보면서 조용히 쉬고 싶어.”\n코코가 나나를 응원하러 카페에 찾아왔다.',type:'collect'},
+          {id:'guide',label:'안내 순서표',icon:'🪑',x:62,y:40,title:'친절한 자리 안내',text:'손님을 맞이하는 올바른 순서대로 눌러 보자!',type:'sequence',options:['📒','🔵','🪟'],solution:[0,1,2],reward:'자리 안내 완료',success:'예약 확인 → 파란 쿠션 확인 → 창가석 안내. 코코가 편안하게 자리에 앉았다!'}
+        ]
+      },
+      {
+        tag:'03 · 디저트 픽업대', image:'images/cafe-delivery.webp', alt:'코코에게 디저트를 배달하려는 나나',
+        kicker:'마지막 임무 · 디저트 배달', objective:'주문표와 테이블 표시를 맞춰 코코에게 정확한 디저트를 배달하자!', hint:'코코의 테이블은 파란 쿠션의 1번 자리야. 주문은 딸기 케이크와 따뜻한 라떼, 배달은 픽업대에서 창가석 순서로!',
+        spots:[
+          {id:'pickup',label:'픽업대 표시',icon:'🏷️',x:21,y:48,title:'디저트 기호표',text:'픽업대의 기호를 확인하자.\n<b>빨간 원 = 딸기 케이크 · 발바닥 = 초코케이크 · 별 = 머핀</b>\n음료는 <b>1번 따뜻한 라떼 · 2번 아이스티 · 3번 녹차</b>다.',type:'clue'},
+          {id:'ticket',label:'코코 주문표',icon:'🧾',x:48,y:24,title:'1번 테이블 주문',text:'코코의 주문표에는 <b>빨간 원 디저트 + 1번 음료</b>가 적혀 있다. 두 기호의 번호를 순서대로 이어 붙이면 배달 확인 암호가 된다.',type:'clue'},
+          {id:'tray',label:'배달 트레이',icon:'🍽️',x:49,y:55,title:'트레이 확인 번호',text:'딸기 케이크는 진열 순서 <b>1번</b>, 따뜻한 라떼도 음료표 <b>1번</b>이다. 두 자리 확인 번호를 입력하자!',type:'code',answer:'11',digits:2,reward:'코코의 디저트 트레이',success:'딸기 케이크와 따뜻한 라떼가 정확히 한 트레이에 준비됐다!'},
+          {id:'delivery',label:'배달 동선',icon:'🐾',x:74,y:67,title:'마지막 배달 임무',text:'완성된 트레이를 코코에게 전달하는 순서를 골라 보자!',type:'sequence',options:['🍽️','🐾','🪟'],solution:[0,1,2],finish:true,success:'픽업대에서 트레이를 들고 통로를 지나 창가석까지! 코코의 주문을 안전하게 배달했다!'}
+        ]
+      }
+    ];
+    const initial = {chapter:0, found:[], items:[], sound:false, finished:false};
+    localStorage.removeItem('nana-cafe-first-day-v1');
+    let state = {...initial, found:[], items:[]};
+    let selected=[];
+    let modalLocked=false,hotspotBusy=false,advancePending=false;
+    const $=s=>document.querySelector(s);
+    const dialog=$('#dialog'), modal=$('#modal'), toast=$('#toast');
+
+    function save(){ /* 진행 상황은 현재 페이지에서만 유지하고 새로고침 시 초기화 */ }
+    let audioCtx=null,musicBus=null,musicTimer=null,nextNoteTime=0,musicStep=0;
+    const melody=[659.25,783.99,880,783.99,659.25,523.25,587.33,659.25,698.46,880,1046.5,880,783.99,659.25,587.33,null,659.25,783.99,987.77,880,783.99,659.25,587.33,523.25,587.33,698.46,880,783.99,698.46,659.25,523.25,null];
+    const bass=[261.63,349.23,220,392];
+    function ensureAudio(){
+      if(audioCtx)return audioCtx;
+      const C=window.AudioContext||window.webkitAudioContext;
+      if(!C)return null;
+      audioCtx=new C();musicBus=audioCtx.createGain();musicBus.gain.value=.0001;musicBus.connect(audioCtx.destination);return audioCtx;
+    }
+    function musicNote(freq,when,duration=.24,volume=.035){
+      if(!freq||!audioCtx||!musicBus)return;
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type='sine';o.frequency.setValueAtTime(freq,when);
+      g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(volume,when+.018);g.gain.exponentialRampToValueAtTime(.0001,when+duration);
+      o.connect(g);g.connect(musicBus);o.start(when);o.stop(when+duration+.03);
+    }
+    function scheduleMusic(){
+      if(!state.sound||!audioCtx)return;
+      while(nextNoteTime<audioCtx.currentTime+.45){
+        const note=melody[musicStep%melody.length];musicNote(note,nextNoteTime,.25,.042);
+        if(note)musicNote(note*2,nextNoteTime,.12,.009);
+        if(musicStep%8===0)musicNote(bass[Math.floor(musicStep/8)%bass.length],nextNoteTime,.7,.018);
+        nextNoteTime+=.29;musicStep++;
+      }
+    }
+    async function startMusic(){
+      const c=ensureAudio();if(!c)return;
+      if(c.state==='suspended')await c.resume();
+      musicBus.gain.cancelScheduledValues(c.currentTime);musicBus.gain.setTargetAtTime(1,c.currentTime,.08);
+      if(musicTimer)return;
+      nextNoteTime=c.currentTime+.05;scheduleMusic();musicTimer=setInterval(scheduleMusic,180);
+    }
+    function stopMusic(){
+      if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
+      if(audioCtx&&musicBus){musicBus.gain.cancelScheduledValues(audioCtx.currentTime);musicBus.gain.setTargetAtTime(.0001,audioCtx.currentTime,.05);}
+    }
+    function beep(freq=660,duration=.08){
+      if(!state.sound)return;const c=ensureAudio();if(!c)return;
+      const o=c.createOscillator(),g=c.createGain();o.frequency.value=freq;o.type='sine';g.gain.setValueAtTime(.07,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+duration);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+duration);
+    }
+    function showToast(message){ toast.textContent=message;toast.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove('show'),2200); }
+    function foundKey(id){ return `${state.chapter}-${id}`; }
+    function addFound(id){ const key=foundKey(id);if(!state.found.includes(key)){state.found.push(key);beep(820);save();}renderHeader(); }
+    function renderHeader(){
+      $('#count').textContent=Math.min(state.found.length,14);
+      const sound=$('#sound');sound.textContent='🎵';sound.classList.toggle('playing',state.sound);sound.setAttribute('aria-pressed',state.sound);sound.setAttribute('aria-label',state.sound?'배경음악과 효과음 끄기':'배경음악과 효과음 켜기');sound.title=state.sound?'음악 끄기':'음악 켜기';
+    }
+    function render(){
+      const c=chapters[state.chapter];
+      $('#scene').classList.add('loading');
+      $('#sceneImage').src=c.image;$('#sceneImage').alt=c.alt;$('#sceneImage').onload=()=>$('#scene').classList.remove('loading');
+      const sceneScroll=$('#sceneScroll');if(sceneScroll)sceneScroll.scrollLeft=0;
+      $('#chapterTag').textContent=c.tag;$('#kicker').textContent=c.kicker;$('#objective').textContent=c.objective;
+      const hs=$('#hotspots'),ma=$('#mobileActions');hs.innerHTML='';ma.innerHTML='';
+      c.spots.forEach(s=>{
+        const done=state.found.includes(foundKey(s.id));
+        const b=document.createElement('button');b.className='hotspot'+(done?' done':'');b.style.left=`calc(${s.x}% - 30px)`;b.style.top=`calc(${s.y}% - 30px)`;b.dataset.label=s.label;b.setAttribute('aria-label',`${s.label}${done?' · 조사 완료':''}`);b.onclick=()=>activateHotspot(b,s);hs.appendChild(b);
+        const m=document.createElement('button');m.textContent=`${s.label}${done?' · 완료':''}`;m.onclick=()=>inspect(s);ma.appendChild(m);
+      });
+      renderHeader();
+    }
+    function activateHotspot(button,spot){
+      if(hotspotBusy||dialog.open)return;
+      hotspotBusy=true;
+      button.classList.remove('activating');void button.offsetWidth;button.classList.add('activating');
+      setTimeout(()=>{button.classList.remove('activating');hotspotBusy=false;if(!dialog.open)inspect(spot);},180);
+    }
+    function openModal(icon,title,html,actions=[],options={}){
+      modalLocked=Boolean(options.locked);
+      modal.className='modal'+(options.className?` ${options.className}`:'');
+      modal.innerHTML=`<div class="modal-head"><div class="modal-icon">${icon}</div><div><div class="eyebrow">나나의 첫 출근 업무일지</div><h2>${title}</h2></div>${modalLocked?'':'<button class="close" aria-label="닫기">×</button>'}</div><div class="modal-body">${html}</div><div class="modal-actions"></div>`;
+      const close=modal.querySelector('.close');if(close)close.onclick=()=>dialog.close();
+      const area=modal.querySelector('.modal-actions');actions.forEach(a=>{const b=document.createElement('button');b.className=a.primary?'primary':'secondary';b.textContent=a.label;b.onclick=a.action;area.appendChild(b);});
+      if(!dialog.open)dialog.showModal();
+    }
+    function inspect(s){
+      if(dialog.open)return;
+      beep(520);
+      if(s.type==='code') return codePuzzle(s);
+      if(s.id==='delivery'&&!state.found.includes('2-tray')){showToast('코코의 디저트 트레이를 먼저 완성해야 한다냥!');return;}
+      if(s.type==='sequence') return sequencePuzzle(s);
+      addFound(s.id);
+      if(s.id==='coco'&&!state.items.includes('코코의 응원'))state.items.push('코코의 응원');
+      save();
+      openModal(s.icon,s.title,`<p>${s.text.replaceAll('\n','</p><p>')}</p>`,[{label:'좋아!',primary:true,action:()=>{dialog.close();checkAdvance();render();}}]);
+    }
+    function seatingPuzzlesComplete(){
+      return state.chapter===1 && state.found.includes('1-seatcode') && state.found.includes('1-guide');
+    }
+    function showSeatingComplete(){
+      if(advancePending)return;
+      advancePending=true;
+      modalLocked=true;
+      openModal('🪑','자리 안내 완료!',`<img class="transition-art" src="images/success-seating.webp" alt="나나가 코코를 햇살 좋은 창가 자리로 안내한 모습"><p>나나는 코코의 요청을 기억하고 햇살이 드는 파란 쿠션 창가석으로 정확히 안내했다.</p><p>이제 마지막 임무, 코코가 주문한 디저트를 안전하게 배달하자!</p><div class="items"><div class="item">📒<br>예약 확인</div><div class="item">🪟<br>창가석 안내</div></div>`,[{label:'디저트 배달로 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('마지막 장소, 디저트 픽업대로 이동!');}}],{locked:true});
+    }
+
+    function codePuzzle(s){
+      const zeros='0'.repeat(s.digits);
+      openModal(s.icon,s.title,`<p>${s.text}</p><div class="code-row"><input id="code" inputmode="numeric" maxlength="${s.digits}" placeholder="${zeros}" aria-label="${s.digits}자리 암호"></div><p class="puzzle-feedback" id="codeFeedback" aria-live="polite"></p>`,[
+        {label:'나중에',action:()=>dialog.close()},{label:'확인하기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">업무 확인</button>';$('#continue').onclick=()=>{dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#codeFeedback');if(feedback)feedback.textContent='앗, 번호가 맞지 않는 것 같다냥! 단서를 다시 살펴보자.';}}}
+      ]);setTimeout(()=>$('#code')?.focus(),80);
+    }
+    function shuffledOptions(options){
+      const list=options.map((icon,index)=>({icon,index}));
+      for(let i=list.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [list[i],list[j]]=[list[j],list[i]];
+      }
+      // 우연히 원래 순서 그대로면 한 번 회전시켜 정답이 눈에 보이지 않게 한다.
+      if(list.length>1 && list.every((item,pos)=>item.index===pos)) list.push(list.shift());
+      return list;
+    }
+
+    function sequencePuzzle(s){
+      selected=[];const icons=s.options;const shuffled=shuffledOptions(icons);
+      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>`,[
+        {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';}},
+        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'첫 출근 완료!':'업무 확인'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 골라보자.';}}}
+      ]);
+      modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length||b.classList.contains('selected'))return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';beep(600+selected.length*70);});
+    }
+    function checkAdvance(){
+      if(advancePending)return;
+      if(state.chapter===0&&state.found.includes('0-register')&&state.found.includes('0-confirm')){
+        advancePending=true;
+        setTimeout(()=>openModal('🧾','첫 주문 접수 완료!',`<img class="transition-art" src="images/success-order.webp" alt="첫 주문표를 정확히 완성하고 기뻐하는 나나"><p>나나는 메뉴 가격을 확인하고 손님의 주문 순서까지 정확하게 되짚었다.</p><p>첫 주문 성공! 이제 홀로 나가 다음 손님을 맞이하자.</p><div class="items"><div class="item">☕<br>라떼 접수</div><div class="item">🍰<br>케이크 접수</div></div>`,[{label:'자리 안내로 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('두 번째 장소, 카페 홀로 이동!');}}],{locked:true}),420);
+        return;
+      }
+      if(seatingPuzzlesComplete()){
+        showSeatingComplete();
+      }
+    }
+    function ending(){
+      confetti();
+      modalLocked=false;
+      openModal('🎉','나나의 첫 출근 성공!',`<img class="transition-art" src="images/success-delivery.webp" alt="나나가 코코에게 딸기 케이크와 따뜻한 라떼를 정확히 배달한 모습"><div class="start-card"><p>나나는 트레이를 흔들림 없이 창가석까지 옮겼다.</p><p>코코의 테이블에는 딸기 케이크와 따뜻한 라떼가 정확히 도착했다!</p><p><b>주문받기, 자리 안내, 디저트 배달까지 모두 성공!</b></p><div class="items"><div class="item">🐾<br>업무 ${Math.min(state.found.length,14)}개</div><div class="item">🧩<br>퍼즐 6개</div><div class="item">☕<br>신입 +100</div></div></div>`,[{label:'다시 출근하기',action:()=>restart()},{label:'엔딩 장면 보기',primary:true,action:()=>showEndingArt()}],{className:'case-result'});
+    }
+    function showEndingArt(){
+      const endingSrc='images/ending-cafe.webp';
+      modalLocked=false;
+      openModal('💛','첫 출근을 마친 나나',`<img class="ending-art" src="${endingSrc}" alt="카페 마감 후 첫 출근을 축하하는 나나와 코코" onerror="this.onerror=null;this.style.display='none';"><div class="ending-copy"><h3>FIRST DAY COMPLETE!</h3><p>처음에는 주문표만 봐도 긴장했지만,<br>나나는 하나씩 차분하게 해냈어요.</p><p>마감 후 코코는 나나와 축하의 앞발 인사를 나누고,<br>남은 딸기 케이크를 함께 맛보았답니다.</p><p><b>나나의 첫 출근을 도와줘서 고마워요 🐾</b></p></div>`,[{label:'처음부터 다시',action:()=>restart()},{label:'오늘 업무 종료',primary:true,action:()=>dialog.close()}]);
+    }
+    function confetti(){const colors=['#ffd75e','#ff8171','#73c8de','#0f7774','#fff'];for(let i=0;i<65;i++){const e=document.createElement('i');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.background=colors[i%colors.length];e.style.animationDelay=Math.random()*1.1+'s';e.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(e);setTimeout(()=>e.remove(),4200);}}
+    function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();intro();}
+    function intro(){openModal('☕','고양이 카페 첫 출근',`<div class="start-card"><div class="cat">🐱</div><p>오늘은 나나가 고양이 카페에 처음 출근하는 날!</p><p><b>주문받기 · 손님 자리 안내 · 디저트 배달</b><br>세 가지 임무를 차근차근 해결해 주세요.</p><p>두 번째 임무에는 반가운 손님 코코도 찾아온대요.</p><p><b>카페의 물건을 누르면 업무가 시작돼요.</b></p></div>`,[{label:'첫 출근 시작!',primary:true,action:()=>{dialog.close();beep(720,.12);}}]);}
+    $('#hint').onclick=()=>openModal('💡','선배 직원의 힌트',`<p>${chapters[state.chapter].hint}</p>`,[{label:'알겠어!',primary:true,action:()=>dialog.close()}]);
+    $('#sound').onclick=async()=>{
+      if(state.sound){beep(520,.09);state.sound=false;stopMusic();}
+      else{state.sound=true;await startMusic();beep(760,.12);showToast('포근한 카페 음악이 시작됐다냥 ♪');}
+      save();renderHeader();
+    };
+    $('#reset').onclick=()=>openModal('↩️','첫 출근을 다시 시작할까?',`<p>완료한 업무와 게임 진행 상황이 모두 초기화돼요.</p>`,[{label:'계속 일할래',action:()=>dialog.close()},{label:'처음부터',primary:true,action:restart}]);
+    dialog.addEventListener('click',e=>{if(e.target===dialog&&!modalLocked)dialog.close();});
+    dialog.addEventListener('cancel',e=>{if(modalLocked)e.preventDefault();});
+    render();
+    setTimeout(intro,250);
+  </script>
+</body>
+</html>
