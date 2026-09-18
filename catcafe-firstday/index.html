@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#eef8e9">
-  <meta name="description" content="초보 바리스타 나나의 주문받기, 자리 안내, 디저트 배달 직장 체험형 방탈출 게임">
+  <meta name="description" content="초보 바리스타 나나의 주문받기, 자리 안내, 새 손님 응대, 디저트 배달 직장 체험형 방탈출 게임">
   <meta property="og:type" content="website">
   <meta property="og:title" content="고양이 카페 첫 출근">
-  <meta property="og:description" content="초보 고양이 나나와 함께 카페의 세 가지 임무를 해결해 보세요!">
+  <meta property="og:description" content="초보 고양이 나나와 함께 카페의 네 가지 임무를 해결해 보세요!">
   <meta property="og:url" content="">
   <meta property="og:image" content="images/og-cafe-first-day.png">
   <meta property="og:image:width" content="1672">
   <meta property="og:image:height" content="941">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="고양이 카페 첫 출근">
-  <meta name="twitter:description" content="주문받기부터 디저트 배달까지, 나나의 첫 출근을 도와주세요!">
+  <meta name="twitter:description" content="주문받기부터 새 손님 응대와 디저트 배달까지, 나나의 첫 출근을 도와주세요!">
   <meta name="twitter:image" content="images/og-cafe-first-day.png">
   <title>고양이 카페 첫 출근</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ffd75e'/%3E%3Ccircle cx='24' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='40' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='18' cy='39' r='7' fill='%230f7774'/%3E%3Ccircle cx='46' cy='39' r='7' fill='%230f7774'/%3E%3Cellipse cx='32' cy='45' rx='13' ry='11' fill='%230f7774'/%3E%3C/svg%3E">
@@ -93,7 +93,7 @@
     .code-row { display:flex; gap:9px; margin:15px 0 4px; }
     .code-row input { width:100%; min-height:52px; border:2px solid #b9d7d2; border-radius:13px; text-align:center; font-size:1.35rem; letter-spacing:.25em; background:#fff; }
     .sequence { display:flex; gap:9px; flex-wrap:wrap; margin:15px 0; }
-    .sequence button { width:56px; height:56px; border:2px solid #bad8d4; background:#fff; border-radius:16px; font-size:1.45rem; cursor:pointer; }
+    .sequence button { width:auto; min-width:56px; min-height:56px; padding:8px 12px; border:2px solid #bad8d4; background:#fff; border-radius:16px; font-size:1rem; line-height:1.35; font-weight:700; cursor:pointer; }
     .sequence button.selected { border-color:var(--coral); background:#fff0ed; transform:translateY(-3px); }
     .puzzle-feedback { min-height:24px; margin:8px 0 0; font-size:.9rem; font-weight:700; color:var(--coral); }
     .puzzle-feedback.ok { color:var(--teal); }
@@ -152,6 +152,8 @@
       .mobile-actions { display:flex; }
       .footerline { padding:0 4px; }
       .footerline span:first-child { display:none; }
+      .sequence { gap:7px; }
+      .sequence button { flex:1 1 calc(50% - 7px); min-width:120px; min-height:52px; padding:8px 10px; font-size:.9rem; }
       .modal { padding:20px; }
       .modal h2 { font-size:1.55rem; line-height:1.08; }
       .modal-head { gap:9px; }
@@ -174,7 +176,7 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><div class="eyebrow">NANA'S FIRST DAY AT THE CAFÉ</div><h1>고양이 카페 첫 출근</h1></div>
-      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 14</span></div>
+      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 18</span></div>
       <button class="pill" id="sound" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기" title="음악 켜기">🎵</button>
     </header>
 
@@ -215,17 +217,27 @@
       },
       {
         tag:'02 · 카페 홀', image:'images/cafe-seating.webp', alt:'카페에 손님으로 온 코코를 맞이하는 나나',
-        kicker:'두 번째 임무 · 자리 안내', objective:'손님 코코의 요청을 확인하고 가장 알맞은 자리로 안내하자!', hint:'코코는 햇살이 들고 파란 쿠션이 있는 조용한 자리를 원해. 자리 번호와 안내 순서를 함께 확인해 봐!',
+        kicker:'두 번째 임무 · 자리 안내', objective:'손님 코코의 요청을 확인하고 가장 알맞은 자리로 안내하자!', hint:'코코는 햇살이 들고 파란 쿠션이 있는 조용한 자리를 원해. 자리 안내는 “손님 확인 → 원하는 조건의 자리 찾기 → 자리까지 안내” 순서로 생각하면 쉬워!',
         spots:[
           {id:'reservation',label:'예약 명단',icon:'📒',x:12,y:56,title:'오늘의 예약 손님',text:'예약 명단 첫 줄에 반가운 이름이 있다.\n<b>코코 · 햇살이 잘 드는 조용한 자리 희망</b>\n나나의 첫 손님이 코코라니, 조금 긴장이 풀린다!',type:'clue'},
           {id:'seatmap',label:'좌석 안내도',icon:'🗺️',x:25,y:61,title:'세 가지 좌석',text:'좌석표에는 세 자리가 표시돼 있다.\n<b>1번: 창가·파란 쿠션 / 2번: 책장·초록 쿠션 / 3번: 중앙·분홍 쿠션</b>',type:'clue'},
           {id:'seatcode',label:'좌석 번호표',icon:'🔢',x:46,y:59,title:'코코의 좌석 번호',text:'햇살이 잘 들고 파란 쿠션이 있는 조용한 창가 자리는 몇 번일까?',type:'code',answer:'1',digits:1,reward:'코코의 좌석표',success:'정답! 코코의 자리는 햇살이 드는 1번 창가석이다.'},
           {id:'coco',label:'손님 코코',icon:'🐱',x:82,y:55,title:'반가운 첫 손님',text:'“나나야, 첫 출근 축하해! 창밖을 보면서 조용히 쉬고 싶어.”\n코코가 나나를 응원하러 카페에 찾아왔다.',type:'collect'},
-          {id:'guide',label:'안내 순서표',icon:'🪑',x:62,y:40,title:'친절한 자리 안내',text:'손님을 맞이하는 올바른 순서대로 눌러 보자!',type:'sequence',options:['📒','🔵','🪟'],solution:[0,1,2],reward:'자리 안내 완료',success:'예약 확인 → 파란 쿠션 확인 → 창가석 안내. 코코가 편안하게 자리에 앉았다!'}
+          {id:'guide',label:'안내 순서표',icon:'🪑',x:62,y:40,title:'코코를 자리로 안내하기',text:'코코를 자리로 안내할 때 필요한 세 가지 행동이 섞여 있다.<br><br><b>① 먼저 예약 손님이 맞는지 확인하고<br>② 코코가 원하는 조건의 자리를 찾은 뒤<br>③ 마지막으로 그 자리까지 안내해 보자!</b><br><br>아래 버튼을 실제 안내 순서대로 눌러 주세요.',type:'sequence',options:['📒 예약 확인','🔵 파란 쿠션 찾기','🪟 창가석 안내'],solution:[0,1,2],reward:'자리 안내 완료',success:'예약 확인 → 파란 쿠션 자리 찾기 → 창가석 안내! 코코가 원하는 자리를 정확하게 찾아 편안하게 안내했다.'}
         ]
       },
       {
-        tag:'03 · 디저트 픽업대', image:'images/cafe-delivery.webp', alt:'코코에게 디저트를 배달하려는 나나',
+        tag:'03 · 새 손님 주문', image:'images/order-scene.webp', alt:'카페에 새로 찾아온 주황 고양이와 턱시도 고양이의 주문을 받는 나나',
+        kicker:'세 번째 임무 · 새 손님 응대', objective:'새로운 고양이 손님들의 주문을 확인하고 밀려드는 요청을 차분하게 처리하자!', hint:'주황 고양이의 주문부터 살펴봐. 디저트 번호와 음료 번호를 주문한 순서대로 이어 붙이면 돼. 주문 벨은 먼저 들어온 요청부터 처리하자!',
+        spots:[
+          {id:'guestorders',label:'새 주문표',icon:'🧾',x:44,y:79,title:'새 손님들의 주문표',text:'새 주문표 두 장이 놓여 있다.\n<b>주황 고양이: 블루베리 머핀 + 아이스티</b>\n<b>턱시도 고양이: 발바닥 초코케이크 + 녹차</b>\n손님이 한꺼번에 찾아와 나나가 조금 바빠졌다!',type:'clue'},
+          {id:'guestmenu',label:'메뉴 번호표',icon:'📋',x:15,y:57,title:'메뉴 번호 확인',text:'메뉴 번호를 다시 확인해 보자.\n<b>디저트: 딸기 케이크 1 · 발바닥 초코케이크 2 · 블루베리 머핀 3</b>\n<b>음료: 따뜻한 라떼 1 · 아이스티 2 · 녹차 3</b>',type:'clue'},
+          {id:'orangeorder',label:'주황 손님 주문',icon:'🧡',x:32,y:52,title:'주황 고양이 주문 번호',text:'주황 고양이가 주문한 <b>블루베리 머핀</b>과 <b>아이스티</b>의 번호를 주문 순서대로 이어 붙여 두 자리 번호를 입력하자!',type:'code',answer:'32',digits:2,reward:'새 손님 주문 영수증',success:'정답! 블루베리 머핀 3번 + 아이스티 2번. 주문 번호 32로 정확히 접수됐다!'},
+          {id:'guestqueue',label:'주문 벨',icon:'🔔',x:59,y:65,title:'밀려드는 요청 처리',text:'요청이 들어온 순서는 <b>주황 고양이 주문 → 턱시도 고양이 주문 → 코코의 물 리필</b>이다. 먼저 들어온 요청부터 차례대로 처리해 보자!',type:'sequence',options:['🧡','🖤','💧'],solution:[0,1,2],reward:'손님 응대 완료',success:'주황 손님 → 턱시도 손님 → 코코의 물 리필! 나나가 밀려드는 요청을 차분하게 모두 처리했다.'}
+        ]
+      },
+      {
+        tag:'04 · 디저트 픽업대', image:'images/cafe-delivery.webp', alt:'코코에게 디저트를 배달하려는 나나',
         kicker:'마지막 임무 · 디저트 배달', objective:'주문표와 테이블 표시를 맞춰 코코에게 정확한 디저트를 배달하자!', hint:'코코의 테이블은 파란 쿠션의 1번 자리야. 주문은 딸기 케이크와 따뜻한 라떼, 배달은 픽업대에서 창가석 순서로!',
         spots:[
           {id:'pickup',label:'픽업대 표시',icon:'🏷️',x:21,y:48,title:'디저트 기호표',text:'픽업대의 기호를 확인하자.\n<b>빨간 원 = 딸기 케이크 · 발바닥 = 초코케이크 · 별 = 머핀</b>\n음료는 <b>1번 따뜻한 라떼 · 2번 아이스티 · 3번 녹차</b>다.',type:'clue'},
@@ -288,7 +300,7 @@
     function foundKey(id){ return `${state.chapter}-${id}`; }
     function addFound(id){ const key=foundKey(id);if(!state.found.includes(key)){state.found.push(key);beep(820);save();}renderHeader(); }
     function renderHeader(){
-      $('#count').textContent=Math.min(state.found.length,14);
+      $('#count').textContent=Math.min(state.found.length,18);
       const sound=$('#sound');sound.textContent='🎵';sound.classList.toggle('playing',state.sound);sound.setAttribute('aria-pressed',state.sound);sound.setAttribute('aria-label',state.sound?'배경음악과 효과음 끄기':'배경음악과 효과음 켜기');sound.title=state.sound?'음악 끄기':'음악 켜기';
     }
     function render(){
@@ -323,7 +335,7 @@
       if(dialog.open)return;
       beep(520);
       if(s.type==='code') return codePuzzle(s);
-      if(s.id==='delivery'&&!state.found.includes('2-tray')){showToast('코코의 디저트 트레이를 먼저 완성해야 한다냥!');return;}
+      if(s.id==='delivery'&&!state.found.includes('3-tray')){showToast('코코의 디저트 트레이를 먼저 완성해야 한다냥!');return;}
       if(s.type==='sequence') return sequencePuzzle(s);
       addFound(s.id);
       if(s.id==='coco'&&!state.items.includes('코코의 응원'))state.items.push('코코의 응원');
@@ -333,17 +345,28 @@
     function seatingPuzzlesComplete(){
       return state.chapter===1 && state.found.includes('1-seatcode') && state.found.includes('1-guide');
     }
+
+    function guestPuzzlesComplete(){
+      return state.chapter===2 && state.found.includes('2-orangeorder') && state.found.includes('2-guestqueue');
+    }
     function showSeatingComplete(){
       if(advancePending)return;
       advancePending=true;
       modalLocked=true;
-      openModal('🪑','자리 안내 완료!',`<img class="transition-art" src="images/success-seating.webp" alt="나나가 코코를 햇살 좋은 창가 자리로 안내한 모습"><p>나나는 코코의 요청을 기억하고 햇살이 드는 파란 쿠션 창가석으로 정확히 안내했다.</p><p>이제 마지막 임무, 코코가 주문한 디저트를 안전하게 배달하자!</p><div class="items"><div class="item">📒<br>예약 확인</div><div class="item">🪟<br>창가석 안내</div></div>`,[{label:'디저트 배달로 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('마지막 장소, 디저트 픽업대로 이동!');}}],{locked:true});
+      openModal('🪑','자리 안내 완료!',`<img class="transition-art" src="images/success-seating.webp" alt="나나가 코코를 햇살 좋은 창가 자리로 안내한 모습"><p>나나는 코코의 요청을 기억하고 햇살이 드는 파란 쿠션 창가석으로 정확히 안내했다.</p><p>그런데 그때, 카페 문이 열리며 새로운 고양이 손님들이 찾아왔다!</p><div class="items"><div class="item">📒<br>예약 확인</div><div class="item">🪟<br>창가석 안내</div></div>`,[{label:'새 손님 맞이하기 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('새로운 고양이 손님들이 찾아왔다냥!');}}],{locked:true});
+    }
+
+    function showGuestsComplete(){
+      if(advancePending)return;
+      advancePending=true;
+      modalLocked=true;
+      openModal('🐱','새 손님 응대 완료!',`<img class="transition-art" src="images/happy-customers.webp" alt="주문을 받은 뒤 카페 자리에서 행복하게 웃고 있는 새 고양이 손님들"><p>주문이 한꺼번에 들어왔지만 나나는 메뉴 번호와 요청 순서를 놓치지 않았다.</p><p>주황 고양이와 턱시도 고양이도 맛있는 디저트를 받고 활짝 웃고 있다!</p><p>이제 코코의 디저트를 가져다줄 마지막 임무만 남았다.</p><div class="items"><div class="item">🧡<br>주문 접수</div><div class="item">🔔<br>응대 완료</div></div>`,[{label:'마지막 배달로 →',primary:true,action:()=>{state.chapter=3;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('마지막 장소, 디저트 픽업대로 이동!');}}],{locked:true});
     }
 
     function codePuzzle(s){
       const zeros='0'.repeat(s.digits);
       openModal(s.icon,s.title,`<p>${s.text}</p><div class="code-row"><input id="code" inputmode="numeric" maxlength="${s.digits}" placeholder="${zeros}" aria-label="${s.digits}자리 암호"></div><p class="puzzle-feedback" id="codeFeedback" aria-live="polite"></p>`,[
-        {label:'나중에',action:()=>dialog.close()},{label:'확인하기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">업무 확인</button>';$('#continue').onclick=()=>{dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#codeFeedback');if(feedback)feedback.textContent='앗, 번호가 맞지 않는 것 같다냥! 단서를 다시 살펴보자.';}}}
+        {label:'나중에',action:()=>dialog.close()},{label:'확인하기',primary:true,action:()=>{const v=$('#code').value;if(v===s.answer){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML='<button class="primary" id="continue">업무 확인</button>';$('#continue').onclick=()=>{dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}if(guestPuzzlesComplete()){showGuestsComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#codeFeedback');if(feedback)feedback.textContent='앗, 번호가 맞지 않는 것 같다냥! 단서를 다시 살펴보자.';}}}
       ]);setTimeout(()=>$('#code')?.focus(),80);
     }
     function shuffledOptions(options){
@@ -361,7 +384,7 @@
       selected=[];const icons=s.options;const shuffled=shuffledOptions(icons);
       openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>`,[
         {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';}},
-        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'첫 출근 완료!':'업무 확인'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 골라보자.';}}}
+        {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'첫 출근 완료!':'업무 확인'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}if(guestPuzzlesComplete()){showGuestsComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 골라보자.';}}}
       ]);
       modal.querySelectorAll('.sequence button').forEach(b=>b.onclick=()=>{if(selected.length>=s.solution.length||b.classList.contains('selected'))return;selected.push(+b.dataset.i);b.classList.add('selected');$('#picked').textContent='선택: '+selected.map(i=>icons[i]).join(' → ');const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';beep(600+selected.length*70);});
     }
@@ -374,12 +397,16 @@
       }
       if(seatingPuzzlesComplete()){
         showSeatingComplete();
+        return;
+      }
+      if(guestPuzzlesComplete()){
+        showGuestsComplete();
       }
     }
     function ending(){
       confetti();
       modalLocked=false;
-      openModal('🎉','나나의 첫 출근 성공!',`<img class="transition-art" src="images/success-delivery.webp" alt="나나가 코코에게 딸기 케이크와 따뜻한 라떼를 정확히 배달한 모습"><div class="start-card"><p>나나는 트레이를 흔들림 없이 창가석까지 옮겼다.</p><p>코코의 테이블에는 딸기 케이크와 따뜻한 라떼가 정확히 도착했다!</p><p><b>주문받기, 자리 안내, 디저트 배달까지 모두 성공!</b></p><div class="items"><div class="item">🐾<br>업무 ${Math.min(state.found.length,14)}개</div><div class="item">🧩<br>퍼즐 6개</div><div class="item">☕<br>신입 +100</div></div></div>`,[{label:'다시 출근하기',action:()=>restart()},{label:'엔딩 장면 보기',primary:true,action:()=>showEndingArt()}],{className:'case-result'});
+      openModal('🎉','나나의 첫 출근 성공!',`<img class="transition-art" src="images/success-delivery.webp" alt="나나가 코코에게 딸기 케이크와 따뜻한 라떼를 정확히 배달한 모습"><div class="start-card"><p>나나는 트레이를 흔들림 없이 창가석까지 옮겼다.</p><p>코코의 테이블에는 딸기 케이크와 따뜻한 라떼가 정확히 도착했다!</p><p><b>주문받기, 자리 안내, 디저트 배달까지 모두 성공!</b></p><div class="items"><div class="item">🐾<br>업무 ${Math.min(state.found.length,18)}개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">☕<br>신입 +100</div></div></div>`,[{label:'다시 출근하기',action:()=>restart()},{label:'엔딩 장면 보기',primary:true,action:()=>showEndingArt()}],{className:'case-result'});
     }
     function showEndingArt(){
       const endingSrc='images/ending-cafe.webp';
@@ -388,7 +415,7 @@
     }
     function confetti(){const colors=['#ffd75e','#ff8171','#73c8de','#0f7774','#fff'];for(let i=0;i<65;i++){const e=document.createElement('i');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.background=colors[i%colors.length];e.style.animationDelay=Math.random()*1.1+'s';e.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(e);setTimeout(()=>e.remove(),4200);}}
     function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();intro();}
-    function intro(){openModal('☕','고양이 카페 첫 출근',`<div class="start-card"><div class="cat">🐱</div><p>오늘은 나나가 고양이 카페에 처음 출근하는 날!</p><p><b>주문받기 · 손님 자리 안내 · 디저트 배달</b><br>세 가지 임무를 차근차근 해결해 주세요.</p><p>두 번째 임무에는 반가운 손님 코코도 찾아온대요.</p><p><b>카페의 물건을 누르면 업무가 시작돼요.</b></p></div>`,[{label:'첫 출근 시작!',primary:true,action:()=>{dialog.close();beep(720,.12);}}]);}
+    function intro(){openModal('☕','고양이 카페 첫 출근',`<div class="start-card"><div class="cat">🐱</div><p>오늘은 나나가 고양이 카페에 처음 출근하는 날!</p><p><b>주문받기 · 자리 안내 · 새 손님 응대 · 디저트 배달</b><br>네 가지 임무를 차근차근 해결해 주세요.</p><p>코코뿐 아니라 새로운 고양이 손님들도 카페에 찾아온대요.</p><p><b>카페의 물건을 누르면 업무가 시작돼요.</b></p></div>`,[{label:'첫 출근 시작!',primary:true,action:()=>{dialog.close();beep(720,.12);}}]);}
     $('#hint').onclick=()=>openModal('💡','선배 직원의 힌트',`<p>${chapters[state.chapter].hint}</p>`,[{label:'알겠어!',primary:true,action:()=>dialog.close()}]);
     $('#sound').onclick=async()=>{
       if(state.sound){beep(520,.09);state.sound=false;stopMusic();}
