@@ -152,8 +152,10 @@
       .mobile-actions { display:flex; }
       .footerline { padding:0 4px; }
       .footerline span:first-child { display:none; }
-      .sequence { gap:7px; }
-      .sequence button { flex:1 1 calc(50% - 7px); min-width:120px; min-height:52px; padding:8px 10px; font-size:.9rem; }
+      .sequence { gap:9px; flex-wrap:nowrap; }
+      .sequence button { flex:0 0 56px; width:56px; min-width:56px; height:56px; min-height:56px; padding:0; font-size:1.45rem; }
+      .sequence.wide-sequence { gap:7px; flex-wrap:wrap; }
+      .sequence.wide-sequence button { flex:1 1 calc(50% - 7px); width:auto; min-width:120px; min-height:52px; height:auto; padding:8px 10px; font-size:.9rem; }
       .modal { padding:20px; }
       .modal h2 { font-size:1.55rem; line-height:1.08; }
       .modal-head { gap:9px; }
@@ -223,7 +225,7 @@
           {id:'seatmap',label:'좌석 안내도',icon:'🗺️',x:25,y:61,title:'세 가지 좌석',text:'좌석표에는 세 자리가 표시돼 있다.\n<b>1번: 창가·파란 쿠션 / 2번: 책장·초록 쿠션 / 3번: 중앙·분홍 쿠션</b>',type:'clue'},
           {id:'seatcode',label:'좌석 번호표',icon:'🔢',x:46,y:59,title:'코코의 좌석 번호',text:'햇살이 잘 들고 파란 쿠션이 있는 조용한 창가 자리는 몇 번일까?',type:'code',answer:'1',digits:1,reward:'코코의 좌석표',success:'정답! 코코의 자리는 햇살이 드는 1번 창가석이다.'},
           {id:'coco',label:'손님 코코',icon:'🐱',x:82,y:55,title:'반가운 첫 손님',text:'“나나야, 첫 출근 축하해! 창밖을 보면서 조용히 쉬고 싶어.”\n코코가 나나를 응원하러 카페에 찾아왔다.',type:'collect'},
-          {id:'guide',label:'안내 순서표',icon:'🪑',x:62,y:40,title:'코코를 자리로 안내하기',text:'코코를 자리로 안내할 때 필요한 세 가지 행동이 섞여 있다.<br><br>아래 버튼을 실제 안내 순서대로 눌러 주세요.',type:'sequence',options:['📒 예약 확인','🔵 파란 쿠션 찾기','🪟 창가석 안내'],solution:[0,1,2],reward:'자리 안내 완료',success:'예약 확인 → 파란 쿠션 자리 찾기 → 창가석 안내! 코코가 원하는 자리를 정확하게 찾아 편안하게 안내했다.'}
+          {id:'guide',label:'안내 순서표',icon:'🪑',x:62,y:40,title:'코코를 자리로 안내하기',text:'코코를 자리로 안내할 때 필요한 세 가지 행동이 섞여 있다.<br><br>아래 버튼을 실제 안내 순서대로 눌러 주세요.',type:'sequence',wide:true,options:['📒 예약 확인','🔵 파란 쿠션 찾기','🪟 창가석 안내'],solution:[0,1,2],reward:'자리 안내 완료',success:'예약 확인 → 파란 쿠션 자리 찾기 → 창가석 안내! 코코가 원하는 자리를 정확하게 찾아 편안하게 안내했다.'}
         ]
       },
       {
@@ -382,7 +384,7 @@
 
     function sequencePuzzle(s){
       selected=[];const icons=s.options;const shuffled=shuffledOptions(icons);
-      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>`,[
+      openModal(s.icon,s.title,`<p>${s.text}</p><div class="sequence${s.wide?' wide-sequence':''}" id="sequence">${shuffled.map(item=>`<button data-i="${item.index}" aria-label="${item.icon}">${item.icon}</button>`).join('')}</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>`,[
         {label:'다시 고르기',action:()=>{selected=[];modal.querySelectorAll('.sequence button').forEach(b=>b.classList.remove('selected'));$('#picked').textContent='선택: 아직 없음';const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='';}},
         {label:'순서 확인',primary:true,action:()=>{if(selected.join(',')===s.solution.join(',')){addFound(s.id);if(s.reward&&!state.items.includes(s.reward))state.items.push(s.reward);save();beep(980,.16);modal.querySelector('.modal-body').innerHTML=`<p><b>${s.success}</b></p>`;modal.querySelector('.modal-actions').innerHTML=`<button class="primary" id="gotit">${s.finish?'첫 출근 완료!':'업무 확인'}</button>`;$('#gotit').onclick=()=>{if(s.finish){state.finished=true;save();return ending();}dialog.close();if(seatingPuzzlesComplete()){showSeatingComplete();return;}if(guestPuzzlesComplete()){showGuestsComplete();return;}checkAdvance();render();};}else{beep(220,.15);const feedback=$('#sequenceFeedback');if(feedback)feedback.textContent='순서가 다른 것 같다냥! 단서를 다시 보고 골라보자.';}}}
       ]);
