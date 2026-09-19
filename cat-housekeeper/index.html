@@ -20,6 +20,10 @@
   <meta name="twitter:image" content="images/og-housekeeper.png">
   <meta name="twitter:image:alt" content="집사 출근시키기">
   <title>오늘은 내가 집사</title>
+  <link rel="preload" as="image" href="images/bedroom.webp">
+  <link rel="preload" as="image" href="images/kitchen.webp">
+  <link rel="preload" as="image" href="images/living-room.webp">
+  <link rel="preload" as="image" href="images/entryway.webp">
   <link rel="preload" as="image" href="images/success-bedroom.webp">
   <link rel="preload" as="image" href="images/success-kitchen.webp">
   <link rel="preload" as="image" href="images/success-living-room.webp">
@@ -51,9 +55,9 @@
     .game-card { overflow:hidden; border:1px solid rgba(255,255,255,.9); border-radius:26px; background:#fff; box-shadow:0 24px 70px rgba(13,86,84,.2); }
     .scene-scroll { position:relative; overflow:hidden; }
     .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:#dff1ef; }
-    .scene img { display:block; width:100%; height:100%; object-fit:cover; transition:opacity .35s,transform .7s; }
+    .scene img { display:block; width:100%; height:100%; object-fit:cover; opacity:1; transition:transform .38s ease; will-change:transform; }
     .pan-guide { display:none; }
-    .scene.loading img { opacity:.25; transform:scale(1.015); }
+    .scene.loading img { opacity:1; transform:scale(1.006); }
     .chapter-tag { position:absolute; left:18px; bottom:18px; top:auto; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
     .hotspot { position:absolute; width:clamp(54px,6vw,76px); aspect-ratio:1; border:1px solid transparent; border-radius:50%; cursor:pointer; background:transparent; box-shadow:none; padding:0; transition:transform .2s,background .2s,box-shadow .2s,border-color .2s; }
     .hotspot::before { content:''; position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,255,255,.22); box-shadow:0 0 14px rgba(255,255,255,.16); opacity:.35; animation:soft-glint 2.8s ease-in-out infinite; }
@@ -186,7 +190,7 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><div class="eyebrow">NANA'S MORNING MISSION</div><h1>오늘은 내가 집사</h1></div>
-      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 16</span></div>
+      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 18</span></div>
       <button class="pill" id="sound" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기" title="음악 켜기">🎵</button>
     </header>
 
@@ -231,13 +235,14 @@
         {
           tag:"02 · 주방", image:"images/kitchen.webp", successImage:"images/success-kitchen.webp", alt:"주방에서 집사의 커피를 준비하는 나나와 뒤에서 지켜보는 코코",
           kicker:"두 번째 임무 · 모닝커피", objective:"레시피를 확인해 집사의 커피를 완성하자!",
-          hint:"레시피 카드의 핵심 숫자는 원두 2스푼, 뜨거운 물 3번이야. 커피는 원두를 갈고, 드리퍼에 담고, 물을 부은 뒤 잔에 옮겨야 해.",
+          hint:"레시피 카드에서 원두와 물의 횟수를 확인하고, 커피 내리는 순서는 나나가 들고 있는 주전자를 살펴봐!",
           required:["recipeCode","brew"],
           successTitle:"모닝커피 완성!", successText:"고소한 향이 집 안에 퍼졌다. 문 뒤에서 지켜보던 코코도 만족한 표정이다. 그런데 집사가 양말 한 짝이 없다며 거실을 뒤지기 시작했다!",
           spots:[
             {id:"card",label:"레시피 카드",icon:"📝",x:18,y:65,title:"집사의 취향",text:"집사의 레시피는 <b>원두 2스푼 · 뜨거운 물 3번 · 우유는 넣지 않기</b>. 나나가 꼭 기억해야 할 숫자는 두 개다.",type:"clue"},
             {id:"recipeCode",label:"원두 통",icon:"🫘",x:25,y:53,title:"레시피 잠금 번호",text:"원두 스푼 수와 물을 붓는 횟수를 순서대로 이어 붙여 두 자리 번호를 입력하자.",type:"code",answer:"23",digits:2,reward:"커피 레시피",success:"정답! 원두 2스푼, 물 3번. 집사의 취향을 정확히 찾았다."},
             {id:"coco",label:"문 뒤의 코코",icon:"🐱",x:69,y:45,title:"조용한 참관자 코코",text:"코코가 문 뒤에서 파란 눈을 반짝이며 나나의 커피 만들기를 지켜보고 있다.<br><b>“순서만 잘 지키면 완벽할 거야.”</b>",type:"collect"},
+            {id:"kettleNote",label:"나나의 주전자",icon:"🫖",x:32,y:34,title:"커피 순서 메모",text:"주전자 손잡이에 작은 메모가 매달려 있다.<br><b>“원두를 갈아 드리퍼에 담고, 물을 부은 다음 잔에 옮기기.”</b>",type:"clue"},
             {id:"brew",label:"커피 드리퍼",icon:"☕",x:39,y:54,title:"커피 내리기",text:"집사의 커피가 맛있게 완성되도록 올바른 순서로 눌러 보자!",type:"sequence",wide:true,options:["🫘 원두 갈기","🔻 드리퍼에 담기","💧 물 붓기","☕ 잔에 옮기기"],solution:[0,1,2,3],reward:"모닝커피",success:"원두 갈기 → 드리퍼 → 물 붓기 → 잔에 옮기기. 향긋한 커피 완성!"}
           ]
         },
@@ -257,7 +262,7 @@
         {
           tag:"04 · 현관", image:"images/entryway.webp", successImage:"images/success-entryway.webp", alt:"출근 준비를 마친 집사와 가방을 확인하는 나나, 뒤에서 배웅하는 코코",
           kicker:"마지막 임무 · 출근 준비", objective:"가방 속 준비물과 행동 순서를 확인해 집사를 출근시키자!",
-          hint:"체크리스트 번호는 열쇠 1, 도시락 2, 가방 3, 교통카드 4야. 메모에 적힌 순서대로 번호를 이어 붙여 봐. 출근할 때는 먼저 도시락을 가방 안에 넣고, 가방을 멘 다음 신발을 신어야 해. 현관문은 가장 마지막에 열면 돼!",
+          hint:"가방 암호는 현관 체크리스트를 확인하고, 출근 순서는 신발장에 붙은 메모를 살펴봐!",
           required:["bagCode","leave"],
           successTitle:"출근 준비 완료!",
           successText:"도시락과 준비물을 가방에 넣고 신발까지 신었다. 나나의 완벽한 도움 덕분에 집사는 빠뜨린 것 없이 제시간에 출근할 수 있게 됐다!",
@@ -265,7 +270,8 @@
             {id:"checklist",label:"현관 체크리스트",icon:"✅",x:16,y:57,title:"준비물 번호",text:"현관 체크리스트를 확인하자.<br><b>열쇠 1 · 도시락 2 · 가방 3 · 교통카드 4</b><br>집사의 메모에는 <b>가방 → 열쇠 → 교통카드 → 도시락</b> 순서로 적혀 있다.",type:"clue"},
             {id:"bagCode",label:"출근 가방",icon:"👜",x:61,y:72,title:"가방 잠금 번호",text:"집사의 메모 순서대로 준비물 번호를 이어 붙여 네 자리 암호를 입력하자.",type:"code",answer:"3142",digits:4,reward:"출근 가방",success:"정답! 가방, 열쇠, 교통카드, 도시락이 모두 챙겨졌다."},
             {id:"coco3",label:"배웅하는 코코",icon:"🐱",x:23,y:38,title:"코코의 아침 인사",text:"코코가 거실 쪽에서 살짝 고개를 내밀었다.<br><b>“나나야, 마지막까지 잘 부탁해!”</b>",type:"collect"},
-            {id:"leave",label:"현관문",icon:"🚪",x:58,y:38,title:"출근시키기",text:"도시락은 가방 안에 넣어야 하고, 가방을 멘 뒤에 신발을 신어야 한다. 집을 나서려면 현관문은 마지막에 열어야겠지? 집사가 출발하기까지의 순서를 골라 보자!",type:"sequence",wide:true,options:["🍱 도시락 넣기","👜 가방 메기","👞 신발 신기","🚪 문 열기"],solution:[0,1,2,3],finish:true,success:"도시락 → 가방 → 신발 → 현관문. 집사가 빠뜨린 것 없이 제시간에 출근한다!"}
+            {id:"shoeNote",label:"신발장 메모",icon:"👞",x:88,y:70,title:"출근 순서 메모",text:"신발장에 집사의 메모가 붙어 있다.<br><b>“도시락은 가방 안에 먼저! 가방을 멘 다음 신발을 신고, 현관문은 마지막에 열기.”</b>",type:"clue"},
+            {id:"leave",label:"현관문",icon:"🚪",x:58,y:38,title:"출근시키기",text:"집사가 빠뜨린 것 없이 출근하도록 올바른 순서를 골라 보자!",type:"sequence",wide:true,options:["🍱 도시락 넣기","👜 가방 메기","👞 신발 신기","🚪 문 열기"],solution:[0,1,2,3],finish:true,success:"도시락 → 가방 → 신발 → 현관문. 집사가 빠뜨린 것 없이 제시간에 출근한다!"}
           ]
         }
       ];
@@ -284,7 +290,7 @@
         renderHeader();
       }
       function renderHeader(){
-        $("#count").textContent = Math.min(state.found.length,16);
+        $("#count").textContent = Math.min(state.found.length,18);
         const s = $("#sound");
         s.classList.toggle("playing",state.sound);
         s.setAttribute("aria-pressed",String(state.sound));
@@ -414,7 +420,7 @@
       }
       function ending(){
         confetti();
-        openModal("🎉","집사 출근 성공!",'<img class="ending-art" src="images/ending.webp" alt="현관에서 나나와 코코가 출근하는 집사에게 인사하는 모습" loading="eager" decoding="sync" fetchpriority="high"><div class="ending-copy"><h3>MISSION COMPLETE!</h3><p>알람부터 커피, 잃어버린 양말과 출근 가방까지<br>나나가 집사를 완벽하게 챙겼어요.</p><p>코코도 곳곳에서 조용히 지켜보며 응원했답니다.</p><p><b>오늘만큼은 나나가 최고의 집사! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,16) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">⏰<br>지각 0분</div></div></div>',[
+        openModal("🎉","집사 출근 성공!",'<img class="ending-art" src="images/ending.webp" alt="현관에서 나나와 코코가 출근하는 집사에게 인사하는 모습" loading="eager" decoding="sync" fetchpriority="high"><div class="ending-copy"><h3>MISSION COMPLETE!</h3><p>알람부터 커피, 잃어버린 양말과 출근 가방까지<br>나나가 집사를 완벽하게 챙겼어요.</p><p>코코도 곳곳에서 조용히 지켜보며 응원했답니다.</p><p><b>오늘만큼은 나나가 최고의 집사! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,18) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">⏰<br>지각 0분</div></div></div>',[
           {label:"다시 플레이",action:restart},
           {label:"아침 작전 종료",primary:true,action:() => dialog.close()}
         ],{className:"case-result"});
