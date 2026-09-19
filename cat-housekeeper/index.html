@@ -20,6 +20,11 @@
   <meta name="twitter:image" content="images/og-housekeeper.png">
   <meta name="twitter:image:alt" content="집사 출근시키기">
   <title>오늘은 내가 집사</title>
+  <link rel="preload" as="image" href="images/success-bedroom.webp">
+  <link rel="preload" as="image" href="images/success-kitchen.webp">
+  <link rel="preload" as="image" href="images/success-living-room.webp">
+  <link rel="preload" as="image" href="images/success-entryway.webp">
+  <link rel="preload" as="image" href="images/ending.webp">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ffd75e'/%3E%3Ccircle cx='24' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='40' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='18' cy='39' r='7' fill='%230f7774'/%3E%3Ccircle cx='46' cy='39' r='7' fill='%230f7774'/%3E%3Cellipse cx='32' cy='45' rx='13' ry='11' fill='%230f7774'/%3E%3C/svg%3E">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
@@ -252,13 +257,15 @@
         {
           tag:"04 · 현관", image:"images/entryway.webp", successImage:"images/success-entryway.webp", alt:"출근 준비를 마친 집사와 가방을 확인하는 나나, 뒤에서 배웅하는 코코",
           kicker:"마지막 임무 · 출근 준비", objective:"가방 속 준비물과 행동 순서를 확인해 집사를 출근시키자!",
-          hint:"체크리스트 번호는 열쇠 1, 도시락 2, 가방 3, 교통카드 4야. 메모에 적힌 순서대로 번호를 이어 붙이고, 마지막에는 신발을 신은 뒤 문을 열면 돼.",
+          hint:"체크리스트 번호는 열쇠 1, 도시락 2, 가방 3, 교통카드 4야. 메모에 적힌 순서대로 번호를 이어 붙여 봐. 출근할 때는 먼저 도시락을 가방 안에 넣고, 가방을 멘 다음 신발을 신어야 해. 현관문은 가장 마지막에 열면 돼!",
           required:["bagCode","leave"],
+          successTitle:"출근 준비 완료!",
+          successText:"도시락과 준비물을 가방에 넣고 신발까지 신었다. 나나의 완벽한 도움 덕분에 집사는 빠뜨린 것 없이 제시간에 출근할 수 있게 됐다!",
           spots:[
             {id:"checklist",label:"현관 체크리스트",icon:"✅",x:16,y:57,title:"준비물 번호",text:"현관 체크리스트를 확인하자.<br><b>열쇠 1 · 도시락 2 · 가방 3 · 교통카드 4</b><br>집사의 메모에는 <b>가방 → 열쇠 → 교통카드 → 도시락</b> 순서로 적혀 있다.",type:"clue"},
             {id:"bagCode",label:"출근 가방",icon:"👜",x:61,y:72,title:"가방 잠금 번호",text:"집사의 메모 순서대로 준비물 번호를 이어 붙여 네 자리 암호를 입력하자.",type:"code",answer:"3142",digits:4,reward:"출근 가방",success:"정답! 가방, 열쇠, 교통카드, 도시락이 모두 챙겨졌다."},
             {id:"coco3",label:"배웅하는 코코",icon:"🐱",x:23,y:38,title:"코코의 아침 인사",text:"코코가 거실 쪽에서 살짝 고개를 내밀었다.<br><b>“나나야, 마지막까지 잘 부탁해!”</b>",type:"collect"},
-            {id:"leave",label:"현관문",icon:"🚪",x:58,y:38,title:"출근시키기",text:"준비를 마친 집사가 집을 나서기까지의 순서를 골라 보자!",type:"sequence",wide:true,options:["🍱 도시락 넣기","👜 가방 메기","👞 신발 신기","🚪 문 열기"],solution:[0,1,2,3],finish:true,success:"도시락 → 가방 → 신발 → 현관문. 집사가 빠뜨린 것 없이 제시간에 출근한다!"}
+            {id:"leave",label:"현관문",icon:"🚪",x:58,y:38,title:"출근시키기",text:"도시락은 가방 안에 넣어야 하고, 가방을 멘 뒤에 신발을 신어야 한다. 집을 나서려면 현관문은 마지막에 열어야겠지? 집사가 출발하기까지의 순서를 골라 보자!",type:"sequence",wide:true,options:["🍱 도시락 넣기","👜 가방 메기","👞 신발 신기","🚪 문 열기"],solution:[0,1,2,3],finish:true,success:"도시락 → 가방 → 신발 → 현관문. 집사가 빠뜨린 것 없이 제시간에 출근한다!"}
           ]
         }
       ];
@@ -394,7 +401,7 @@
         if(!c.required.every(id => has(id))) return;
         const isLast = state.chapter === chapters.length-1;
         locked = true;
-        openModal("✨",c.successTitle,'<img class="transition-art" src="' + c.successImage + '" alt="' + c.successTitle + '"><p>' + c.successText + '</p><div class="items"><div class="item">🐾<br>임무 완료</div><div class="item">🎒<br>' + (state.chapter+1) + '/4 성공</div></div>',[
+        openModal("✨",c.successTitle,'<img class="transition-art" src="' + c.successImage + '" alt="' + c.successTitle + '" loading="eager" decoding="sync" fetchpriority="high"><p>' + c.successText + '</p><div class="items"><div class="item">🐾<br>임무 완료</div><div class="item">🎒<br>' + (state.chapter+1) + '/4 성공</div></div>',[
           {label:isLast ? "엔딩 장면 보기 →" : "다음 장소로 →",primary:true,action:() => {
             locked=false;
             dialog.close();
@@ -407,7 +414,7 @@
       }
       function ending(){
         confetti();
-        openModal("🎉","집사 출근 성공!",'<img class="ending-art" src="images/ending.webp" alt="현관에서 나나와 코코가 출근하는 집사에게 인사하는 모습"><div class="ending-copy"><h3>MISSION COMPLETE!</h3><p>알람부터 커피, 잃어버린 양말과 출근 가방까지<br>나나가 집사를 완벽하게 챙겼어요.</p><p>코코도 곳곳에서 조용히 지켜보며 응원했답니다.</p><p><b>오늘만큼은 나나가 최고의 집사! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,16) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">⏰<br>지각 0분</div></div></div>',[
+        openModal("🎉","집사 출근 성공!",'<img class="ending-art" src="images/ending.webp" alt="현관에서 나나와 코코가 출근하는 집사에게 인사하는 모습" loading="eager" decoding="sync" fetchpriority="high"><div class="ending-copy"><h3>MISSION COMPLETE!</h3><p>알람부터 커피, 잃어버린 양말과 출근 가방까지<br>나나가 집사를 완벽하게 챙겼어요.</p><p>코코도 곳곳에서 조용히 지켜보며 응원했답니다.</p><p><b>오늘만큼은 나나가 최고의 집사! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,16) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">⏰<br>지각 0분</div></div></div>',[
           {label:"다시 플레이",action:restart},
           {label:"아침 작전 종료",primary:true,action:() => dialog.close()}
         ],{className:"case-result"});
