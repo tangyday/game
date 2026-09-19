@@ -190,7 +190,7 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand"><div class="eyebrow">NANA'S MORNING MISSION</div><h1>오늘은 내가 집사</h1></div>
-      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 18</span></div>
+      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 19</span></div>
       <button class="pill" id="sound" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기" title="음악 켜기">🎵</button>
     </header>
 
@@ -249,13 +249,14 @@
         {
           tag:"03 · 거실", image:"images/living-room.webp", successImage:"images/success-living-room.webp", alt:"거실에서 잃어버린 양말을 찾는 나나와 소파에서 지켜보는 코코",
           kicker:"세 번째 임무 · 양말 수색", objective:"출근용 양말의 짝을 찾아 집사에게 가져다주자!",
-          hint:"세탁 메모에서 출근용 양말 번호를 확인해. 수색은 세탁 바구니에서 시작해 소파 아래를 살피고, 마지막으로 로봇청소기 주변을 보면 돼!",
+          hint:"세탁 바구니에서 출근용 양말 번호를 확인하고, 수색 순서는 오른쪽의 로봇청소기를 살펴봐!",
           required:["sockCode","search"],
           successTitle:"양말 수색 완료!", successText:"나나는 소파 아래에 밀려 있던 파란 줄무늬 양말을 찾아냈다. 코코는 소파 위에서 처음부터 알고 있었다는 듯 태연하다. 이제 현관에서 마지막 준비만 확인하자!",
           spots:[
             {id:"basket",label:"세탁 바구니",icon:"🧺",x:88,y:61,title:"양말 분류표",text:"양말 분류표가 붙어 있다.<br><b>1번 검정 · 2번 파란 줄무늬 · 3번 분홍 · 4번 초록 줄무늬</b><br>집사의 출근용 양말은 파란 줄무늬다.",type:"clue"},
             {id:"sockCode",label:"보이는 양말",icon:"🧦",x:75,y:77,title:"출근용 양말 번호",text:"집사가 찾는 파란 줄무늬 양말의 번호를 입력하자.",type:"code",answer:"2",digits:1,reward:"양말 한 짝",success:"정답! 2번 파란 줄무늬 양말이 집사의 출근용이다."},
             {id:"coco2",label:"소파 위 코코",icon:"💙",x:32,y:31,title:"코코는 알고 있다",text:"코코가 소파 아래를 가만히 내려다보고 있다. 회색 이마 무늬와 파란 눈이 아침 햇살에 또렷하다.<br><b>아무래도 중요한 힌트 같다!</b>",type:"collect"},
+            {id:"vacuumNote",label:"로봇청소기",icon:"🤖",x:80,y:53,title:"수색 경로 기록",text:"로봇청소기에 오늘 아침의 이동 기록이 남아 있다.<br><b>“세탁 바구니 확인 → 소파 아래 수색 → 로봇청소기 주변 확인”</b>",type:"clue"},
             {id:"search",label:"소파 아래",icon:"🔎",x:43,y:66,title:"양말 수색 순서",text:"나나가 놓치지 않고 양말을 찾도록 수색 순서를 정해 보자!",type:"sequence",wide:true,options:["🧺 바구니 확인","🛋️ 소파 아래","🤖 청소기 주변"],solution:[0,1,2],reward:"양말 한 켤레",success:"바구니 → 소파 아래 → 청소기 주변. 소파 밑에서 잃어버린 짝을 찾았다!"}
           ]
         },
@@ -290,7 +291,7 @@
         renderHeader();
       }
       function renderHeader(){
-        $("#count").textContent = Math.min(state.found.length,18);
+        $("#count").textContent = Math.min(state.found.length,19);
         const s = $("#sound");
         s.classList.toggle("playing",state.sound);
         s.setAttribute("aria-pressed",String(state.sound));
@@ -420,7 +421,7 @@
       }
       function ending(){
         confetti();
-        openModal("🎉","집사 출근 성공!",'<img class="ending-art" src="images/ending.webp" alt="현관에서 나나와 코코가 출근하는 집사에게 인사하는 모습" loading="eager" decoding="sync" fetchpriority="high"><div class="ending-copy"><h3>MISSION COMPLETE!</h3><p>알람부터 커피, 잃어버린 양말과 출근 가방까지<br>나나가 집사를 완벽하게 챙겼어요.</p><p>코코도 곳곳에서 조용히 지켜보며 응원했답니다.</p><p><b>오늘만큼은 나나가 최고의 집사! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,18) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">⏰<br>지각 0분</div></div></div>',[
+        openModal("🎉","집사 출근 성공!",'<img class="ending-art" src="images/ending.webp" alt="현관에서 나나와 코코가 출근하는 집사에게 인사하는 모습" loading="eager" decoding="sync" fetchpriority="high"><div class="ending-copy"><h3>MISSION COMPLETE!</h3><p>알람부터 커피, 잃어버린 양말과 출근 가방까지<br>나나가 집사를 완벽하게 챙겼어요.</p><p>코코도 곳곳에서 조용히 지켜보며 응원했답니다.</p><p><b>오늘만큼은 나나가 최고의 집사! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,19) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">⏰<br>지각 0분</div></div></div>',[
           {label:"다시 플레이",action:restart},
           {label:"아침 작전 종료",primary:true,action:() => dialog.close()}
         ],{className:"case-result"});
