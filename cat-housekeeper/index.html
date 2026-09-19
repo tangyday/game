@@ -190,7 +190,7 @@
 <body>
   <main class="shell">
     <header class="topbar">
-      <div class="brand"><div class="eyebrow">NANA'S MORNING MISSION</div><h1>오늘은 내가 집사</h1></div>
+      <div class="brand"><div class="eyebrow">NANA'S MORNING MISSION</div><h1>집사 출근시키기</h1></div>
       <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 19</span></div>
       <button class="pill" id="sound" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기" title="음악 켜기">🎵</button>
     </header>
@@ -436,7 +436,7 @@
         }
       }
       function intro(){
-        openModal("🐾","오늘은 내가 집사",'<div class="start-card"><div class="cat">🐱</div><p>집사가 늦잠든 아침, 나나가 먼저 눈을 떴어요!</p><p><b>알람 끄기 · 커피 준비 · 양말 찾기 · 출근 준비</b><br>네 가지 작전을 해결해 집사를 무사히 출근시켜 주세요.</p><p>코코도 집 안 어딘가에서 두 고양이를 지켜보고 있대요.</p><p><b>장면 속 물건을 누르면 단서와 퍼즐이 열려요.</b></p></div>',[
+        openModal("🐾","집사 출근시키기",'<div class="start-card"><div class="cat">🐱</div><p>집사가 늦잠든 아침, 나나가 먼저 눈을 떴어요!</p><p><b>알람 끄기 · 커피 준비 · 양말 찾기 · 출근 준비</b><br>네 가지 작전을 해결해 집사를 무사히 출근시켜 주세요.</p><p>코코도 집 안 어딘가에서 두 고양이를 지켜보고 있대요.</p><p><b>장면 속 물건을 누르면 단서와 퍼즐이 열려요.</b></p></div>',[
           {label:"아침 작전 시작!",primary:true,action:() => { dialog.close(); tone(720,.1); }}
         ]);
       }
