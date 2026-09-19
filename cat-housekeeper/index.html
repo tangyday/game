@@ -280,6 +280,7 @@
 
       const initial = {chapter:0,found:[],items:[],sound:false};
       let state = {chapter:0,found:[],items:[],sound:false};
+      let renderedChapter = -1;
       let selected = [], locked = false, busy = false, musicTimer = null, audioCtx = null;
       const $ = s => document.querySelector(s);
       const dialog = $("#dialog"), modal = $("#modal"), toast = $("#toast");
@@ -301,11 +302,13 @@
       }
       function render(){
         const c = chapters[state.chapter], scene = $("#scene");
+        const chapterChanged = renderedChapter !== state.chapter;
         scene.classList.add("loading");
         $("#sceneImage").src = c.image;
         $("#sceneImage").alt = c.alt;
         $("#sceneImage").onload = () => scene.classList.remove("loading");
-        $("#sceneScroll").scrollLeft = 0;
+        if(chapterChanged) $("#sceneScroll").scrollLeft = 0;
+        renderedChapter = state.chapter;
         $("#chapterTag").textContent = c.tag;
         $("#kicker").textContent = c.kicker;
         $("#objective").textContent = c.objective;
@@ -441,7 +444,7 @@
         ]);
       }
       function restart(){
-        state={chapter:0,found:[],items:[],sound:state.sound}; dialog.close(); render(); setTimeout(intro,120);
+        state={chapter:0,found:[],items:[],sound:state.sound}; renderedChapter=-1; dialog.close(); render(); setTimeout(intro,120);
       }
       function ensureAudio(){
         if(!audioCtx){ const C=window.AudioContext||window.webkitAudioContext; if(C) audioCtx=new C(); }
