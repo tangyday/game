@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff4d8">
+  <link rel="icon" type="image/png" href="/nyamplay-paw.png">
+  <meta name="description" content="코코와 나나가 열쇠, 참치캔, 돗자리, 초대장을 모아 옥상 파티를 준비하는 온라인 방탈출 게임">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="옥상 참치 파티 대작전">
+  <meta property="og:description" content="네 가지 준비물을 모아 동네 고양이들의 옥상 참치 파티를 완성해 주세요!">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="images/og-rooftop-tuna-party.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="옥상 참치 파티 대작전">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="옥상 참치 파티 대작전">
+  <meta name="twitter:description" content="코코와 나나의 네 가지 옥상 파티 준비 작전!">
+  <meta name="twitter:image" content="images/og-rooftop-tuna-party.png">
+  <meta name="twitter:image:alt" content="옥상 참치 파티 대작전">
+  <title>옥상 참치 파티 대작전</title>
+  <link rel="preload" as="image" href="images/stairwell.webp">
+  <link rel="preload" as="image" href="images/storage.webp">
+  <link rel="preload" as="image" href="images/rooftop-mat.webp">
+  <link rel="preload" as="image" href="images/invitations.webp">
+  <link rel="preload" as="image" href="images/success-key.webp">
+  <link rel="preload" as="image" href="images/success-tuna.webp">
+  <link rel="preload" as="image" href="images/success-mat.webp">
+  <link rel="preload" as="image" href="images/success-invitations.webp">
+  <link rel="preload" as="image" href="images/ending.webp">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ffd75e'/%3E%3Ccircle cx='24' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='40' cy='27' r='7' fill='%230f7774'/%3E%3Ccircle cx='18' cy='39' r='7' fill='%230f7774'/%3E%3Ccircle cx='46' cy='39' r='7' fill='%230f7774'/%3E%3Cellipse cx='32' cy='45' rx='13' ry='11' fill='%230f7774'/%3E%3C/svg%3E">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+    :root { --ink:#40574f; --teal:#4f927d; --deep:#33705d; --yellow:#ffd67a; --cream:#fff9ec; --coral:#ef8878; --sky:#83cddd; --line:rgba(64,87,79,.16); }
+    * { box-sizing:border-box; }
+    html, body { margin:0; min-height:100%; }
+    body { font-family:'Noto Sans KR',system-ui,sans-serif; color:var(--ink); background:radial-gradient(circle at 10% 0%,#fff0c8 0,transparent 28%),linear-gradient(145deg,#fffdf7,#eaf7ef); }
+    button, input { font:inherit; }
+    button { color:inherit; }
+    .shell { width:min(1240px,100%); min-height:100vh; margin:auto; padding:18px clamp(12px,3vw,36px) 28px; }
+    .topbar { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .brand { margin-right:auto; }
+    .eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.13em; color:var(--teal); }
+    h1 { margin:1px 0 0; font-family:'Gaegu',cursive; font-size:clamp(1.75rem,4vw,2.7rem); line-height:1; }
+    .pill { border:1px solid var(--line); background:rgba(255,255,255,.78); border-radius:999px; min-height:44px; padding:0 14px; display:inline-flex; align-items:center; gap:7px; font-weight:700; box-shadow:0 6px 18px rgba(20,91,91,.08); }
+    button.pill { cursor:pointer; }
+    button.pill:hover { background:#fff; transform:translateY(-1px); }
+    #sound { width:44px; min-width:44px; padding:0; justify-content:center; font-size:1.1rem; }
+    button.pill.playing { color:#075454; background:#fff8d5; border-color:#e9c852; animation:bounce-note .8s ease-in-out infinite alternate; }
+    @keyframes bounce-note { to { transform:translateY(-2px) rotate(5deg); } }
+    .progress { display:flex; align-items:center; gap:5px; }
+    .paw { width:13px; height:13px; border:2px solid var(--teal); border-radius:50% 50% 45% 45%; opacity:.28; transition:.25s; }
+    .paw.found { background:var(--yellow); border-color:#ca9621; opacity:1; transform:scale(1.08); }
+    .game-card { overflow:hidden; border:1px solid rgba(255,255,255,.9); border-radius:26px; background:#fff; box-shadow:0 24px 70px rgba(13,86,84,.2); }
+    .scene-scroll { position:relative; overflow:hidden; }
+    .scene { position:relative; aspect-ratio:16/9; overflow:hidden; background:#dff1ef; }
+    .scene img { display:block; width:100%; height:100%; object-fit:cover; opacity:1; transition:transform .38s ease; will-change:transform; }
+    .pan-guide { display:none; }
+    .scene.loading img { opacity:1; transform:scale(1.006); }
+    .chapter-tag { position:absolute; left:18px; bottom:18px; top:auto; padding:8px 13px; border-radius:999px; background:rgba(255,255,255,.9); font-size:.8rem; font-weight:700; box-shadow:0 4px 16px rgba(0,0,0,.1); }
+    .hotspot { position:absolute; width:clamp(54px,6vw,76px); aspect-ratio:1; border:1px solid transparent; border-radius:50%; cursor:pointer; background:transparent; box-shadow:none; padding:0; transition:transform .2s,background .2s,box-shadow .2s,border-color .2s; }
+    .hotspot::before { content:''; position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,255,255,.22); box-shadow:0 0 14px rgba(255,255,255,.16); opacity:.35; animation:soft-glint 2.8s ease-in-out infinite; }
+    .hotspot:hover, .hotspot:focus-visible, .hotspot.activating { transform:scale(1.08); outline:0; border-color:rgba(255,255,255,.92); background:radial-gradient(circle,rgba(255,239,159,.46),rgba(255,215,94,.12) 48%,transparent 70%); box-shadow:0 0 0 8px rgba(255,215,94,.2),0 0 30px rgba(255,239,159,.78); }
+    .hotspot:hover::before, .hotspot:focus-visible::before, .hotspot.activating::before { inset:4%; border-color:rgba(255,255,255,.9); opacity:1; animation:tap-spark .42s ease-out; }
+    .hotspot.done::before { border-color:rgba(255,255,255,.25); box-shadow:0 0 16px rgba(15,119,116,.2); }
+    .hotspot.done:hover, .hotspot.done:focus-visible { background:radial-gradient(circle,rgba(122,222,209,.34),rgba(15,119,116,.08) 52%,transparent 72%); box-shadow:0 0 0 8px rgba(15,119,116,.14),0 0 26px rgba(122,222,209,.5); }
+    .hotspot::after { content:attr(data-label); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); white-space:nowrap; padding:6px 10px; border-radius:9px; background:rgba(9,61,61,.92); color:#fff; font-size:.74rem; opacity:0; pointer-events:none; transition:.2s; }
+    .hotspot:hover::after, .hotspot:focus-visible::after { opacity:1; }
+    @keyframes soft-glint { 50% { opacity:.7; box-shadow:0 0 19px rgba(255,255,255,.38); } }
+    @keyframes tap-spark { from { transform:scale(.55); opacity:.2; } to { transform:scale(1); opacity:1; } }
+    .storybar { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:18px; align-items:center; min-height:104px; padding:18px 22px; background:#fff; border-top:1px solid #edf3ef; }
+    .chapter-kicker { color:var(--coral); font-weight:700; font-size:.78rem; letter-spacing:.08em; }
+    .objective { margin:4px 0 0; font-size:clamp(1rem,2vw,1.15rem); line-height:1.65; }
+    .hint-btn { border:0; border-radius:14px; background:var(--teal); color:#fff; padding:13px 16px; font-weight:700; cursor:pointer; box-shadow:0 7px 0 var(--deep); }
+    .hint-btn:active { transform:translateY(4px); box-shadow:0 3px 0 var(--deep); }
+    .mobile-actions { display:none; padding:14px; gap:8px; overflow-x:auto; border-top:1px solid var(--line); background:#fffcf3; }
+    .mobile-actions button { white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:#fff; padding:10px 13px; font-weight:700; }
+    .footerline { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:13px; color:#5c7777; font-size:.82rem; }
+    .reset { border:0; background:transparent; text-decoration:underline; cursor:pointer; color:inherit; }
+    dialog { width:min(520px,calc(100% - 26px)); max-height:calc(100dvh - 26px); overflow:auto; border:0; border-radius:24px; padding:0; color:var(--ink); background:var(--cream); box-shadow:0 30px 100px rgba(0,35,35,.38); }
+    dialog::backdrop { background:rgba(7,57,57,.67); backdrop-filter:blur(5px); }
+    .modal { padding:26px; }
+    .modal-head { display:flex; gap:12px; align-items:flex-start; }
+    .modal-icon { width:48px; height:48px; flex:0 0 auto; border-radius:16px; display:grid; place-items:center; background:var(--yellow); font-size:1.55rem; transform:rotate(-4deg); }
+    .modal h2 { font-family:'Gaegu',cursive; font-size:2rem; margin:0; line-height:1; }
+    .modal p { line-height:1.75; margin:14px 0; }
+    .transition-art { width:100%; max-height:270px; object-fit:cover; display:block; margin:18px 0 20px; border-radius:18px; box-shadow:0 10px 28px rgba(13,86,84,.12); }
+    .ending-art { width:100%; max-height:430px; object-fit:cover; display:block; margin:20px 0 18px; border-radius:20px; box-shadow:0 14px 34px rgba(13,86,84,.16); }
+    .ending-copy { text-align:center; }
+    .ending-copy h3 { font-family:'Gaegu',cursive; font-size:2rem; margin:8px 0 6px; color:var(--teal); }
+    .ending-copy p { margin:8px 0; }
+    .close { margin-left:auto; border:0; background:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:1.35rem; }
+    .modal-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:9px; margin-top:20px; }
+    .primary, .secondary { min-height:46px; border-radius:13px; padding:0 17px; font-weight:700; cursor:pointer; }
+    .primary { border:0; color:#fff; background:var(--teal); box-shadow:0 5px 0 var(--deep); }
+    .secondary { border:1px solid var(--line); background:#fff; }
+    .case-result { padding:26px; min-height:610px; }
+    .case-result .start-card { padding-top:0; }
+    .case-result .start-card p { margin:14px auto; line-height:1.75; font-size:1rem; }
+    .case-result .items { margin:18px 0 8px; }
+    .case-result .item { min-width:68px; padding:9px; }
+    .case-result .modal-actions { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:9px; margin-top:20px; }
+    .case-result .modal-actions button { width:100%; min-width:0; padding:0 12px; white-space:nowrap; font-size:1rem; }
+    .code-row { display:flex; gap:9px; margin:15px 0 4px; }
+    .code-row input { width:100%; min-height:52px; border:2px solid #b9d7d2; border-radius:13px; text-align:center; font-size:1.35rem; letter-spacing:.25em; background:#fff; }
+    .sequence { display:flex; gap:9px; flex-wrap:wrap; margin:15px 0; }
+    .sequence button { width:auto; min-width:56px; min-height:56px; padding:8px 12px; border:2px solid #bad8d4; background:#fff; border-radius:16px; font-size:1rem; line-height:1.35; font-weight:700; cursor:pointer; }
+    .sequence button.selected { border-color:var(--coral); background:#fff0ed; transform:translateY(-3px); }
+    .puzzle-feedback { min-height:24px; margin:8px 0 0; font-size:.9rem; font-weight:700; color:var(--coral); }
+    .puzzle-feedback.ok { color:var(--teal); }
+    .toast { position:fixed; left:50%; bottom:max(18px,env(safe-area-inset-bottom)); z-index:20; transform:translate(-50%,30px); opacity:0; max-width:calc(100% - 28px); background:#103f40; color:#fff; padding:12px 18px; border-radius:999px; box-shadow:0 12px 30px rgba(0,0,0,.25); font-weight:700; transition:.3s; pointer-events:none; text-align:center; }
+    .toast.show { transform:translate(-50%,0); opacity:1; }
+    .confetti { position:fixed; top:-20px; width:10px; height:16px; z-index:30; animation:fall 2.7s linear forwards; }
+    @keyframes fall { to { transform:translateY(110vh) rotate(720deg); } }
+    .start-card { text-align:center; padding:5px 0 0; }
+    .start-card .cat { font-size:4.5rem; filter:drop-shadow(0 8px 0 rgba(15,119,116,.12)); }
+    .start-card h2 { font-size:2.3rem; margin:8px 0; }
+    .start-card p { margin:8px auto 18px; max-width:390px; }
+    .items { display:flex; justify-content:center; gap:8px; margin:15px 0; }
+    .item { min-width:68px; padding:9px; border-radius:14px; background:#fff; border:1px solid var(--line); font-size:.82rem; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    @media (max-width:720px) {
+      .shell { padding:10px 8px 20px; }
+      .topbar { flex-wrap:wrap; }
+      .brand { width:100%; }
+      h1 { font-size:1.55rem; line-height:1.08; }
+      .eyebrow { font-size:.68rem; }
+      .game-card { border-radius:18px; }
+      .scene-scroll {
+        overflow-x:auto;
+        overflow-y:hidden;
+        -webkit-overflow-scrolling:touch;
+        overscroll-behavior-x:contain;
+        scrollbar-width:none;
+        touch-action:pan-x pan-y;
+        background:#dff1ef;
+      }
+      .scene-scroll::-webkit-scrollbar { display:none; }
+      .scene {
+        width:180vw;
+        min-width:180vw;
+        max-width:none;
+        aspect-ratio:16/9;
+        overflow:hidden;
+      }
+      .scene img { width:100%; height:100%; object-fit:cover; }
+      .pan-guide {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:6px;
+        padding:8px 12px;
+        background:#fffdf7;
+        border-top:1px solid var(--line);
+        color:#648080;
+        font-size:.72rem;
+        font-weight:700;
+      }
+      .chapter-tag { left:10px; bottom:10px; top:auto; padding:5px 9px; font-size:.66rem; background:rgba(255,255,255,.82); box-shadow:0 2px 8px rgba(0,0,0,.08); }
+      .hotspot { width:56px; }
+      .hotspot::after { display:none; }
+      .storybar { grid-template-columns:1fr; padding:15px; gap:12px; }
+      .hint-btn { width:100%; }
+      .mobile-actions { display:flex; }
+      .footerline { padding:0 4px; }
+      .footerline span:first-child { display:none; }
+      .sequence { gap:9px; flex-wrap:nowrap; }
+      .sequence button { flex:0 0 56px; width:56px; min-width:56px; height:56px; min-height:56px; padding:0; font-size:1.45rem; }
+      .sequence.wide-sequence { gap:7px; flex-wrap:wrap; }
+      .sequence.wide-sequence button { flex:1 1 calc(50% - 7px); width:auto; min-width:120px; min-height:52px; height:auto; padding:8px 10px; font-size:.9rem; }
+      .modal { padding:20px; }
+      .modal h2 { font-size:1.55rem; line-height:1.08; }
+      .modal-head { gap:9px; }
+      .modal-icon { width:42px; height:42px; font-size:1.3rem; border-radius:13px; }
+      .close { width:38px; height:38px; font-size:1.2rem; }
+      .transition-art { width:100%; margin:16px 0 18px; max-height:220px; }
+      .ending-art { max-height:360px; margin-top:17px; }
+      .case-result { padding:20px; min-height:min(650px,calc(100dvh - 26px)); }
+      .case-result .modal-head { margin-bottom:2px; }
+      .case-result .start-card p { margin:12px auto; font-size:1rem; line-height:1.75; }
+      .case-result .items { margin:15px 0 8px; gap:8px; }
+      .case-result .item { min-width:0; flex:1; padding:8px 5px; font-size:.82rem; border-radius:12px; }
+      .case-result .modal-actions { margin-top:18px; gap:8px; }
+      .case-result .modal-actions button { min-height:46px; padding:0 8px; font-size:.9rem; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="eyebrow">COCO &amp; NANA'S ROOFTOP MISSION</div><h1>옥상 참치 파티 대작전</h1></div>
+      <div class="pill" aria-label="발견한 단서"><span>🐾</span><strong id="count">0</strong><span>/ 20</span></div>
+      <button class="pill" id="sound" type="button" aria-pressed="false" aria-label="배경음악과 효과음 켜기" title="음악 켜기">🎵</button>
+    </header>
+
+    <section class="game-card" aria-live="polite">
+      <div class="scene-scroll" id="sceneScroll">
+        <div class="scene" id="scene">
+          <img id="sceneImage" src="images/stairwell.webp" alt="옥상 열쇠를 찾는 코코와 나나">
+          <div class="chapter-tag" id="chapterTag">01 · 옥상 계단</div>
+          <div id="hotspots"></div>
+        </div>
+      </div>
+      <div class="pan-guide" aria-hidden="true">↔ 좌우로 밀어 장면 전체를 둘러보세요</div>
+      <div class="storybar">
+        <div><div class="chapter-kicker" id="kicker">첫 번째 임무</div><p class="objective" id="objective">잠긴 옥상문을 열 열쇠를 찾자!</p></div>
+        <button class="hint-btn" id="hint" type="button">코코와 나나의 힌트 🐾</button>
+      </div>
+      <div class="mobile-actions" id="mobileActions" aria-label="살펴볼 곳"></div>
+    </section>
+
+    <div class="footerline"><span>장면 속 물건을 눌러 옥상 파티 준비물을 모아 보세요.</span><button class="reset" id="reset" type="button">처음부터 다시 하기</button></div>
+  </main>
+
+  <dialog id="dialog"><div class="modal" id="modal"></div></dialog>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    (() => {
+      const chapters = [
+        {
+          tag:"01 · 옥상 계단", image:"images/stairwell.webp", successImage:"images/success-key.webp", alt:"옥상 계단에서 열쇠를 찾는 코코와 나나",
+          kicker:"첫 번째 임무 · 열쇠 찾기", objective:"잠긴 옥상문을 열 열쇠를 찾아내자!",
+          hint:"게시판의 숫자 순서를 먼저 확인하고, 옥상문까지 가는 순서는 우산통 메모를 살펴봐!",
+          required:["keyCode","unlock"],
+          successTitle:"옥상 열쇠 발견!", successText:"민트색 열쇠함이 딸깍 열렸다. 나나가 황동 열쇠를 꺼내고 코코가 옥상문을 활짝 열었다!",
+          spots:[
+            {id:"board",label:"게시판",icon:"📌",x:58,y:18,title:"게시판의 숫자",text:"고양이 얼굴 스티커 아래에 숫자가 적혀 있다.<br><b>화분 3 · 우산 2 · 창문 1</b><br>열쇠함에는 이 순서가 필요해 보인다.",type:"clue"},
+            {id:"keyCode",label:"민트색 열쇠함",icon:"🔐",x:72,y:30,title:"열쇠함 암호",text:"게시판에 적힌 <b>화분 → 우산 → 창문</b>의 숫자를 이어 붙여 세 자리 암호를 입력하자.",type:"code",answer:"321",digits:3,reward:"옥상 열쇠",success:"정답! 3-2-1. 열쇠함 안에서 반짝이는 옥상 열쇠를 찾았다."},
+            {id:"coco",label:"계단의 코코",icon:"🐱",x:13,y:34,title:"코코의 발견",text:"코코가 계단에서 꼬리를 세우고 옥상문 쪽을 바라본다.<br><b>“열쇠를 찾으면 화분부터 살펴보자!”</b>",type:"collect"},
+            {id:"routeNote",label:"우산통",icon:"☂️",x:69,y:64,title:"문까지 가는 순서",text:"우산 손잡이에 메모가 묶여 있다.<br><b>화분 확인 → 신발장 옆 지나기 → 열쇠함 열기 → 옥상문</b>",type:"clue"},
+            {id:"unlock",label:"옥상문",icon:"🚪",x:91,y:43,title:"옥상문 열기",text:"열쇠를 들고 옥상문까지 가는 올바른 순서를 골라 보자!",type:"sequence",wide:true,options:["🪴 화분 확인","👟 신발장 옆","🔐 열쇠함 열기","🚪 옥상문"],solution:[0,1,2,3],reward:"옥상 입장",success:"화분 → 신발장 → 열쇠함 → 옥상문. 드디어 옥상으로 가는 길이 열렸다!"}
+          ]
+        },
+        {
+          tag:"02 · 옥상 창고", image:"images/storage.webp", successImage:"images/success-tuna.webp", alt:"옥상 창고에서 참치캔을 찾는 코코와 나나",
+          kicker:"두 번째 임무 · 참치캔 수색", objective:"창고 곳곳의 참치캔 네 개를 찾아 쿨러에 담자!",
+          hint:"선반 메모에 적힌 장소별 숫자를 읽고, 참치캔을 담는 순서는 벽시계 아래의 정리표를 확인해 봐!",
+          required:["tunaCode","packTuna"],
+          successTitle:"참치캔 네 개 확보!", successText:"코코와 나나는 흩어져 있던 참치캔 네 개를 모두 찾아 파란 쿨러에 차곡차곡 담았다.",
+          spots:[
+            {id:"shelfNote",label:"선반 메모",icon:"🗒️",x:17,y:20,title:"참치 위치 번호",text:"창고 정리 메모를 발견했다.<br><b>윗선반 1 · 작업대 2 · 상자 4</b><br>참치캔 그림 아래 화살표는 윗선반 → 작업대 → 상자를 가리킨다.",type:"clue"},
+            {id:"tunaCode",label:"파란 쿨러",icon:"🧊",x:20,y:70,title:"쿨러 잠금 번호",text:"메모의 화살표 순서대로 장소 번호를 이어 붙여 세 자리 암호를 입력하자.",type:"code",answer:"124",digits:3,reward:"빈 쿨러",success:"정답! 1-2-4. 쿨러가 열렸고 참치캔을 담을 준비가 됐다."},
+            {id:"topCan",label:"윗선반 참치",icon:"🐟",x:12,y:13,title:"첫 번째 참치캔",text:"화분 옆 윗선반에서 참치캔 하나를 발견했다. <b>가장 먼저 챙길 캔이다.</b>",type:"collect"},
+            {id:"orderNote",label:"벽시계",icon:"🕰️",x:61,y:12,title:"창고 정리 순서",text:"벽시계 아래 정리표가 있다.<br><b>윗선반 → 작업대 → 바닥 상자 → 쿨러</b> 순서로 정리하면 넘어질 걱정이 없다고 한다.",type:"clue"},
+            {id:"packTuna",label:"바닥 상자",icon:"📦",x:86,y:76,title:"참치캔 모으기",text:"참치캔을 안전하게 찾아 쿨러에 담는 순서를 골라 보자!",type:"sequence",wide:true,options:["🗄️ 윗선반","🪵 작업대","📦 바닥 상자","🧊 쿨러"],solution:[0,1,2,3],reward:"참치캔 4개",success:"윗선반 → 작업대 → 상자 → 쿨러. 참치캔 네 개를 모두 챙겼다!"}
+          ]
+        },
+        {
+          tag:"03 · 옥상 정원", image:"images/rooftop-mat.webp", successImage:"images/success-mat.webp", alt:"옥상 정원에서 돗자리를 펼치는 코코와 나나",
+          kicker:"세 번째 임무 · 돗자리 준비", objective:"바람에 날리지 않게 파티 돗자리를 펼치자!",
+          hint:"돗자리 바구니에서 색깔 번호를 확인하고, 펼치는 순서는 바람개비가 가리키는 쪽의 메모를 살펴봐!",
+          required:["matCode","spreadMat"],
+          successTitle:"돗자리 펼치기 성공!", successText:"민트와 노란색 체크 돗자리가 옥상 한가운데 반듯하게 펼쳐졌다. 쿨러까지 올려두니 파티 자리가 제법 그럴듯하다!",
+          spots:[
+            {id:"basket",label:"돗자리 바구니",icon:"🧺",x:88,y:60,title:"색깔 번호표",text:"말아 둔 돗자리마다 번호표가 붙어 있다.<br><b>민트 2 · 노랑 4 · 코랄 1</b><br>파티 초대장에 그려진 색 순서는 민트 → 노랑 → 코랄이다.",type:"clue"},
+            {id:"matCode",label:"돗자리 끈",icon:"🪢",x:58,y:68,title:"돗자리 끈 풀기",text:"초대장의 색 순서대로 번호를 이어 붙여 세 자리 암호를 입력하자.",type:"code",answer:"241",digits:3,reward:"체크 돗자리",success:"정답! 2-4-1. 파티에 딱 맞는 체크 돗자리의 끈이 풀렸다."},
+            {id:"pinwheel",label:"바람개비",icon:"🌬️",x:91,y:24,title:"바람의 방향",text:"바람개비가 오른쪽으로 빠르게 돈다. 메모에는 <b>“먼지를 턴 뒤 바람이 오는 쪽 모서리부터 눌러!”</b>라고 적혀 있다.",type:"clue"},
+            {id:"lantern",label:"작은 랜턴",icon:"🏮",x:7,y:74,title:"파티 불빛",text:"해가 지면 켤 작은 랜턴이다. 코코가 앞발로 톡 건드리자 따뜻한 불빛이 반짝였다.",type:"collect"},
+            {id:"spreadMat",label:"체크 돗자리",icon:"🧺",x:48,y:70,title:"돗자리 펼치기",text:"바람에 날리지 않도록 돗자리를 펼치는 순서를 골라 보자!",type:"sequence",wide:true,options:["✨ 먼지 털기","⬅️ 바람 쪽 모서리","➡️ 반대쪽 모서리","🧊 쿨러 올리기"],solution:[0,1,2,3],reward:"파티 자리",success:"먼지 털기 → 바람 쪽 → 반대쪽 → 쿨러. 돗자리가 단단히 고정됐다!"}
+          ]
+        },
+        {
+          tag:"04 · 초대장 테이블", image:"images/invitations.webp", successImage:"images/success-invitations.webp", alt:"옥상에서 동네 고양이 초대장을 준비하는 코코와 나나",
+          kicker:"마지막 임무 · 초대장 배달", objective:"초대장을 완성해 동네 고양이들에게 전달하자!",
+          hint:"벽의 도형 번호표에서 별·원·하트의 숫자를 찾고, 배달 순서는 물뿌리개 옆의 발자국 메모를 확인해 봐!",
+          required:["inviteCode","deliver"],
+          successTitle:"초대장 배달 완료!", successText:"주황이, 까망이, 회색이 모두 초대장을 받았다. 이제 옥상 참치 파티를 시작할 시간이다!",
+          spots:[
+            {id:"symbolBoard",label:"도형 번호표",icon:"🔷",x:25,y:24,title:"초대장 도형 암호",text:"벽의 번호표를 읽어 보자.<br><b>원 1 · 삼각형 2 · 네모 3 · 별 4 · 하트 5</b><br>코코의 봉투에는 별 → 원 → 하트가 그려져 있다.",type:"clue"},
+            {id:"inviteCode",label:"초대장 상자",icon:"💌",x:42,y:70,title:"초대장 상자 열기",text:"코코의 봉투에 그려진 <b>별 → 원 → 하트</b>의 번호를 이어 붙여 세 자리 암호를 입력하자.",type:"code",answer:"415",digits:3,reward:"초대장 세 장",success:"정답! 4-1-5. 주황이, 까망이, 회색이의 초대장이 완성됐다."},
+            {id:"stamps",label:"발도장 세트",icon:"🐾",x:63,y:66,title:"고양이 발도장",text:"초대장마다 알록달록한 발도장을 꾹! 나나가 마지막 봉투까지 정성스럽게 꾸몄다.",type:"collect"},
+            {id:"routeCard",label:"물뿌리개",icon:"🪴",x:91,y:75,title:"배달 경로 메모",text:"물뿌리개 옆에 배달 경로가 놓여 있다.<br><b>주황이 → 까망이 → 회색이</b><br>난간과 가장 가까운 친구부터 시계 방향으로 돌면 된다.",type:"clue"},
+            {id:"deliver",label:"동네 고양이들",icon:"🐈",x:78,y:43,title:"초대장 전달하기",text:"메모에 적힌 순서대로 초대장을 전달해 보자!",type:"sequence",wide:true,options:["🧡 주황이","🖤 까망이","🩶 회색이"],solution:[0,1,2],reward:"파티 친구들",success:"주황이 → 까망이 → 회색이. 모두 기쁜 표정으로 파티 초대장을 받았다!"}
+          ]
+        }
+      ];
+
+      const initial = {chapter:0,found:[],items:[],sound:false};
+      let state = {chapter:0,found:[],items:[],sound:false};
+      let renderedChapter = -1;
+      let selected = [], locked = false, busy = false, musicTimer = null, audioCtx = null;
+      const $ = s => document.querySelector(s);
+      const dialog = $("#dialog"), modal = $("#modal"), toast = $("#toast");
+
+      function key(id){ return state.chapter + "-" + id; }
+      function has(id){ return state.found.includes(key(id)); }
+      function add(id){
+        const k = key(id);
+        if(!state.found.includes(k)){ state.found.push(k); tone(820,.08); }
+        renderHeader();
+      }
+      function renderHeader(){
+        $("#count").textContent = Math.min(state.found.length,20);
+        const s = $("#sound");
+        s.classList.toggle("playing",state.sound);
+        s.setAttribute("aria-pressed",String(state.sound));
+        s.setAttribute("aria-label",state.sound ? "배경음악과 효과음 끄기" : "배경음악과 효과음 켜기");
+        s.title = state.sound ? "음악 끄기" : "음악 켜기";
+      }
+      function render(){
+        const c = chapters[state.chapter], scene = $("#scene");
+        const chapterChanged = renderedChapter !== state.chapter;
+        scene.classList.add("loading");
+        $("#sceneImage").src = c.image;
+        $("#sceneImage").alt = c.alt;
+        $("#sceneImage").onload = () => scene.classList.remove("loading");
+        if(chapterChanged) $("#sceneScroll").scrollLeft = 0;
+        renderedChapter = state.chapter;
+        $("#chapterTag").textContent = c.tag;
+        $("#kicker").textContent = c.kicker;
+        $("#objective").textContent = c.objective;
+        const hs = $("#hotspots"), ma = $("#mobileActions");
+        hs.innerHTML = ""; ma.innerHTML = "";
+        c.spots.forEach(s => {
+          const done = has(s.id);
+          const b = document.createElement("button");
+          b.className = "hotspot" + (done ? " done" : "");
+          b.style.left = "calc(" + s.x + "% - 30px)";
+          b.style.top = "calc(" + s.y + "% - 30px)";
+          b.dataset.label = s.label;
+          b.setAttribute("aria-label",s.label + (done ? " · 조사 완료" : ""));
+          b.onclick = () => activate(b,s);
+          hs.appendChild(b);
+          const m = document.createElement("button");
+          m.textContent = s.label + (done ? " · 완료" : "");
+          m.onclick = () => inspect(s);
+          ma.appendChild(m);
+        });
+        renderHeader();
+      }
+      function activate(button,spot){
+        if(busy || dialog.open) return;
+        busy = true; button.classList.add("activating");
+        setTimeout(() => { button.classList.remove("activating"); busy=false; if(!dialog.open) inspect(spot); },180);
+      }
+      function showToast(message){
+        toast.textContent = message; toast.classList.add("show");
+        clearTimeout(showToast.t); showToast.t = setTimeout(() => toast.classList.remove("show"),2200);
+      }
+      function openModal(icon,title,html,actions,options){
+        actions = actions || []; options = options || {}; locked = Boolean(options.locked);
+        modal.className = "modal" + (options.className ? " " + options.className : "");
+        modal.innerHTML = '<div class="modal-head"><div class="modal-icon">' + icon + '</div><div><div class="eyebrow">코코와 나나의 옥상 작전 일지</div><h2>' + title + '</h2></div>' + (locked ? '' : '<button class="close" aria-label="닫기">×</button>') + '</div><div class="modal-body">' + html + '</div><div class="modal-actions"></div>';
+        const close = modal.querySelector(".close"); if(close) close.onclick = () => dialog.close();
+        const area = modal.querySelector(".modal-actions");
+        actions.forEach(a => {
+          const b = document.createElement("button");
+          b.className = a.primary ? "primary" : "secondary";
+          b.textContent = a.label; b.onclick = a.action; area.appendChild(b);
+        });
+        if(!dialog.open) dialog.showModal();
+      }
+      function inspect(s){
+        if(dialog.open) return;
+        tone(520,.07);
+        if(s.type === "code") return codePuzzle(s);
+        if(s.type === "sequence") return sequencePuzzle(s);
+        add(s.id);
+        openModal(s.icon,s.title,"<p>" + s.text.replaceAll("\n","</p><p>") + "</p>",[
+          {label:"확인했어!",primary:true,action:() => { dialog.close(); render(); }}
+        ]);
+      }
+      function codePuzzle(s){
+        openModal(s.icon,s.title,'<p>' + s.text + '</p><div class="code-row"><input id="code" inputmode="numeric" maxlength="' + s.digits + '" placeholder="' + "0".repeat(s.digits) + '" aria-label="' + s.digits + '자리 암호"></div><p class="puzzle-feedback" id="codeFeedback" aria-live="polite"></p>',[
+          {label:"나중에",action:() => dialog.close()},
+          {label:"확인하기",primary:true,action:() => {
+            if($("#code").value === s.answer){
+              add(s.id); if(s.reward && !state.items.includes(s.reward)) state.items.push(s.reward);
+              modal.querySelector(".modal-body").innerHTML = "<p><b>" + s.success + "</b></p>";
+              modal.querySelector(".modal-actions").innerHTML = '<button class="primary" id="continue">다음 확인</button>';
+              $("#continue").onclick = () => { dialog.close(); render(); maybeAdvance(); };
+            } else {
+              tone(220,.14); $("#codeFeedback").textContent = "암호가 맞지 않는 것 같다냥! 단서를 다시 살펴보자.";
+            }
+          }}
+        ]);
+        setTimeout(() => $("#code") && $("#code").focus(),80);
+      }
+      function shuffled(options){
+        const a = options.map((label,index) => ({label,index}));
+        for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+        if(a.length>1 && a.every((v,i) => v.index===i)) a.push(a.shift());
+        return a;
+      }
+      function sequencePuzzle(s){
+        selected = []; const choices = shuffled(s.options);
+        openModal(s.icon,s.title,'<p>' + s.text + '</p><div class="sequence wide-sequence" id="sequence">' + choices.map(v => '<button data-i="' + v.index + '">' + v.label + '</button>').join("") + '</div><p id="picked">선택: 아직 없음</p><p class="puzzle-feedback" id="sequenceFeedback" aria-live="polite"></p>',[
+          {label:"다시 고르기",action:() => { selected=[]; modal.querySelectorAll(".sequence button").forEach(b=>b.classList.remove("selected")); $("#picked").textContent="선택: 아직 없음"; $("#sequenceFeedback").textContent=""; }},
+          {label:"순서 확인",primary:true,action:() => {
+            if(selected.join(",") === s.solution.join(",")){
+              add(s.id); if(s.reward && !state.items.includes(s.reward)) state.items.push(s.reward);
+              modal.querySelector(".modal-body").innerHTML = "<p><b>" + s.success + "</b></p>";
+              modal.querySelector(".modal-actions").innerHTML = '<button class="primary" id="gotit">작전 확인</button>';
+              $("#gotit").onclick = () => { dialog.close(); render(); maybeAdvance(); };
+            } else {
+              tone(220,.14); $("#sequenceFeedback").textContent = "순서가 다른 것 같다냥! 힌트를 보고 다시 골라보자.";
+            }
+          }}
+        ]);
+        modal.querySelectorAll(".sequence button").forEach(b => b.onclick = () => {
+          if(selected.length >= s.solution.length || b.classList.contains("selected")) return;
+          selected.push(Number(b.dataset.i)); b.classList.add("selected");
+          $("#picked").textContent = "선택: " + selected.map(i => s.options[i]).join(" → ");
+          $("#sequenceFeedback").textContent = ""; tone(580 + selected.length*60,.06);
+        });
+      }
+      function maybeAdvance(){
+        const c = chapters[state.chapter];
+        if(!c.required.every(id => has(id))) return;
+        const isLast = state.chapter === chapters.length-1;
+        locked = true;
+        openModal("✨",c.successTitle,'<img class="transition-art" src="' + c.successImage + '" alt="' + c.successTitle + '" loading="eager" decoding="sync" fetchpriority="high"><p>' + c.successText + '</p><div class="items"><div class="item">🐾<br>임무 완료</div><div class="item">🎒<br>' + (state.chapter+1) + '/4 성공</div></div>',[
+          {label:isLast ? "엔딩 장면 보기 →" : "다음 장소로 →",primary:true,action:() => {
+            locked=false;
+            dialog.close();
+            if(isLast){ ending(); return; }
+            state.chapter++;
+            render();
+            showToast("다음 파티 준비 작전이 시작됐다냥!");
+          }}
+        ],{locked:true});
+      }
+      function ending(){
+        confetti();
+        openModal("🎉","옥상 참치 파티 시작!",'<img class="ending-art" src="images/ending.webp" alt="옥상에서 참치 파티를 즐기는 코코와 나나, 동네 고양이들" loading="eager" decoding="sync" fetchpriority="high"><div class="ending-copy"><h3>PARTY COMPLETE!</h3><p>열쇠, 참치캔, 돗자리와 초대장까지<br>코코와 나나가 모든 준비를 마쳤어요.</p><p>노을이 사라지고 전구가 반짝이자<br>동네 고양이들의 참치 파티가 시작됐답니다.</p><p><b>오늘 밤 옥상은 가장 포근한 고양이 아지트! 🐾</b></p><div class="items"><div class="item">🐾<br>단서 ' + Math.min(state.found.length,20) + '개</div><div class="item">🧩<br>퍼즐 8개</div><div class="item">🐟<br>참치 4캔</div></div></div>',[
+          {label:"다시 플레이",action:restart},
+          {label:"파티 즐기기",primary:true,action:() => dialog.close()}
+        ],{className:"case-result"});
+      }
+      function confetti(){
+        const colors=["#ffd986","#e98678","#89c9d7","#5d927d","#fff"];
+        for(let i=0;i<60;i++){
+          const e=document.createElement("i"); e.className="confetti"; e.style.left=Math.random()*100+"vw";
+          e.style.background=colors[i%colors.length]; e.style.animationDelay=Math.random()*1.1+"s";
+          document.body.appendChild(e); setTimeout(()=>e.remove(),4200);
+        }
+      }
+      function intro(){
+        openModal("🐾","옥상 참치 파티 대작전",'<div class="start-card"><div class="cat">🐱</div><p>오늘 저녁, 코코와 나나는 동네 고양이들을 위한 옥상 파티를 열기로 했어요!</p><p><b>옥상 열쇠 · 참치캔 · 돗자리 · 초대장</b><br>네 가지 준비물을 차례로 모아 파티를 완성해 주세요.</p><p>각 장면 속 물건을 누르면 단서와 퍼즐이 열려요.</p><p><b>모바일에서는 그림을 좌우로 밀어 전체를 둘러볼 수 있어요.</b></p></div>',[
+          {label:"옥상 작전 시작!",primary:true,action:() => { dialog.close(); tone(720,.1); }}
+        ]);
+      }
+      function restart(){
+        state={chapter:0,found:[],items:[],sound:state.sound}; renderedChapter=-1; dialog.close(); render(); setTimeout(intro,120);
+      }
+      function ensureAudio(){
+        if(!audioCtx){ const C=window.AudioContext||window.webkitAudioContext; if(C) audioCtx=new C(); }
+        return audioCtx;
+      }
+      function tone(freq,duration){
+        if(!state.sound) return; const c=ensureAudio(); if(!c) return;
+        const o=c.createOscillator(),g=c.createGain(); o.type="sine"; o.frequency.value=freq;
+        g.gain.setValueAtTime(.055,c.currentTime); g.gain.exponentialRampToValueAtTime(.001,c.currentTime+duration);
+        o.connect(g); g.connect(c.destination); o.start(); o.stop(c.currentTime+duration);
+      }
+      function startMusic(){
+        const notes=[523.25,659.25,783.99,659.25,587.33,698.46,783.99,698.46]; let i=0;
+        clearInterval(musicTimer); tone(notes[0],.16);
+        musicTimer=setInterval(()=>tone(notes[i++%notes.length],.16),520);
+      }
+      function stopMusic(){ clearInterval(musicTimer); musicTimer=null; }
+
+      $("#hint").onclick = () => openModal("💡","코코와 나나의 힌트","<p>" + chapters[state.chapter].hint + "</p>",[
+        {label:"알겠어!",primary:true,action:() => dialog.close()}
+      ]);
+      $("#sound").onclick = async () => {
+        state.sound=!state.sound;
+        if(state.sound){ const c=ensureAudio(); if(c && c.state==="suspended") await c.resume(); startMusic(); showToast("포근한 옥상 음악이 시작됐다냥 ♪"); }
+        else stopMusic();
+        renderHeader();
+      };
+      $("#reset").onclick = () => openModal("↩️","옥상 작전을 다시 시작할까?","<p>찾은 단서와 진행 상황이 모두 초기화돼요.</p>",[
+        {label:"계속할래",action:() => dialog.close()},
+        {label:"처음부터",primary:true,action:restart}
+      ]);
+      dialog.addEventListener("click",e => { if(e.target===dialog && !locked) dialog.close(); });
+      dialog.addEventListener("cancel",e => { if(locked) e.preventDefault(); });
+      render(); setTimeout(intro,220);
+    })();
+  </script>
+</body>
+</html>
