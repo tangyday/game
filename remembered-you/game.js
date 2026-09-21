@@ -55,7 +55,7 @@ function panel(tag,title,html,label='돌아가기',fn=null,wide=false){
     }
   };
   afterClose=null;
-  p.showModal();
+  p.showModal();setTimeout(bindMemoryChoiceButtons,0);
 }
 function options(selector,callback){document.querySelectorAll(selector).forEach(b=>b.onclick=()=>callback(b));}
 function unlocked(ch){return ch===1||(ch===2&&state.revisited)||(ch===3&&state.linked)||(ch===4&&state.gate)||(ch===5&&state.revealed);}
@@ -113,10 +113,9 @@ function showLine(){
         </div>
       </div>`;
   }else{
-    const imageUrl=new URL(m.image,window.location.href).href;
     visual=`
-      <div class="memory-popup-image" data-memory-image="${m.image}" style="background-image:url('${imageUrl}')">
-        <img src="${imageUrl}" alt="${m.title}">
+      <div class="memory-popup-image" data-memory-image="${m.image}">
+        <img src="${m.image}" alt="${m.title}" loading="eager">
       </div>`;
   }
 
@@ -229,4 +228,26 @@ const hotspots=[...document.querySelectorAll('[data-object]')];let touchTarget=n
 $('#next').onclick=next;$('#chapters').onclick=chapterMap;$('#journal-button').onclick=journal;$('#connect').onclick=()=>state.chapter===3?compareAwards():connectSleep();$('#continue').onclick=continueStory;$('#close').onclick=closePanel;$('#panel').addEventListener('cancel',()=>afterClose=null);restorePanelAction();$('#hint').onclick=()=>notify($('#objective').textContent);$('#sound').onclick=()=>{try{if(!audio)audio=new(window.AudioContext||window.webkitAudioContext)();sound=!sound;$('#sound').textContent=sound?'소리 켜짐':'소리 꺼짐';$('#sound').setAttribute('aria-pressed',String(sound));$('#sound').setAttribute('aria-label',sound?'소리 끄기':'소리 켜기');chime();}catch{notify('이 브라우저에서는 소리를 켤 수 없어요.');}};
 $('#restart').onclick=()=>panel('다시 시작','첫 페이지로 돌아갈까요?','<p>이 기기에 저장된 모든 챕터와 선택이 초기화돼요.</p>','처음부터 시작',()=>{state=initial();render();$('#chapters').focus();intro();});$('#close-session').onclick=showLastWords;$('#reopen').onclick=endCard;$('#return-memories').onclick=()=>leaveEnding();$('#other-choice').onclick=()=>leaveEnding(true);
 const context=document.modelContext;if(context?.registerTool){const lifecycle=new AbortController();try{Promise.resolve(context.registerTool({name:'read_memory_room_progress',description:'Read unlocked memory chapters and current objective without changing progress.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute(){return {...state,objective:$('#objective').textContent};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
+
+function bindMemoryChoiceButtons(){
+  document.querySelectorAll('button').forEach(btn=>{
+    const t=(btn.textContent||'').trim();
+    if(t==='실제 기록을 기준으로 표시'){
+      btn.onclick=()=>{
+        state.choice='correct';
+        const p=$('#panel');
+        if(p && p.open)p.close();
+        setTimeout(()=>startMemory('corrected'),120);
+      };
+    }else if(t==='기억을 기준으로 표시'){
+      btn.onclick=()=>{
+        state.choice='preserve';
+        const p=$('#panel');
+        if(p && p.open)p.close();
+        setTimeout(()=>startMemory('preserved'),120);
+      };
+    }
+  });
+}
+
 render();if(state.ended&&state.chapter===5)endCard();else if(state.chapter===1)intro();else if(!state.introduced)intro();})();

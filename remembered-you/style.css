@@ -350,3 +350,31 @@
     min-height:210px;
   }
 }
+
+
+/* =========================================================
+   v30 - 기억 팝업 이미지 비율 그대로 표시
+   ========================================================= */
+.memory-popup-image{
+  height:auto !important;
+  min-height:0 !important;
+  aspect-ratio:auto !important;
+  background-image:none !important;
+  background-color:transparent !important;
+}
+.memory-popup-image img{
+  position:static !important;
+  inset:auto !important;
+  width:100% !important;
+  height:auto !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  display:block !important;
+  border-radius:14px;
+}
+@media(max-width:680px){
+  #panel.memory-popup .memory-popup-image{
+    height:auto !important;
+    min-height:0 !important;
+  }
+}
