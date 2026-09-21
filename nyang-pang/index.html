@@ -83,7 +83,7 @@ canvas{width:min(100%,390px); height:auto; display:block; border-radius:22px; ba
         <div class="overlay show" id="overlay">
           <div class="modal" id="modal">
             <h2>냥냥 팡!</h2>
-            <p>같은 고양이 <b>4마리 이상</b>을 연결하면 사라져요.<br>귀여운 고양이 4종으로 10스테이지를 클리어해보세요!</p>
+            <p>같은 고양이 풍선이 <b>4개 이상</b> 모이면 팡팡 터져요!<br>귀여운 고양이 풍선을 모아 10스테이지를 클리어해보세요!</p>
             <button class="btn" id="startBtn">게임 시작</button>
           </div>
         </div>
@@ -110,7 +110,7 @@ canvas{width:min(100%,390px); height:auto; display:block; border-radius:22px; ba
 
       <div class="info">
         <b>규칙</b><br>
-        고양이 얼굴 이미지를 사용한 퍼즐 조각이에요. 같은 고양이가 상하좌우로 4마리 이상 붙으면 사라집니다.
+        귀여운 고양이 풍선을 모으는 퍼즐 게임이에요. 같은 고양이 풍선이 상하좌우로 4개 이상 모이면 팡팡 터져요!
         연쇄가 일어나면 점수가 크게 올라가요. 회색 발바닥 블록은 주변 고양이가 터질 때 함께 사라집니다.
       </div>
       <div class="legend">스테이지가 올라갈수록 목표 점수와 속도가 올라가고, 방해 블록이 더 많이 등장해요.</div>
@@ -137,7 +137,7 @@ const STAGES=[
   {target:10000,speed:300,garbage:8,intro:'마지막 스테이지! 10,000점을 달성하세요.'}
 ];
 const CAT_IMAGES = SPRITES.map(src=>{ const img=new Image(); img.src=src; return img; });
-let grid, pair, nextPair, score=0, stage=1, playing=false, dropTimer=0, lastTime=0, unlocked=1, particles=[];
+let grid, pair, nextPair, score=0, stage=1, playing=false, resolving=false, dropTimer=0, lastTime=0, unlocked=1, particles=[];
 let best=Number(localStorage.getItem('catpuyo_fresh_best')||0);
 let cleared=JSON.parse(localStorage.getItem('catpuyo_fresh_cleared')||'[]');
 unlocked=Number(localStorage.getItem('catpuyo_fresh_unlocked')||1);
@@ -153,14 +153,14 @@ function collides(p=pair){
   return cellsOf(p).some(c=>c.x<0||c.x>=COLS||c.y>=ROWS||(c.y>=0&&grid[c.y][c.x]!==null));
 }
 function move(dx,dy){
-  if(!playing) return false;
+  if(!playing || resolving) return false;
   const np={...pair,x:pair.x+dx,y:pair.y+dy};
   if(!collides(np)){ pair=np; return true; }
   if(dy>0) lockPair();
   return false;
 }
 function rotate(){
-  if(!playing) return;
+  if(!playing || resolving) return;
   let np={...pair,rot:(pair.rot+1)%4};
   if(!collides(np)){ pair=np; return; }
   for(const kick of [-1,1,-2,2]){
@@ -168,13 +168,22 @@ function rotate(){
     if(!collides(k)){ pair=k; return; }
   }
 }
-function hardDrop(){ if(!playing) return; while(move(0,1)){} }
+function hardDrop(){ if(!playing || resolving) return; while(move(0,1)){} }
 function lockPair(){
+  if(resolving) return;
   for(const c of cellsOf()) if(c.y<0){ gameOver(); return; }
+
+  // 가로로 놓인 두 냥이 중 한쪽 아래가 비어 있으면,
+  // 착지 후 각 냥이가 독립적으로 아래까지 떨어지도록 처리한다.
   for(const c of cellsOf()) grid[c.y][c.x]=c.v;
+  resolving=true;
+  applyGravity();
+  draw();
+
   resolveBoard().then(()=>{
-    if(score>=STAGES[stage-1].target){ stageClear(); return; }
+    if(score>=STAGES[stage-1].target){ resolving=false; stageClear(); return; }
     pair=nextPair; nextPair=makePair();
+    resolving=false;
     if(collides(pair)){ gameOver(); return; }
     updateUI();
   });
@@ -278,7 +287,7 @@ function addGarbage(n){
 }
 function startStage(s=stage){
   stage=s; score=0; grid=blankGrid(); addGarbage(STAGES[stage-1].garbage);
-  pair=makePair(); nextPair=makePair(); playing=true; dropTimer=0; lastTime=performance.now();
+  pair=makePair(); nextPair=makePair(); playing=true; resolving=false; dropTimer=0; lastTime=performance.now();
   hideOverlay(); updateUI(); draw(); requestAnimationFrame(loop);
 }
 function gameOver(){ playing=false; updateBest(); showOverlay('앗, 천장까지 찼어요!','현재 스테이지를 다시 도전해볼까요?','다시 도전',()=>startStage(stage)); }
@@ -298,7 +307,7 @@ function hideOverlay(){ document.getElementById('overlay').classList.remove('sho
 function loop(t){
   if(!playing) return;
   const dt=t-lastTime; lastTime=t; dropTimer+=dt;
-  if(dropTimer>STAGES[stage-1].speed){ move(0,1); dropTimer=0; }
+  if(!resolving && dropTimer>STAGES[stage-1].speed){ move(0,1); dropTimer=0; }
   updateParticles(dt); draw(); requestAnimationFrame(loop);
 }
 function drawStoryBackdrop(){
@@ -331,7 +340,7 @@ function draw(chain=0){
     ctx.strokeStyle='rgba(236,234,241,.95)'; ctx.strokeRect(x*CELL+.5,y*CELL+.5,CELL-1,CELL-1);
     if(grid[y][x]!==null) drawCatCell(x*CELL+30,y*CELL+31,grid[y][x],.92);
   }
-  if(playing) for(const c of cellsOf()) if(c.y>=0) drawCatCell(c.x*CELL+30,c.y*CELL+31,c.v,.92);
+  if(playing && !resolving) for(const c of cellsOf()) if(c.y>=0) drawCatCell(c.x*CELL+30,c.y*CELL+31,c.v,.92);
   drawParticles();
   if(chain>1){ ctx.save(); ctx.font='900 34px system-ui'; ctx.textAlign='center'; ctx.fillStyle='#ff5d9b'; ctx.strokeStyle='rgba(255,255,255,.92)'; ctx.lineWidth=6; ctx.strokeText(`${chain} CHAIN!`,180,70); ctx.fillText(`${chain} CHAIN!`,180,70); ctx.restore(); }
 }
