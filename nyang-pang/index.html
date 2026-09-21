@@ -59,22 +59,36 @@ canvas{width:min(100%,390px); height:auto; display:block; border-radius:22px; ba
 .info{background:#fff; border-radius:18px; padding:14px; line-height:1.6; font-size:14px; margin-top:12px}
 .legend{font-size:13px; line-height:1.65; color:#706778}
 @media (max-width:780px){
-  #app{padding:8px}
-  .topbar{gap:8px; padding:10px 12px; border-radius:18px}
-  .brand{width:100%; gap:8px; font-size:22px}
-  .brand .logo{font-size:26px}
-  .status{width:100%; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px}
-  .pill{padding:7px 4px; font-size:11px; text-align:center; white-space:nowrap}
-  .main{grid-template-columns:1fr; gap:10px; margin-top:10px}
-  .card{padding:10px; border-radius:20px}
-  canvas{width:min(100%,330px); border-radius:18px}
-  .controls{position:sticky; bottom:6px; z-index:5; gap:6px; margin-top:8px}
-  .ctrl{padding:9px 6px; font-size:21px; border-radius:13px}
-  .footer{font-size:10px; margin-top:7px}
+  #app{padding:6px}
+  .topbar{gap:6px; padding:8px 10px; border-radius:18px}
+  .brand{width:100%; gap:7px; font-size:20px; line-height:1.1}
+  .brand .logo{font-size:23px}
+  .status{width:100%; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px}
+  .pill{padding:6px 2px; font-size:10px; text-align:center; white-space:nowrap}
+  .main{grid-template-columns:1fr; gap:8px; margin-top:8px}
+  .card{padding:8px; border-radius:18px}
+  canvas{width:min(100%,270px); border-radius:16px}
+  .controls{position:static; gap:5px; margin-top:6px}
+  .ctrl{min-height:48px; padding:7px 5px; font-size:20px; border-radius:12px}
+  .footer{display:none}
 }
 @media (max-width:380px){
-  canvas{width:min(100%,310px)}
-  .pill{font-size:10px; padding:6px 2px}
+  canvas{width:min(100%,260px)}
+  .pill{font-size:9.5px; padding:5px 1px}
+}
+@media (max-width:780px) and (max-height:850px){
+  canvas{width:min(100%,250px)}
+  .topbar{padding:7px 9px}
+  .brand{font-size:19px}
+  .brand .logo{font-size:21px}
+  .pill{padding:5px 1px; font-size:9px}
+  .ctrl{min-height:44px; padding:6px 4px; font-size:19px}
+}
+@media (max-width:780px) and (max-height:740px){
+  canvas{width:min(100%,225px)}
+  .main{margin-top:6px}
+  .card{padding:6px}
+  .controls{margin-top:5px}
 }
 </style>
 </head>
