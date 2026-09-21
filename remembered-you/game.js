@@ -114,8 +114,10 @@ function showLine(){
       </div>`;
   }else{
     visual=`
-      <div class="memory-popup-image">
-        <img src="${m.image}" alt="${m.title}">
+      <div class="memory-popup-image" data-memory-image="${m.image}">
+        <img src="${m.image}" alt="${m.title}" loading="eager" decoding="sync"
+             onload="this.style.opacity='1'"
+             onerror="this.style.display='none';this.parentElement.classList.add('image-load-failed')">
       </div>`;
   }
 
@@ -217,7 +219,7 @@ function choicePanel(){if(!state.revealed)return;panel('기록 선택','어떤 �
 function previewChoice(choice){const correct=choice==='correct';panel('선택 미리보기',correct?'실제 기록을 기준으로':'그날의 기억을 기준으로',`<div class="choice-preview ${correct?'faded-memory':''}"><img src="hug-memory.png" alt="원래 대화에 이어진 포옹의 기억"><p>${correct?'참가상이라는 결과에 이 포옹을 새 반응으로 붙이지 않습니다. 원래 장면은 별도 기억에 남습니다.':'그날의 말과 포옹이 함께 남습니다. 금상 표시가 실제 결과는 아니라는 사실도 구분해 둡니다.'}</p></div><dl class="record-facts"><dt>액자의 표시</dt><dd>${correct?'참가상 · 실제 기록':'금상 · 대화에 근거한 표시'}</dd><dt>별도 보관함</dt><dd>${correct?'원래 대화와 포옹':'실제 참가상'}</dd></dl><button id="review-choice" class="text-button">다른 선택 살펴보기</button>`,correct?'실제 기록을 기준으로 표시':'현재 기억을 기준으로 표시',()=>commitChoice(choice),true);$('#review-choice').onclick=choicePanel;}
 
 function commitChoice(choice){state.choice=choice;state.chapter=5;state.consequence=false;state.goodbye=false;state.ended=false;render();startMemory(choice==='correct'?'corrected':'preserved');}
-function continueStory(){switch(state.chapter){case 2:if(state.linked)changeRoom(3);break;case 4:if(state.revealed){changeRoom(5);choicePanel();}else startMemory('reveal');break;case 5:if(!state.choice)choicePanel();else if(!state.consequence)startMemory(state.choice==='correct'?'corrected':'preserved');else if(state.goodbye)showEpilogue();else startMemory('goodbye');}}
+function continueStory(){switch(state.chapter){case 2:if(state.linked)changeRoom(3);break;case 4:if(state.revealed){changeRoom(5);choicePanel();}else startMemory('reveal');break;case 5:if(!state.choice)choicePanel();else if(!state.consequence)setTimeout(()=>startMemory(state.choice==='correct'?'corrected':'preserved'),120);else if(state.goodbye)showEpilogue();else startMemory('goodbye');}}
 function showEpilogue(){closePanel();$('main').inert=true;$('#epilogue').hidden=false;$('#epilogue').classList.remove('last-line','reconnected');$('#exit-window').hidden=false;$('#last-words').hidden=true;$('#end-card').hidden=true;$('#close-session').focus();}
 function showLastWords(){$('#exit-window').hidden=true;$('#last-words').hidden=false;$('#epilogue').classList.add('last-line');$('#reopen').focus();}
 function endCard(){state.ended=true;save();$('#exit-window').hidden=true;$('#last-words').hidden=true;$('#end-card').hidden=false;$('#epilogue').hidden=false;$('#epilogue').classList.add('reconnected');$('main').inert=true;$('#return-memories').focus();}
