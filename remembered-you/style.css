@@ -457,3 +457,47 @@
     white-space:nowrap;
   }
 }
+
+
+/* =========================================================
+   v36 - 벽 상장 텍스트 자연스럽게 재조정
+   원래 중앙 배치는 유지하고 글자만 적당히 축소
+   ========================================================= */
+@media(max-width:680px){
+  #wall-award{
+    padding:0 !important;
+    gap:4% !important;
+    overflow:visible !important;
+    justify-content:center !important;
+  }
+
+  #wall-award span{
+    width:auto !important;
+    max-width:none !important;
+    margin:0 !important;
+    font-size:11px !important;
+    line-height:1.15 !important;
+    letter-spacing:0 !important;
+    white-space:nowrap !important;
+  }
+
+  #wall-award strong{
+    width:auto !important;
+    max-width:none !important;
+    margin:0 !important;
+    font-size:22px !important;
+    line-height:1.05 !important;
+    letter-spacing:.12em !important;
+    white-space:nowrap !important;
+  }
+
+  #wall-award small{
+    width:auto !important;
+    max-width:none !important;
+    margin:0 !important;
+    font-size:9px !important;
+    line-height:1.15 !important;
+    letter-spacing:0 !important;
+    white-space:nowrap !important;
+  }
+}
