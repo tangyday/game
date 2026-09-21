@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>냥냥 팡! - 고양이 퍼즐</title>
+<title>냥팡팡 - 고양이 퍼즐</title>
 <meta property="og:image" content="images/nyang-pang.png" />
 <style>
 :root{
@@ -59,16 +59,29 @@ canvas{width:min(100%,390px); height:auto; display:block; border-radius:22px; ba
 .info{background:#fff; border-radius:18px; padding:14px; line-height:1.6; font-size:14px; margin-top:12px}
 .legend{font-size:13px; line-height:1.65; color:#706778}
 @media (max-width:780px){
-  #app{padding:10px}
-  .main{grid-template-columns:1fr}
-  .controls{position:sticky; bottom:6px; z-index:5}
+  #app{padding:8px}
+  .topbar{gap:8px; padding:10px 12px; border-radius:18px}
+  .brand{width:100%; gap:8px; font-size:22px}
+  .brand .logo{font-size:26px}
+  .status{width:100%; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px}
+  .pill{padding:7px 4px; font-size:11px; text-align:center; white-space:nowrap}
+  .main{grid-template-columns:1fr; gap:10px; margin-top:10px}
+  .card{padding:10px; border-radius:20px}
+  canvas{width:min(100%,330px); border-radius:18px}
+  .controls{position:sticky; bottom:6px; z-index:5; gap:6px; margin-top:8px}
+  .ctrl{padding:9px 6px; font-size:21px; border-radius:13px}
+  .footer{font-size:10px; margin-top:7px}
+}
+@media (max-width:380px){
+  canvas{width:min(100%,310px)}
+  .pill{font-size:10px; padding:6px 2px}
 }
 </style>
 </head>
 <body>
 <div id="app">
   <div class="topbar">
-    <div class="brand"><span class="logo">🐾</span><span>냥냥 팡!</span></div>
+    <div class="brand"><span class="logo">🐾</span><span>냥팡팡</span></div>
     <div class="status">
       <div class="pill">STAGE <span id="stageNum">1</span>/10</div>
       <div class="pill">SCORE <span id="score">0</span></div>
@@ -83,7 +96,7 @@ canvas{width:min(100%,390px); height:auto; display:block; border-radius:22px; ba
         <canvas id="game" width="360" height="720" aria-label="고양이 퍼즐 게임"></canvas>
         <div class="overlay show" id="overlay">
           <div class="modal" id="modal">
-            <h2>냥냥 팡!</h2>
+            <h2>냥팡팡</h2>
             <p>같은 고양이 풍선이 <b>4개 이상</b> 모이면 팡팡 터져요!<br>귀여운 고양이 풍선을 모아 10스테이지를 클리어해보세요!</p>
             <button class="btn" id="startBtn">게임 시작</button>
           </div>
