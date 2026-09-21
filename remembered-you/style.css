@@ -89,13 +89,13 @@
 @media(prefers-reduced-motion:reduce){*{animation:none!important}}
 /* A shared image container keeps clue labels attached to their picture at any viewport size. */
 #memory-art{position:absolute;inset:0 0 250px;display:flex;align-items:center;justify-content:center;z-index:-1;pointer-events:none}
-.memory-picture{position:relative;width:min(100%,calc((100dvh - 250px)*1.77778));aspect-ratio:16/9}
+.memory-picture{position:relative;width:min(100%,calc((100vh - 250px)*1.77778));aspect-ratio:16/9}
 #memory-image{display:block;width:100%;height:100%;object-fit:contain}
 .sleep-memory::before{display:none}
 #memory-record{position:absolute;left:37.5%;top:10%;width:19%;height:22%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5%;color:#705427;font-family:var(--serif);text-align:center}
 #memory-record span{font-size:clamp(7px,1vw,14px)}#memory-record strong{font-size:clamp(15px,2.2vw,30px);letter-spacing:.18em}#memory-record small{font-size:clamp(6px,.85vw,12px)}
-@media(max-width:680px){#memory-art{bottom:275px}.memory-picture{width:min(100%,calc((100dvh - 275px)*1.77778))}}
-@media(max-height:540px) and (min-width:681px){#memory-art{bottom:170px}.memory-picture{width:min(100%,calc((100dvh - 170px)*1.77778))}}
+@media(max-width:680px){#memory-art{bottom:275px}.memory-picture{width:min(100%,calc((100vh - 275px)*1.77778))}}
+@media(max-height:540px) and (min-width:681px){#memory-art{bottom:170px}.memory-picture{width:min(100%,calc((100vh - 170px)*1.77778))}}
 .reality-label{position:absolute;left:5%;top:5%;font-size:14px}.last-line .reality-label,.reconnected .reality-label{display:none}
 
 /* Phone exploration keeps the original image and its object coordinates together. */
@@ -121,11 +121,11 @@
  .panel-actions{position:static;background:#f6f0e2;padding:12px 0 0;margin-top:14px}.panel-actions button{width:100%}
  .certificate-pair{grid-template-columns:1fr;gap:16px}.certificate{padding:22px}.certificate .cert-event{font-size:16px}.certificate p{font-size:14px}.certificate .record-source{font-size:14px}
  .compare-options{flex-direction:column}.clue-pair span,.choice-grid span{font-size:16px}
- .dialogue{height:100dvh;padding:0;display:grid;grid-template-rows:minmax(170px,1fr) auto;overflow:hidden}
+ .dialogue{height:100vh;padding:0;display:grid;grid-template-rows:minmax(170px,1fr) auto;overflow:hidden}
  .dialogue-inner{display:contents}
  .portrait-stage{grid-row:1;align-self:stretch;height:auto;min-height:0;padding:0;gap:0;align-items:flex-end}
  .portrait{height:100%;width:50%;transform:none}.portrait img{object-fit:cover;object-position:50% top}
- .dialogue-card{grid-row:2;width:100%;max-height:55dvh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px 18px 0 0;padding:18px 22px max(18px,env(safe-area-inset-bottom));background:#102c30f5}
+ .dialogue-card{grid-row:2;width:100%;max-height:55vh;overflow-y:auto;overscroll-behavior:contain;border-radius:18px 18px 0 0;padding:18px 22px max(18px,env(safe-area-inset-bottom));background:#102c30f5}
  .dialogue-card #line{font-size:21px;line-height:1.8;min-height:3.6em;margin-bottom:18px;word-break:keep-all;overflow-wrap:anywhere}
  .dialogue-card .speaker{font-size:16px;margin:12px 0 8px}.dialogue-top,.dialogue-top .eyebrow{font-size:13px}
  .dialogue-card #next{min-height:48px;width:100%;font-size:17px;padding:12px}
@@ -139,9 +139,9 @@
 @media(max-height:540px) and (orientation:landscape) and (pointer:coarse){
  main{padding:8px max(12px,env(safe-area-inset-left))}header{margin-bottom:8px}h1{font-size:22px}.header-actions button{min-height:44px}
  .scene{aspect-ratio:16/9}.scene-caption h2{font-size:24px}.bottom{padding:10px 16px}footer{padding-top:0}
- .dialogue{display:grid;grid-template-columns:56% 44%;padding:0;height:100dvh;align-items:stretch;overflow:hidden}
+ .dialogue{display:grid;grid-template-columns:56% 44%;padding:0;height:100vh;align-items:stretch;overflow:hidden}
  .dialogue-inner{display:contents}.portrait-stage{grid-column:1;height:100%;padding:0;gap:0;min-height:0}.portrait{width:50%;height:100%}
- .dialogue-card{grid-column:2;grid-row:1;max-height:100dvh;overflow:auto;border-radius:0;padding:16px max(18px,env(safe-area-inset-right)) 16px 18px}
+ .dialogue-card{grid-column:2;grid-row:1;max-height:100vh;overflow:auto;border-radius:0;padding:16px max(18px,env(safe-area-inset-right)) 16px 18px}
  .dialogue-card #line{font-size:19px;min-height:0;line-height:1.65}.dialogue-card #next{min-height:44px;width:100%}
  #memory-art{position:relative;inset:auto;grid-column:1;grid-row:1;z-index:0;overflow:auto;pointer-events:auto;display:flex}
  .memory-picture{width:100%;height:auto;aspect-ratio:16/9;flex-shrink:0}.sleep-memory .dialogue-inner{display:contents}
