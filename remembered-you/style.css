@@ -378,3 +378,38 @@
     min-height:0 !important;
   }
 }
+
+
+/* =========================================================
+   v33 - 기억 팝업 이미지 영역 0높이 방지 + 여백 최소화
+   ========================================================= */
+.memory-popup-image{
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:160px !important;
+  overflow:hidden !important;
+  border-radius:14px !important;
+  background:transparent !important;
+}
+.memory-popup-image img{
+  position:static !important;
+  display:block !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:160px !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  border-radius:14px !important;
+}
+@media(max-width:680px){
+  #panel.memory-popup .memory-popup-image{
+    min-height:150px !important;
+  }
+  #panel.memory-popup .memory-popup-image img{
+    min-height:150px !important;
+  }
+}

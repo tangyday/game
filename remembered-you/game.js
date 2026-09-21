@@ -20,6 +20,7 @@ window.MEMORY_STORY={
 
 (()=>{'use strict';
 const $=s=>document.querySelector(s),KEY='remembered-you-room1-v1',STORY=window.MEMORY_STORY;
+['sleep-memory.png','hug-memory.png','award-room.png','glass-room.png'].forEach(src=>{const i=new Image();i.src=src;});
 const flags=['introduced','diary','note','memory','revisited','blanket','sleep','linked','award','hug','external','compared','gate','revealed','consequence','goodbye','ended'];
 const initial=()=>Object.assign(Object.fromEntries(flags.map(k=>[k,false])),{chapter:1,choice:null});
 let state=initial(),afterClose=null,activeMemory=null,lineIndex=0,audio=null,sound=false,toastTimer;
@@ -55,7 +56,7 @@ function panel(tag,title,html,label='돌아가기',fn=null,wide=false){
     }
   };
   afterClose=null;
-  p.showModal();setTimeout(bindMemoryChoiceButtons,0);
+  p.showModal();
 }
 function options(selector,callback){document.querySelectorAll(selector).forEach(b=>b.onclick=()=>callback(b));}
 function unlocked(ch){return ch===1||(ch===2&&state.revisited)||(ch===3&&state.linked)||(ch===4&&state.gate)||(ch===5&&state.revealed);}
@@ -113,10 +114,9 @@ function showLine(){
         </div>
       </div>`;
   }else{
-    const imageUrl=new URL(m.image,window.location.href).href;
     visual=`
-      <div class="memory-popup-image" data-memory-image="${m.image}" style="background-image:url('${imageUrl}')">
-        <img src="${imageUrl}" alt="${m.title}">
+      <div class="memory-popup-image" data-memory-image="${m.image}">
+        <img class="memory-popup-art" alt="${m.title}">
       </div>`;
   }
 
@@ -130,6 +130,14 @@ function showLine(){
       <p class="memory-popup-line">${line}</p>
       <small class="memory-popup-count">${lineIndex+1} / ${m.lines.length}</small>
     </div>`;
+
+  if(!m.portraits){
+    const art=$('.memory-popup-art');
+    if(art){
+      art.loading='eager';
+      art.src=m.image;
+    }
+  }
 
   const action=$('#panel-action');
   action.textContent=lineIndex===m.lines.length-1?'이어가기':'다음 →';
@@ -230,25 +238,5 @@ $('#next').onclick=next;$('#chapters').onclick=chapterMap;$('#journal-button').o
 $('#restart').onclick=()=>panel('다시 시작','첫 페이지로 돌아갈까요?','<p>이 기기에 저장된 모든 챕터와 선택이 초기화돼요.</p>','처음부터 시작',()=>{state=initial();render();$('#chapters').focus();intro();});$('#close-session').onclick=showLastWords;$('#reopen').onclick=endCard;$('#return-memories').onclick=()=>leaveEnding();$('#other-choice').onclick=()=>leaveEnding(true);
 const context=document.modelContext;if(context?.registerTool){const lifecycle=new AbortController();try{Promise.resolve(context.registerTool({name:'read_memory_room_progress',description:'Read unlocked memory chapters and current objective without changing progress.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute(){return {...state,objective:$('#objective').textContent};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
 
-function bindMemoryChoiceButtons(){
-  document.querySelectorAll('button').forEach(btn=>{
-    const t=(btn.textContent||'').trim();
-    if(t==='실제 기록을 기준으로 표시'){
-      btn.onclick=()=>{
-        state.choice='correct';
-        const p=$('#panel');
-        if(p && p.open)p.close();
-        setTimeout(()=>startMemory('corrected'),120);
-      };
-    }else if(t==='기억을 기준으로 표시'){
-      btn.onclick=()=>{
-        state.choice='preserve';
-        const p=$('#panel');
-        if(p && p.open)p.close();
-        setTimeout(()=>startMemory('preserved'),120);
-      };
-    }
-  });
-}
 
 render();if(state.ended&&state.chapter===5)endCard();else if(state.chapter===1)intro();else if(!state.introduced)intro();})();
