@@ -291,11 +291,16 @@
       $('#count').textContent=Math.min(state.found.length,14);
       const sound=$('#sound');sound.textContent='🎵';sound.classList.toggle('playing',state.sound);sound.setAttribute('aria-pressed',state.sound);sound.setAttribute('aria-label',state.sound?'배경음악과 효과음 끄기':'배경음악과 효과음 켜기');sound.title=state.sound?'음악 끄기':'음악 켜기';
     }
+    function resetSceneScroll(){
+      const sceneScroll=$('#sceneScroll');
+      if(!sceneScroll)return;
+      requestAnimationFrame(()=>{ sceneScroll.scrollLeft=0; });
+    }
+
     function render(){
       const c=chapters[state.chapter];
       $('#scene').classList.add('loading');
       $('#sceneImage').src=c.image;$('#sceneImage').alt=c.alt;$('#sceneImage').onload=()=>$('#scene').classList.remove('loading');
-      const sceneScroll=$('#sceneScroll');if(sceneScroll)sceneScroll.scrollLeft=0;
       $('#chapterTag').textContent=c.tag;$('#kicker').textContent=c.kicker;$('#objective').textContent=c.objective;
       const hs=$('#hotspots'),ma=$('#mobileActions');hs.innerHTML='';ma.innerHTML='';
       c.spots.forEach(s=>{
@@ -337,7 +342,7 @@
       if(advancePending)return;
       advancePending=true;
       modalLocked=true;
-      openModal('🕵️','용의자 조사 완료!',`<img class="transition-art" src="images/success-kitchen.webp" alt="로봇청소기 바퀴에서 츄르 포장 조각을 찾아낸 코코와 알리바이가 확인된 나나"><p>나나의 알리바이를 확인하고 로봇청소기에서 결정적인 포장 조각을 찾았다.</p><p>이제 로봇의 전체 동선을 따라가 사건의 마지막 목격자, 집사를 조사하자!</p><div class="items"><div class="item">🐱<br>알리바이</div><div class="item">🤖<br>포장 조각</div></div>`,[{label:'최종 추리로 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();}}],{locked:true});
+      openModal('🕵️','용의자 조사 완료!',`<img class="transition-art" src="images/success-kitchen.webp" alt="로봇청소기 바퀴에서 츄르 포장 조각을 찾아낸 코코와 알리바이가 확인된 나나"><p>나나의 알리바이를 확인하고 로봇청소기에서 결정적인 포장 조각을 찾았다.</p><p>이제 로봇의 전체 동선을 따라가 사건의 마지막 목격자, 집사를 조사하자!</p><div class="items"><div class="item">🐱<br>알리바이</div><div class="item">🤖<br>포장 조각</div></div>`,[{label:'최종 추리로 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();resetSceneScroll();}}],{locked:true});
     }
 
     function codePuzzle(s){
@@ -369,7 +374,7 @@
       if(advancePending)return;
       if(state.chapter===0&&state.found.includes('0-drawer')&&state.found.includes('0-ribbon')){
         advancePending=true;
-        setTimeout(()=>openModal('📁','현장 감식 완료!',`<img class="transition-art" src="images/success-living.webp" alt="거실에서 세 용의자의 이동 순서를 밝혀낸 코코"><p>사건 시각과 세 용의자의 이동 순서를 알아냈다. 이제 주방으로 가서 한 명씩 알리바이를 확인하자!</p><div class="items"><div class="item">📷<br>현장 사진</div><div class="item">🧭<br>용의자 동선</div></div>`,[{label:'용의자 조사로 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('두 번째 장소, 주방으로 이동!');}}],{locked:true}),420);
+        setTimeout(()=>openModal('📁','현장 감식 완료!',`<img class="transition-art" src="images/success-living.webp" alt="거실에서 세 용의자의 이동 순서를 밝혀낸 코코"><p>사건 시각과 세 용의자의 이동 순서를 알아냈다. 이제 주방으로 가서 한 명씩 알리바이를 확인하자!</p><div class="items"><div class="item">📷<br>현장 사진</div><div class="item">🧭<br>용의자 동선</div></div>`,[{label:'용의자 조사로 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();resetSceneScroll();showToast('두 번째 장소, 주방으로 이동!');}}],{locked:true}),420);
         return;
       }
       if(kitchenPuzzlesComplete()){
@@ -387,7 +392,7 @@
       openModal('💛','사건 종결 보고서',`<img class="ending-art" src="${endingSrc}" alt="냉장고에서 찾은 츄르를 사이좋게 나눠 먹는 코코와 나나" onerror="this.onerror=null;this.style.display='none';"><div class="ending-copy"><h3>CASE CLOSED!</h3><p>나나는 냄새만 맡았고,<br>로봇청소기는 끌고 갔고,<br>집사는 안전하게 냉장 보관했어요.</p><p>코코와 나나는 츄르를 사이좋게 나눠 먹었고,<br>로봇청소기에게는 먼지 없는 휴식이 주어졌답니다.</p><p><b>수사에 참여해줘서 고마워요 🐾</b></p></div>`,[{label:'처음부터 다시',action:()=>restart()},{label:'수사 종료',primary:true,action:()=>dialog.close()}]);
     }
     function confetti(){const colors=['#ffd75e','#ff8171','#73c8de','#0f7774','#fff'];for(let i=0;i<65;i++){const e=document.createElement('i');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.background=colors[i%colors.length];e.style.animationDelay=Math.random()*1.1+'s';e.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(e);setTimeout(()=>e.remove(),4200);}}
-    function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();intro();}
+    function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();resetSceneScroll();intro();}
     function intro(){openModal('🔎','사라진 츄르를 찾아라!',`<div class="start-card"><div class="cat">😾</div><p>아침 7시 30분.<br>코코가 몰래 숨겨 둔 연어맛 츄르가 감쪽같이 사라졌다!</p><p>용의자는 <b>나나, 로봇청소기, 집사</b>.<br>집 안의 단서를 모아 사건의 전말을 밝혀 주세요.</p><p><b>수상한 물건을 누르면 조사가 시작돼요.</b></p></div>`,[{label:'수사 시작!',primary:true,action:()=>{dialog.close();beep(720,.12);}}]);}
     $('#hint').onclick=()=>openModal('💡','탐정 코코의 힌트',`<p>${chapters[state.chapter].hint}</p>`,[{label:'알겠어!',primary:true,action:()=>dialog.close()}]);
     $('#sound').onclick=async()=>{
