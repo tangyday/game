@@ -24,9 +24,17 @@ const $=s=>document.querySelector(s),KEY='remembered-you-room1-v1',STORY=window.
 const flags=['introduced','diary','note','memory','revisited','blanket','sleep','linked','award','hug','external','compared','gate','revealed','consequence','goodbye','ended'];
 const initial=()=>Object.assign(Object.fromEntries(flags.map(k=>[k,false])),{chapter:1,choice:null});
 let state=initial(),afterClose=null,activeMemory=null,lineIndex=0,audio=null,sound=false,toastTimer;
-try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&[1,2,3].includes(s.version)){for(const k of flags)state[k]=s[k]===true;state.chapter=Number.isInteger(s.chapter)&&s.chapter>=1&&s.chapter<=5?s.chapter:1;state.choice=['correct','preserve'].includes(s.choice)?s.choice:null;}}catch{}
-// Preserve chapter-one/two saves and enforce prerequisites for resumed scenes.
-if(state.ended)state.goodbye=true;if(state.goodbye)state.consequence=true;if(state.consequence&&!state.choice)state.choice='preserve';if(state.choice||state.chapter===5)state.revealed=true;if(state.revealed||state.chapter>=4)state.gate=true;if(state.gate)state.compared=true;if(state.compared)state.external=true;if(state.external)state.hug=true;if(state.hug)state.award=true;if(state.award||state.chapter>=3)state.linked=true;if(state.linked)state.sleep=true;if(state.sleep)state.blanket=true;if(state.blanket||state.chapter>=2)state.revisited=true;if(state.revisited)state.memory=true;if(state.memory){state.diary=true;state.note=true;}if(state.diary)state.introduced=true;
+
+/* 게임을 다시 열면 항상 처음부터 시작 */
+try{localStorage.removeItem(KEY);}catch{}
+
+/* 뒤로 나갔다가 브라우저/WebView 캐시로 복원되는 경우도 처음부터 */
+window.addEventListener('pageshow',e=>{
+  if(e.persisted){
+    try{localStorage.removeItem(KEY);}catch{}
+    location.reload();
+  }
+});
 const roomInfo={1:{label:'01 · 아직 남아 있는 저녁',title:'아직 남아 있는 저녁',image:'room.webp',alt:'저녁빛이 드는 집. 왼쪽 책상과 오른쪽 식탁.'},2:{label:'02 · 내가 잠든 뒤에',title:'내가 잠든 뒤에',image:'living-room.png',alt:'거실. 소파 위 담요와 탁자에 펼쳐진 책.'},3:{label:'03 · 같은 날의 다른 기록',title:'같은 날의 다른 기록',image:'award-room.png',alt:'현관 앞 복도. 벽의 상장, 액자 뒤 종이와 작은 보관함.'},4:{label:'04 · 문 너머',title:'유리 너머의 사람',image:'glass-room.png',alt:'유리 너머 책상에 앉아 있는 나이 든 여성.'},5:{label:'05 · 남겨 둘 기억',title:'남겨 둘 기억',image:'award-room.png',alt:'기억 속 상장과 실제 기록이 남은 복도.'}};
 function save(){try{localStorage.setItem(KEY,JSON.stringify({...state,version:3}));}catch{}}
 function notify(t){$('#toast').textContent=t;$('#toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').classList.remove('show'),4500);}
