@@ -1,0 +1,50 @@
+[
+  {
+    "id": "remembered-you",
+    "title": "언니의 기억",
+    "description": "기억 속 단서를 따라가는 스토리 미스터리",
+    "thumbnail": "https://nyamplay.pages.dev/remembered-you/sleep-memory.png",
+    "url": "https://nyamplay.pages.dev/remembered-you/",
+    "new": false
+  },
+  {
+    "id": "coco-birthday",
+    "title": "코코의 몰래 생일파티 대작전",
+    "description": "코코의 생일을 완성하는 귀여운 방탈출",
+    "thumbnail": "https://nyamplay.pages.dev/coco-birthday/images/og.png",
+    "url": "https://nyamplay.pages.dev/coco-birthday/",
+    "new": false
+  },
+  {
+    "id": "churu-mystery",
+    "title": "사라진 츄르를 찾아라!",
+    "description": "사라진 츄르의 범인을 찾는 코믹 미스터리",
+    "thumbnail": "https://nyamplay.pages.dev/churu-mystery/images/og-churu.png",
+    "url": "https://nyamplay.pages.dev/churu-mystery/",
+    "new": false
+  },
+  {
+    "id": "catcafe-firstday",
+    "title": "고양이 카페 첫 출근!",
+    "description": "초보 고양이 직원 나나의 첫 출근",
+    "thumbnail": "https://nyamplay.pages.dev/catcafe-firstday/images/og-cafe-first-day.png",
+    "url": "https://nyamplay.pages.dev/catcafe-firstday/",
+    "new": false
+  },
+  {
+    "id": "cat-housekeeper",
+    "title": "집사 출근시키기",
+    "description": "나나가 집사의 출근 준비를 돕는 방탈출",
+    "thumbnail": "https://nyamplay.pages.dev/cat-housekeeper/images/og-housekeeper.png",
+    "url": "https://nyamplay.pages.dev/cat-housekeeper/",
+    "new": false
+  },
+  {
+    "id": "rooftop-mission",
+    "title": "옥상 참치 대작전",
+    "description": "옥상에서 펼쳐지는 코코와 나나의 새로운 작전",
+    "thumbnail": "https://nyamplay.pages.dev/rooftop-mission/images/og-rooftop-tuna-party.png",
+    "url": "https://nyamplay.pages.dev/rooftop-mission/",
+    "new": true
+  }
+]
