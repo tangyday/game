@@ -113,11 +113,10 @@ function showLine(){
         </div>
       </div>`;
   }else{
+    const imageUrl=new URL(m.image,window.location.href).href;
     visual=`
-      <div class="memory-popup-image" data-memory-image="${m.image}">
-        <img src="${m.image}" alt="${m.title}" loading="eager" decoding="sync"
-             onload="this.style.opacity='1'"
-             onerror="this.style.display='none';this.parentElement.classList.add('image-load-failed')">
+      <div class="memory-popup-image" data-memory-image="${m.image}" style="background-image:url('${imageUrl}')">
+        <img src="${imageUrl}" alt="${m.title}">
       </div>`;
   }
 

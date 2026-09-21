@@ -234,7 +234,12 @@
   height:min(42vh,360px);
   overflow:hidden;
   border-radius:14px;
-  background:linear-gradient(180deg,#193a3d,#0f292c);
+  position:relative;
+  background-color:#132f32;
+  background-image:var(--memory-scene-bg);
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-size:cover;
 }
 .memory-popup-person{
   width:50%;
@@ -253,6 +258,7 @@
   display:block;
   object-fit:contain;
   object-position:center bottom;
+  filter:drop-shadow(0 10px 22px rgba(0,0,0,.28));
 }
 .memory-popup-image{
   width:100%;
@@ -303,5 +309,44 @@
   }
   #panel.memory-popup .memory-popup-line{
     font-size:17px!important;
+  }
+}
+
+
+
+
+/* =========================================================
+   v29 - 기억 팝업 일러스트 WebView 표시 보강
+   ========================================================= */
+.memory-popup-image{
+  position:relative;
+  display:block !important;
+  width:100%;
+  height:min(42vh,360px);
+  min-height:220px;
+  overflow:hidden;
+  border-radius:14px;
+  background-color:#132f32;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+}
+.memory-popup-image img{
+  position:absolute;
+  inset:0;
+  display:block !important;
+  width:100% !important;
+  height:100% !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  opacity:1 !important;
+  visibility:visible !important;
+}
+
+@media(max-width:680px){
+  #panel.memory-popup .memory-popup-image{
+    height:32vh;
+    min-height:210px;
   }
 }
