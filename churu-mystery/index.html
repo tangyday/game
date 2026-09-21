@@ -66,8 +66,35 @@
     .mobile-actions button { white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:#fff; padding:10px 13px; font-weight:700; }
     .footerline { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:13px; color:#5c7777; font-size:.82rem; }
     .reset { border:0; background:transparent; text-decoration:underline; cursor:pointer; color:inherit; }
-    dialog { width:min(520px,calc(100% - 26px)); max-height:calc(100dvh - 26px); overflow:auto; border:0; border-radius:24px; padding:0; color:var(--ink); background:var(--cream); box-shadow:0 30px 100px rgba(0,35,35,.38); }
-    dialog::backdrop { background:rgba(7,57,57,.67); backdrop-filter:blur(5px); }
+    /* Android WebView에서도 안정적으로 보이도록 native <dialog> 대신 커스텀 오버레이 사용 */
+    .dialog-layer {
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:max(13px,env(safe-area-inset-top)) 13px max(13px,env(safe-area-inset-bottom));
+      background:rgba(7,57,57,.67);
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+    .dialog-layer.is-open { display:flex; }
+    .dialog-panel {
+      width:min(520px,calc(100vw - 26px));
+      max-height:calc(100dvh - 26px);
+      overflow:auto;
+      border:0;
+      border-radius:24px;
+      padding:0;
+      color:var(--ink);
+      background:var(--cream);
+      box-shadow:0 30px 100px rgba(0,35,35,.38);
+      position:relative;
+      z-index:1;
+      -webkit-overflow-scrolling:touch;
+    }
+    body.modal-open { overflow:hidden; }
     .modal { padding:26px; }
     .modal-head { display:flex; gap:12px; align-items:flex-start; }
     .modal-icon { width:48px; height:48px; flex:0 0 auto; border-radius:16px; display:grid; place-items:center; background:var(--yellow); font-size:1.55rem; transform:rotate(-4deg); }
@@ -197,7 +224,9 @@
     <div class="footerline"><span>수상한 물건을 누르면 탐정 코코가 조사해요.</span><button class="reset" id="reset" type="button">처음부터 다시 하기</button></div>
   </main>
 
-  <dialog id="dialog"><div class="modal" id="modal"></div></dialog>
+  <div id="dialog" class="dialog-layer" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="dialog-panel"><div class="modal" id="modal"></div></div>
+  </div>
   <div class="toast" id="toast" role="status"></div>
 
   <script>
@@ -242,6 +271,20 @@
     let modalLocked=false,hotspotBusy=false,advancePending=false;
     const $=s=>document.querySelector(s);
     const dialog=$('#dialog'), modal=$('#modal'), toast=$('#toast');
+
+    // native <dialog>.showModal()은 일부 Android WebView에서
+    // backdrop만 보이고 본문이 렌더링되지 않는 문제가 있어 커스텀 방식으로 처리한다.
+    Object.defineProperty(dialog,'open',{get(){return dialog.classList.contains('is-open');}});
+    dialog.showModal=()=>{
+      dialog.classList.add('is-open');
+      dialog.setAttribute('aria-hidden','false');
+      document.body.classList.add('modal-open');
+    };
+    dialog.close=()=>{
+      dialog.classList.remove('is-open');
+      dialog.setAttribute('aria-hidden','true');
+      document.body.classList.remove('modal-open');
+    };
 
     function save(){ /* 진행 상황은 현재 페이지에서만 유지하고 새로고침 시 초기화 */ }
     let audioCtx=null,musicBus=null,musicTimer=null,nextNoteTime=0,musicStep=0;
@@ -397,7 +440,6 @@
     };
     $('#reset').onclick=()=>openModal('↩️','수사를 처음부터 할까?',`<p>발견한 단서와 수사 진행 상황이 모두 초기화돼요.</p>`,[{label:'계속 수사할래',action:()=>dialog.close()},{label:'처음부터',primary:true,action:restart}]);
     dialog.addEventListener('click',e=>{if(e.target===dialog&&!modalLocked)dialog.close();});
-    dialog.addEventListener('cancel',e=>{if(modalLocked)e.preventDefault();});
     render();
     setTimeout(intro,250);
   </script>
