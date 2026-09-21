@@ -78,50 +78,134 @@ else if(id==='envelope'){if(!state.hug)return;if(state.choice){panel('액자 뒤
 else if(id==='box'){if(state.choice==='preserve')panel('별도 보관함','기억과 구분한 사실',certificate('참가상',true)+'<p>금상은 그날의 말에 근거한 기억의 표시다.<br>실제 수상 결과는 이 참가상 기록으로 남아 있다.</p>');else if(state.choice==='correct')panel('별도 기억 보관함','그날의 포옹','<dl class="record-facts"><dt>실제 수상 기록</dt><dd>참가상</dd><dt>그날 동생이 말한 결과</dt><dd>일등</dd></dl><p>포옹은 실제로 있었던 장면이다. 참가상이라고 말했을 때의 반응으로 바꾸어 재생하지 않을 뿐이다.</p>','원래 대화와 포옹 보기',()=>startMemory('hug'));else panel('복도의 보관함','작은 보관함','<p>뚜껑을 열자 빈 바닥이 보인다.<br>아직 아무것도 넣지 않은 상자다.</p>');}
 else if(id==='entrance'){if(!state.compared){notify('기억 속 상장과 액자 뒤의 종이를 먼저 비교해 보자.');return;}if(state.gate){changeRoom(4);return;}gatePuzzle();}}
 function startMemory(kind){
-  activeMemory=kind;
-  lineIndex=0;
-
   if(!STORY || !STORY[kind]){
     notify('대화 데이터를 불러오지 못했어요.');
     return;
   }
 
-  const m=STORY[kind];
-  const d=$('#dialogue');
+  activeMemory=kind;
+  lineIndex=0;
 
-  /* 먼저 화면을 띄운 뒤 내용을 채운다 - WebView 호환 */
-  d.hidden=false;
-  d.removeAttribute('hidden');
-  d.style.display='flex';
-  d.style.visibility='visible';
-  d.style.opacity='1';
-  d.style.zIndex='99999';
+  const p=$('#panel');
+  if(p.open)p.close();
 
-  $('#memory-art').hidden=!!m.portraits;
-  $('#memory-image').src=m.image;
-  $('#memory-image').alt=m.title;
-  $('#memory-record').hidden=m.image!=='award-room.png';
-  $('#memory-result').textContent=state.choice==='correct'?'참가상':'금상';
-
-  document.body.classList.add('remembering');
-  d.classList.toggle('sleep-memory',!m.portraits);
-  d.classList.toggle('portrait-memory',!!m.portraits);
-  d.style.setProperty('--memory-bg',`url("${m.image}")`);
-  d.setAttribute('aria-label',m.title);
-  $('#memory-label').textContent=m.title;
-
-  showLine();
-  setTimeout(()=>$('#next').focus(),80);
+  setTimeout(()=>{
+    showLine();
+  },120);
 }
-function showLine(){const m=STORY[activeMemory],[speaker,line]=m.lines[lineIndex];$('#portrait-younger').classList.toggle('speaking',speaker==='동생');$('#portrait-older').classList.toggle('speaking',speaker==='언니');$('.portrait-stage').classList.toggle('narration',!speaker);$('#speaker').textContent=speaker||(m.present?'지금':'그날의 기억');$('#line').textContent=line;$('#line-count').textContent=`${lineIndex+1} / ${m.lines.length}`;$('#next').textContent=lineIndex===m.lines.length-1?'이어가기':'다음 →';$('#dialogue').classList.toggle('system-line',speaker==='시스템');if(activeMemory==='reveal'&&lineIndex>=5)$('#memory-label').textContent='동생 모델 복원 완료';if(activeMemory==='table'&&(lineIndex===4||lineIndex===5))chime();}
-function next(){if($('#dialogue').hidden)return;if(++lineIndex<STORY[activeMemory].lines.length){showLine();return;}const kind=activeMemory;activeMemory=null;document.body.classList.remove('remembering');$('main').inert=false;const d=$('#dialogue');d.hidden=true;d.style.display='';d.style.visibility='';d.style.opacity='';d.style.zIndex='';
-if(kind==='table'){state.memory=true;render();$('[data-object="diary"]').focus();notify('식탁의 장면이 잦아든다. 일기장을 다시 확인해 보자.');}
-else if(kind==='sleep'){state.sleep=true;render();panel('거실로 돌아와','내가 잠든 뒤의 장면','<p>“나 저때 자고 있었는데.”</p><p>잠든 내 얼굴도, 담요를 덮어 주던 손도.<br>내가 볼 수 없었던 장면이 선명하다.</p><div class="journal-entry"><h3>새 단서 두 개</h3><p>잠든 나 · 언니의 시계</p></div>','단서 연결하기',connectSleep);}
-else if(kind==='hug'){state.hug=true;render();if(!state.external)notify('기억이 잦아들자 액자 뒤의 종이가 눈에 들어온다.');(state.choice?$('[data-object="box"]'):$('[data-object="envelope"]')).focus();}
-else if(kind==='external'){state.external=true;render();compareAwards();}
-else if(kind==='reveal'){state.revealed=true;render();panel('유리 너머','끝내 말하지 못했던 것','<p>실제 동생이 참가상 기록을 가리킨다.</p><p>“이 자료를 기준으로 표시를 바꾸면…… 뭐가 달라질까?”</p>','기록 살펴보기',()=>{changeRoom(5);choicePanel();});}
-else if(kind==='corrected'||kind==='preserved'){state.consequence=true;render();panel('남겨진 기록',state.choice==='correct'?'사실과 기억을 나란히':'기억과 사실을 함께',state.choice==='correct'?'<p>참가상으로 고쳐진 액자 옆에 작은 기록이 남는다.<br>원래 대화와 포옹은 보관함에서 다시 볼 수 있다.</p><dl class="record-facts"><dt>실제 수상 기록</dt><dd>참가상</dd><dt>그날 동생이 말한 결과</dt><dd>일등</dd></dl>':'<p>액자에는 그날의 말에 근거한 금상 표시가 남는다.<br>실제 결과는 참가상이며, 외부 자료로 보관함에 남는다.</p>','유리 너머로 돌아가기',()=>startMemory('goodbye'));}
-else if(kind==='goodbye'){state.goodbye=true;render();showEpilogue();}}
+
+function showLine(){
+  if(!activeMemory || !STORY[activeMemory])return;
+
+  const m=STORY[activeMemory];
+  const [speaker,line]=m.lines[lineIndex];
+  const p=$('#panel');
+
+  let visual='';
+  if(m.portraits){
+    visual=`
+      <div class="memory-popup-portraits">
+        <div class="memory-popup-person ${speaker==='동생'?'speaking':''}">
+          <img src="younger.webp" alt="동생">
+        </div>
+        <div class="memory-popup-person ${speaker==='언니'?'speaking':''}">
+          <img src="older.webp" alt="언니">
+        </div>
+      </div>`;
+  }else{
+    visual=`
+      <div class="memory-popup-image">
+        <img src="${m.image}" alt="${m.title}">
+      </div>`;
+  }
+
+  p.classList.add('wide','memory-popup');
+  $('#panel-tag').textContent='기억';
+  $('#panel-title').textContent=m.title;
+  $('#panel-body').innerHTML=`
+    ${visual}
+    <div class="memory-popup-dialogue ${speaker==='시스템'?'system':''}">
+      <strong class="memory-popup-speaker">${speaker||(m.present?'지금':'그날의 기억')}</strong>
+      <p class="memory-popup-line">${line}</p>
+      <small class="memory-popup-count">${lineIndex+1} / ${m.lines.length}</small>
+    </div>`;
+
+  const action=$('#panel-action');
+  action.textContent=lineIndex===m.lines.length-1?'이어가기':'다음 →';
+  action.onclick=()=>{
+    if(activeMemory==='table'&&(lineIndex===4||lineIndex===5))chime();
+
+    lineIndex++;
+    if(lineIndex<m.lines.length){
+      showLine();
+      return;
+    }
+
+    const kind=activeMemory;
+    activeMemory=null;
+    p.classList.remove('memory-popup','wide');
+    if(p.open)p.close();
+
+    setTimeout(()=>finishMemory(kind),120);
+  };
+
+  afterClose=null;
+  if(!p.open)p.showModal();
+}
+
+function next(){
+  if(!activeMemory)return;
+  const action=$('#panel-action');
+  if(action)action.click();
+}
+
+function finishMemory(kind){
+  if(kind==='table'){
+    state.memory=true;
+    render();
+    $('[data-object="diary"]').focus();
+    notify('식탁의 장면이 잦아든다. 일기장을 다시 확인해 보자.');
+  }
+  else if(kind==='sleep'){
+    state.sleep=true;
+    render();
+    panel('거실로 돌아와','내가 잠든 뒤의 장면','<p>“나 저때 자고 있었는데.”</p><p>잠든 내 얼굴도, 담요를 덮어 주던 손도.<br>내가 볼 수 없었던 장면이 선명하다.</p><div class="journal-entry"><h3>새 단서 두 개</h3><p>잠든 나 · 언니의 시계</p></div>','단서 연결하기',connectSleep);
+  }
+  else if(kind==='hug'){
+    state.hug=true;
+    render();
+    if(!state.external)notify('기억이 잦아들자 액자 뒤의 종이가 눈에 들어온다.');
+    (state.choice?$('[data-object="box"]'):$('[data-object="envelope"]')).focus();
+  }
+  else if(kind==='external'){
+    state.external=true;
+    render();
+    compareAwards();
+  }
+  else if(kind==='reveal'){
+    state.revealed=true;
+    render();
+    panel('유리 너머','끝내 말하지 못했던 것','<p>실제 동생이 참가상 기록을 가리킨다.</p><p>“이 자료를 기준으로 표시를 바꾸면…… 뭐가 달라질까?”</p>','기록 살펴보기',()=>{changeRoom(5);choicePanel();});
+  }
+  else if(kind==='corrected'||kind==='preserved'){
+    state.consequence=true;
+    render();
+    panel(
+      '남겨진 기록',
+      state.choice==='correct'?'사실과 기억을 나란히':'기억과 사실을 함께',
+      state.choice==='correct'
+        ?'<p>참가상으로 고쳐진 액자 옆에 작은 기록이 남는다.<br>원래 대화와 포옹은 보관함에서 다시 볼 수 있다.</p><dl class="record-facts"><dt>실제 수상 기록</dt><dd>참가상</dd><dt>그날 동생이 말한 결과</dt><dd>일등</dd></dl>'
+        :'<p>액자에는 그날의 말에 근거한 금상 표시가 남는다.<br>실제 결과는 참가상이며, 외부 자료로 보관함에 남는다.</p>',
+      '유리 너머로 돌아가기',
+      ()=>startMemory('goodbye')
+    );
+  }
+  else if(kind==='goodbye'){
+    state.goodbye=true;
+    render();
+    showEpilogue();
+  }
+}
 function connectSleep(){if(!state.sleep)return;if(state.linked){chapterTwoEnd();return;}panel('단서 연결','내가 볼 수 없었던 장면','<p>두 단서를 선택해 같은 기억 위에 놓아 보세요.</p><div class="clue-pair"><label><input type="checkbox" id="clue-sleep"> <strong>잠든 나</strong><span>그때 나는 눈을 감고 있었다.</span></label><label><input type="checkbox" id="clue-watch"> <strong>언니의 시계</strong><span>담요를 덮어 주는 손목에 있었다.</span></label></div><p id="clue-feedback" aria-live="polite"></p>','두 단서 연결');$('#panel-action').onclick=()=>{if(!$('#clue-sleep').checked||!$('#clue-watch').checked){$('#clue-feedback').textContent='두 단서를 모두 골라 보세요.';return;}choosePerspective();};}
 function choosePerspective(){panel('단서 연결','이 장면의 시선은 어디에 있었을까?','<p>나는 소파에서 잠들어 있었다.<br>그런데 기억 속에서는 소파에 누운 내가 보인다.</p><div class="perspective-options"><button data-answer="self">소파에 잠든 내 눈</button><button data-answer="other">소파 옆에서 나를 바라보던 눈</button></div><p id="answer-feedback" aria-live="polite"></p>','잠깐 돌아가기');options('[data-answer]',b=>{if(b.dataset.answer==='self'){$('#answer-feedback').textContent='잠든 내 눈으로 내 얼굴을 볼 수 있었을까?';return;}state.linked=true;render();chapterTwoEnd();});}
 function chapterTwoEnd(){panel('두 번째 방 / 완료','이 장면을 보고 있던 사람은 누구지?','<p>일기장에 내가 쓴 글은 없었다.<br>하지만 내가 잠든 모습은 남아 있다.</p><div class="paper">내가 잘못 기억하는 걸까.<br>아니면 다른 사람의 시선인 걸까.</div><p>복도에 걸린 상장이 눈에 들어온다.</p>','복도로 가기',()=>changeRoom(3));}

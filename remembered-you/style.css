@@ -215,3 +215,93 @@
     display:none !important;
   }
 }
+
+
+/* =========================================================
+   v26 - 기억 대화도 검증된 일반 팝업(dialog #panel)로 표시
+   ========================================================= */
+#panel.memory-popup #panel-body{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+.memory-popup-portraits{
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  gap:4px;
+  width:100%;
+  height:min(42vh,360px);
+  overflow:hidden;
+  border-radius:14px;
+  background:linear-gradient(180deg,#193a3d,#0f292c);
+}
+.memory-popup-person{
+  width:50%;
+  height:100%;
+  opacity:.48;
+  transform:scale(.96);
+  transition:opacity .2s ease,transform .2s ease;
+}
+.memory-popup-person.speaking{
+  opacity:1;
+  transform:scale(1);
+}
+.memory-popup-person img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:contain;
+  object-position:center bottom;
+}
+.memory-popup-image{
+  width:100%;
+  max-height:min(42vh,360px);
+  overflow:hidden;
+  border-radius:14px;
+  background:#132f32;
+}
+.memory-popup-image img{
+  width:100%;
+  max-height:min(42vh,360px);
+  display:block;
+  object-fit:contain;
+}
+.memory-popup-dialogue{
+  padding:4px 2px 0;
+}
+.memory-popup-speaker{
+  display:block;
+  margin-bottom:8px;
+  font-size:14px;
+  letter-spacing:.04em;
+  color:#476a66;
+}
+.memory-popup-line{
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1.75!important;
+  word-break:keep-all;
+}
+.memory-popup-count{
+  display:block;
+  margin-top:10px;
+  text-align:right;
+  color:#76827d;
+}
+.memory-popup-dialogue.system{
+  opacity:.86;
+}
+
+@media(max-width:680px){
+  #panel.memory-popup{
+    width:calc(100% - 20px);
+  }
+  #panel.memory-popup .memory-popup-portraits{
+    height:34vh;
+    min-height:210px;
+  }
+  #panel.memory-popup .memory-popup-line{
+    font-size:17px!important;
+  }
+}
