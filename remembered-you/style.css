@@ -413,3 +413,47 @@
     min-height:150px !important;
   }
 }
+
+
+/* =========================================================
+   v35 - 앱 WebView 벽 상장 텍스트 크기/위치 보정
+   ========================================================= */
+@media(max-width:680px){
+  #wall-award{
+    box-sizing:border-box;
+    padding:8% 7% 7% !important;
+    gap:2% !important;
+    overflow:hidden !important;
+    justify-content:center !important;
+  }
+
+  #wall-award span{
+    display:block;
+    width:100%;
+    max-width:100%;
+    font-size:8px !important;
+    line-height:1.05 !important;
+    letter-spacing:0 !important;
+    white-space:nowrap;
+  }
+
+  #wall-award strong{
+    display:block;
+    width:100%;
+    max-width:100%;
+    font-size:18px !important;
+    line-height:1 !important;
+    letter-spacing:.08em !important;
+    white-space:nowrap;
+  }
+
+  #wall-award small{
+    display:block;
+    width:100%;
+    max-width:100%;
+    font-size:7px !important;
+    line-height:1.05 !important;
+    letter-spacing:0 !important;
+    white-space:nowrap;
+  }
+}
