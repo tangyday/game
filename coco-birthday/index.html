@@ -348,7 +348,7 @@
       if(advancePending)return;
       advancePending=true;
       modalLocked=true;
-      openModal('🚪','주방 임무 완료!',`<img class="transition-art" src="images/kitchen-to-rooftop.webp" alt="케이크와 장식을 싣고 옥상으로 향하는 코코와 로봇청소기" loading="eager" decoding="sync"><p>케이크와 생일 초를 모두 챙겼다. 나나가 오기 전에 옥상으로 출발!</p><div class="items"><div class="item">🎂<br>케이크</div><div class="item">🕯️<br>생일 초</div></div>`,[{label:'옥상으로 가기 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();}}],{locked:true});
+      openModal('🚪','주방 임무 완료!',`<img class="transition-art" src="images/kitchen-to-rooftop.webp" alt="케이크와 장식을 싣고 옥상으로 향하는 코코와 로봇청소기" loading="eager" decoding="sync"><p>케이크와 생일 초를 모두 챙겼다. 나나가 오기 전에 옥상으로 출발!</p><div class="items"><div class="item">🎂<br>케이크</div><div class="item">🕯️<br>생일 초</div></div>`,[{label:'옥상으로 가기 →',primary:true,action:()=>{state.chapter=2;advancePending=false;modalLocked=false;save();dialog.close();render();resetSceneScroll();}}],{locked:true});
     }
 
     function codePuzzle(s){
@@ -380,7 +380,7 @@
       if(advancePending)return;
       if(state.chapter===0&&state.found.includes('0-drawer')&&state.found.includes('0-ribbon')){
         advancePending=true;
-        setTimeout(()=>openModal('🚪','거실 임무 완료!',`<img class="transition-art" src="images/living-to-kitchen.webp" alt="왕관과 선물을 챙겨 주방으로 달려가는 코코" loading="eager" decoding="sync"><p>왕관과 선물 포장을 모두 챙겼다. 이제 케이크가 기다리는 주방으로 가자!</p><div class="items"><div class="item">👑<br>왕관</div><div class="item">🎁<br>포장 선물</div></div>`,[{label:'주방으로 가기 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();showToast('두 번째 장소, 주방으로 이동!');}}],{locked:true}),420);
+        setTimeout(()=>openModal('🚪','거실 임무 완료!',`<img class="transition-art" src="images/living-to-kitchen.webp" alt="왕관과 선물을 챙겨 주방으로 달려가는 코코" loading="eager" decoding="sync"><p>왕관과 선물 포장을 모두 챙겼다. 이제 케이크가 기다리는 주방으로 가자!</p><div class="items"><div class="item">👑<br>왕관</div><div class="item">🎁<br>포장 선물</div></div>`,[{label:'주방으로 가기 →',primary:true,action:()=>{state.chapter=1;advancePending=false;modalLocked=false;save();dialog.close();render();resetSceneScroll();showToast('두 번째 장소, 주방으로 이동!');}}],{locked:true}),420);
         return;
       }
       if(kitchenPuzzlesComplete()){
@@ -398,7 +398,7 @@
       openModal('💛','코코와 나나의 생일 저녁',`<img class="ending-art" src="${endingSrc}" alt="생일파티를 마치고 함께 있는 코코와 나나" loading="eager" decoding="sync" onerror="this.onerror=null;this.src='images/rooftop-party.webp';"><div class="ending-copy"><h3>HAPPY BIRTHDAY, NANA!</h3><p>몰래 준비한 파티는 대성공!<br>코코와 나나는 오래오래 오늘을 기억하기로 했어요.</p><p><b>게임을 끝까지 플레이해줘서 고마워요 🐾</b></p></div>`,[{label:'처음부터 다시',action:()=>restart()},{label:'엔딩 닫기',primary:true,action:()=>dialog.close()}]);
     }
     function confetti(){const colors=['#ffd75e','#ff8171','#73c8de','#0f7774','#fff'];for(let i=0;i<65;i++){const e=document.createElement('i');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.background=colors[i%colors.length];e.style.animationDelay=Math.random()*1.1+'s';e.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(e);setTimeout(()=>e.remove(),4200);}}
-    function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();intro();}
+    function restart(){state={...initial,found:[],items:[]};save();dialog.close();render();resetSceneScroll();intro();}
     function intro(){openModal('🐱','오늘은 나나의 생일!',`<div class="start-card"><div class="cat">🎀</div><p>나나가 낮잠에서 깨기까지 딱 10분!<br>코코와 함께 집 안의 단서를 풀고 깜짝 파티를 준비해 주세요.</p><p><b>반짝이는 발바닥을 눌러 조사하면 돼요.</b></p></div>`,[{label:'작전 시작!',primary:true,action:()=>{dialog.close();beep(720,.12);}}]);}
     $('#hint').onclick=()=>openModal('💡','코코의 힌트',`<p>${chapters[state.chapter].hint}</p>`,[{label:'알겠어!',primary:true,action:()=>dialog.close()}]);
     $('#sound').onclick=async()=>{
