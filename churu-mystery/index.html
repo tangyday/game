@@ -251,6 +251,20 @@
       }
     ];
     const initial = {chapter:0, found:[], items:[], sound:false, finished:false};
+
+    // 성공/엔딩 일러스트를 미리 로드해 팝업에서 즉시 표시되도록 한다.
+    const preloadImages = [
+      'images/success-living.webp',
+      'images/success-kitchen.webp',
+      'images/success-deduction.webp',
+      'images/ending-churu.webp'
+    ];
+    preloadImages.forEach(src => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+    });
+
     localStorage.removeItem('coco-churu-mystery-v1');
     let state = {...initial, found:[], items:[]};
     let selected=[];
@@ -331,12 +345,26 @@
       button.classList.remove('activating');void button.offsetWidth;button.classList.add('activating');
       setTimeout(()=>{button.classList.remove('activating');hotspotBusy=false;if(!dialog.open)inspect(spot);},180);
     }
+    function prepareModalImages(container){
+      container.querySelectorAll('img').forEach(img=>{
+        if(img.complete) return;
+        img.style.opacity='0';
+        const reveal=()=>{
+          img.style.transition='opacity .12s ease';
+          requestAnimationFrame(()=>img.style.opacity='1');
+        };
+        img.addEventListener('load',reveal,{once:true});
+        img.addEventListener('error',reveal,{once:true});
+      });
+    }
+
     function openModal(icon,title,html,actions=[],options={}){
       modalLocked=Boolean(options.locked);
       modal.className='modal'+(options.className?` ${options.className}`:'');
       modal.innerHTML=`<div class="modal-head"><div class="modal-icon">${icon}</div><div><div class="eyebrow">탐정 코코의 수사 기록</div><h2>${title}</h2></div>${modalLocked?'':'<button class="close" aria-label="닫기">×</button>'}</div><div class="modal-body">${html}</div><div class="modal-actions"></div>`;
       const close=modal.querySelector('.close');if(close)close.onclick=()=>dialog.close();
       const area=modal.querySelector('.modal-actions');actions.forEach(a=>{const b=document.createElement('button');b.className=a.primary?'primary':'secondary';b.textContent=a.label;b.onclick=a.action;area.appendChild(b);});
+      prepareModalImages(modal);
       if(!dialog.open)dialog.showModal();
     }
     function inspect(s){
