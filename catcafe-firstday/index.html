@@ -18,10 +18,23 @@
   <meta name="twitter:description" content="주문받기부터 새 손님 응대와 디저트 배달까지, 나나의 첫 출근을 도와주세요!">
   <meta name="twitter:image" content="images/og-cafe-first-day.png">
   <title>고양이 카페 첫 출근</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="preload" href="../Gaegu-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="../Gaegu-Bold.ttf" as="font" type="font/ttf" crossorigin>
     <style>
+    @font-face {
+      font-family:'Gaegu';
+      src:url('../Gaegu-Regular.ttf') format('truetype');
+      font-weight:400;
+      font-style:normal;
+      font-display:block;
+    }
+    @font-face {
+      font-family:'Gaegu';
+      src:url('../Gaegu-Bold.ttf') format('truetype');
+      font-weight:700;
+      font-style:normal;
+      font-display:block;
+    }
     :root { --ink:#3f554f; --teal:#5d927d; --deep:#3f725f; --yellow:#ffd986; --cream:#fffaf1; --coral:#e98678; --sky:#89c9d7; --line:rgba(63,85,79,.16); }
     * { box-sizing:border-box; }
     html, body { margin:0; min-height:100%; }
