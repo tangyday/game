@@ -264,6 +264,20 @@
         ]
       }
     ];
+    // 성공/엔딩 팝업 일러스트를 미리 로드해 팝업 표시 지연을 줄인다.
+    const popupArtPreloads = [
+      'images/success-order.webp',
+      'images/success-seating.webp',
+      'images/happy-customers.webp',
+      'images/success-delivery.webp',
+      'images/ending-cafe.webp'
+    ];
+    popupArtPreloads.forEach(src=>{
+      const img = new Image();
+      img.decoding = 'async';
+      img.src = src;
+    });
+
     const initial = {chapter:0, found:[], items:[], sound:false, finished:false};
     localStorage.removeItem('nana-cafe-first-day-v1');
     let state = {...initial, found:[], items:[]};
