@@ -20,7 +20,7 @@
   <title>사라진 츄르를 찾아라!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=block" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
     :root { --ink:#214a4b; --teal:#0f7774; --deep:#075454; --yellow:#ffd75e; --cream:#fffaf0; --coral:#ff8171; --sky:#73c8de; --line:rgba(33,74,75,.16); }
     * { box-sizing:border-box; }
@@ -79,11 +79,6 @@
     .ending-art { width:100%; max-height:430px; object-fit:cover; display:block; margin:20px 0 18px; border-radius:20px; box-shadow:0 14px 34px rgba(13,86,84,.16); }
     .ending-copy { text-align:center; }
     .ending-copy h3 { font-family:'Gaegu','Noto Sans KR','Malgun Gothic',cursive; font-size:2rem; margin:8px 0 6px; color:var(--teal); }
-    /* 제목 폰트가 준비되기 전 대체 폰트가 잠깐 보이는 현상 방지 */
-    h1, .modal h2, .ending-copy h3 { visibility:hidden; }
-    html.fonts-ready h1,
-    html.fonts-ready .modal h2,
-    html.fonts-ready .ending-copy h3 { visibility:visible; }
     .ending-copy p { margin:8px 0; }
     .close { margin-left:auto; border:0; background:#fff; width:42px; height:42px; border-radius:50%; cursor:pointer; font-size:1.35rem; }
     .modal-actions { display:flex; justify-content:flex-end; flex-wrap:wrap; gap:9px; margin-top:20px; }
@@ -178,24 +173,6 @@
   </style>
 </head>
 <body>
-  <script>
-    (() => {
-      const revealTitles = () => document.documentElement.classList.add('fonts-ready');
-
-      if (!document.fonts || !document.fonts.load) {
-        revealTitles();
-        return;
-      }
-
-      Promise.race([
-        Promise.all([
-          document.fonts.load('700 32px "Gaegu"'),
-          document.fonts.load('400 16px "Noto Sans KR"')
-        ]),
-        new Promise(resolve => setTimeout(resolve, 1800))
-      ]).then(revealTitles).catch(revealTitles);
-    })();
-  </script>
   <main class="shell">
     <header class="topbar">
       <div class="brand"><div class="eyebrow">COCO'S CHURU MYSTERY</div><h1>사라진 츄르를 찾아라!</h1></div>
