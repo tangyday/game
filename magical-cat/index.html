@@ -211,6 +211,13 @@ html,body {
   background-image:radial-gradient(ellipse at 15% 0%,#353058,transparent 60%),linear-gradient(135deg,#17172f,#211d37);
 }
 .shell { position:relative;z-index:1; }
+
+/* 장면 이동 안내와 이야기 설명도 팝업 본문과 같은 고딕체 */
+.pan-guide,
+.chapter-kicker,
+.objective {
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans KR','Malgun Gothic',sans-serif;
+}
 </style></head><body><div id="gameBackdrop" aria-hidden="true"></div><main class="shell"><header class="topbar"><div class="brand"><div class="eyebrow">COCO & NANA · MAGIC SCHOOL</div><h1>코코와 나나의 마법학교 대소동</h1><p class="subtitle">사라진 별빛 마법서를 찾아라!</p></div><button class="pill" id="sound" aria-label="음악 켜기" aria-pressed="false">♫</button><button class="pill" id="notebook">📖 단서 노트</button><div class="pill" id="progress">마법 단서 0 / 3</div></header><nav class="map" id="map" aria-label="학교 지도"></nav><section class="game-card"><div class="scene-scroll" id="sceneScroll"><div class="scene" id="scene"><img id="sceneImage" alt="마법학교 중앙홀" decoding="sync"><div id="hotspots"></div><div class="chapter-tag" id="chapterTag"></div></div></div><div class="pan-guide">↔ 좌우로 밀어 장면 전체를 둘러보세요</div><div class="storybar"><div><div class="chapter-kicker" id="kicker"></div><p class="objective" id="objective"></p></div><button class="hint-btn" id="hint">코코와 나나의 힌트 🐾</button></div><div class="inventory" id="inventory"></div><div class="mobile-actions" id="mobileActions" aria-label="살펴볼 곳"></div></section><div class="footerline"><span>반짝이는 물건을 눌러 학교의 비밀을 찾아보세요.</span><button class="reset" id="reset">처음부터 다시 하기</button></div></main><div id="dialog" class="popup-overlay" aria-hidden="true"><div class="popup-panel" role="dialog" aria-modal="true" aria-labelledby="popupTitle" tabindex="-1"><div class="modal" id="modal"></div></div></div><div class="toast" id="toast" role="status"></div><script>(()=>{'use strict';
 const $=s=>document.querySelector(s),dialog=$('#dialog'),modal=$('#modal');
 const rooms=[
