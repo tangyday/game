@@ -1044,10 +1044,22 @@
 
       const goToPage = (page, behavior = 'smooth') => {
         const targetPage = Math.max(0, Math.min(getPageCount() - 1, page));
-        track.scrollTo({
-          left: targetPage * getPageStep(),
-          behavior
-        });
+        const targetLeft = targetPage * getPageStep();
+
+        if (behavior === 'auto') {
+          /* 복원 시 CSS의 scroll-behavior:smooth까지 잠시 꺼서 즉시 해당 카드가 보이게 함 */
+          const previousScrollBehavior = track.style.scrollBehavior;
+          track.style.scrollBehavior = 'auto';
+          track.scrollLeft = targetLeft;
+          void track.offsetWidth;
+          track.style.scrollBehavior = previousScrollBehavior;
+        } else {
+          track.scrollTo({
+            left: targetLeft,
+            behavior
+          });
+        }
+
         sliderState[stateKey] = targetPage;
         saveSliderState();
       };
@@ -1148,13 +1160,10 @@
         });
       });
 
-      buildDots();
-
       const savedPage = Number.isFinite(sliderState[stateKey]) ? sliderState[stateKey] : 0;
-      requestAnimationFrame(() => {
-        goToPage(savedPage, 'auto');
-        updateControls();
-      });
+      goToPage(savedPage, 'auto');
+      buildDots();
+      updateControls();
     });
 
     window.addEventListener('pagehide', saveSliderState);
