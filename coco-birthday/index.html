@@ -81,8 +81,9 @@
     .objective { margin:4px 0 0; font-size:clamp(1rem,2vw,1.15rem); line-height:1.65; }
     .hint-btn { border:0; border-radius:14px; background:var(--teal); color:#fff; padding:13px 16px; font-weight:700; cursor:pointer; box-shadow:0 7px 0 var(--deep); }
     .hint-btn:active { transform:translateY(4px); box-shadow:0 3px 0 var(--deep); }
-    .mobile-actions { display:none; padding:14px; gap:8px; overflow-x:auto; border-top:1px solid var(--line); background:#fffcf3; }
-    .mobile-actions button { white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:#fff; padding:10px 13px; font-weight:700; }
+    .mobile-actions { display:flex; padding:14px; gap:8px; overflow-x:auto; border-top:1px solid var(--line); background:#fffcf3; }
+    .mobile-actions button { white-space:nowrap; border:1px solid var(--line); border-radius:999px; background:#fff; padding:10px 13px; font-weight:700; cursor:pointer; }
+    .mobile-actions button.done { border-color:rgba(15,119,116,.45); background:#e8f8f5; color:var(--deep); }
     .footerline { display:flex; justify-content:space-between; gap:12px; align-items:center; margin-top:13px; color:#5c7777; font-size:.82rem; }
     .reset { border:0; background:transparent; text-decoration:underline; cursor:pointer; color:inherit; }
     dialog { width:min(520px,calc(100% - 26px)); border:0; border-radius:24px; padding:0; color:var(--ink); background:var(--cream); box-shadow:0 30px 100px rgba(0,35,35,.38); }
@@ -330,9 +331,11 @@
       $('#chapterTag').textContent=c.tag;$('#kicker').textContent=c.kicker;$('#objective').textContent=c.objective;
       const hs=$('#hotspots'),ma=$('#mobileActions');hs.innerHTML='';ma.innerHTML='';
       c.spots.forEach(s=>{
-        const done=state.found.includes(foundKey(s.id));
-        const b=document.createElement('button');b.className='hotspot'+(done?' done':'');b.style.left=`calc(${s.x}% - 30px)`;b.style.top=`calc(${s.y}% - 30px)`;b.dataset.label=s.label;b.setAttribute('aria-label',`${s.label}${done?' · 조사 완료':''}`);b.onclick=()=>activateHotspot(b,s);hs.appendChild(b);
-        const m=document.createElement('button');m.className=done?'done':'';m.textContent=`${s.label}${done?' · 완료':''}`;m.onclick=()=>inspect(s);ma.appendChild(m);
+        const solved=state.found.includes(foundKey(s.id));
+        const isPuzzle=s.type==='code'||s.type==='sequence';
+        const puzzleDone=isPuzzle&&solved;
+        const b=document.createElement('button');b.className='hotspot'+(puzzleDone?' done':'');b.style.left=`calc(${s.x}% - 30px)`;b.style.top=`calc(${s.y}% - 30px)`;b.dataset.label=s.label;b.setAttribute('aria-label',`${s.label}${puzzleDone?' · 퍼즐 완료':''}`);b.onclick=()=>activateHotspot(b,s);hs.appendChild(b);
+        const m=document.createElement('button');m.className=puzzleDone?'done':'';m.textContent=`${s.label}${puzzleDone?' · 완료':''}`;m.onclick=()=>inspect(s);ma.appendChild(m);
       });
       renderHeader();
     }
@@ -351,9 +354,9 @@
     }
     function inspect(s){
       if(dialog.open)return;
-      if(state.found.includes(foundKey(s.id))){
+      if((s.type==='code'||s.type==='sequence')&&state.found.includes(foundKey(s.id))){
         beep(620);
-        showToast(s.type==='code'||s.type==='sequence'?'이미 푼 퍼즐이다냥!':'이미 조사한 곳이다냥!');
+        showToast('이미 푼 퍼즐이다냥!');
         return;
       }
       beep(520);
