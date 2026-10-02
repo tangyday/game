@@ -707,7 +707,8 @@
       .theme-group .games-grid{
         gap:14px;
         touch-action:pan-y;
-        overscroll-behavior-x:contain;
+        overflow-x:hidden;
+        overscroll-behavior-x:none;
       }
 
       .theme-group .game-card{
@@ -1069,52 +1070,42 @@
         requestAnimationFrame(updateControls);
       }, { passive:true });
 
-      /* 모바일: 한 번의 손가락 스와이프당 정확히 1페이지씩만 이동 */
-      let dragStartX = 0;
-      let dragStartScroll = 0;
-      let dragStartPage = 0;
-      let dragging = false;
+      /* 모바일: 세로 스크롤에는 반응하지 않고, 확실한 좌우 스와이프 때만 1페이지 이동 */
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchStartPage = 0;
 
-      track.addEventListener('pointerdown', (e) => {
-        if (!isMobile() || e.pointerType === 'mouse') return;
+      track.addEventListener('touchstart', (e) => {
+        if (!isMobile() || !e.touches.length) return;
 
-        dragging = true;
-        dragStartX = e.clientX;
-        dragStartScroll = track.scrollLeft;
-        dragStartPage = getCurrentPage();
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchStartPage = getCurrentPage();
+      }, { passive:true });
 
-        track.setPointerCapture?.(e.pointerId);
-      });
+      track.addEventListener('touchend', (e) => {
+        if (!isMobile() || !e.changedTouches.length) return;
 
-      track.addEventListener('pointermove', (e) => {
-        if (!dragging || !isMobile() || e.pointerType === 'mouse') return;
+        const touch = e.changedTouches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+        const horizontalThreshold = 50;
 
-        const dx = e.clientX - dragStartX;
-        track.scrollLeft = dragStartScroll - dx;
-      });
-
-      const finishSwipe = (e) => {
-        if (!dragging || !isMobile() || e.pointerType === 'mouse') return;
-
-        dragging = false;
-        const dx = e.clientX - dragStartX;
-        const threshold = 45;
-
-        if (dx <= -threshold) {
-          goToPage(dragStartPage + 1);
-        } else if (dx >= threshold) {
-          goToPage(dragStartPage - 1);
-        } else {
-          goToPage(dragStartPage);
+        /* 세로 이동이 더 크면 페이지 이동 금지 */
+        if (Math.abs(dy) >= Math.abs(dx)) {
+          goToPage(touchStartPage, 'auto');
+          return;
         }
 
-        try {
-          track.releasePointerCapture?.(e.pointerId);
-        } catch (_) {}
-      };
-
-      track.addEventListener('pointerup', finishSwipe);
-      track.addEventListener('pointercancel', finishSwipe);
+        if (dx <= -horizontalThreshold) {
+          goToPage(touchStartPage + 1);
+        } else if (dx >= horizontalThreshold) {
+          goToPage(touchStartPage - 1);
+        } else {
+          goToPage(touchStartPage);
+        }
+      }, { passive:true });
 
       window.addEventListener('resize', () => {
         buildDots();
