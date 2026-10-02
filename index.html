@@ -999,12 +999,27 @@
   <button class="back-to-top" type="button" aria-label="맨 위로 이동">↑</button>
 
   <script>
-    document.querySelectorAll('[data-theme-group]').forEach(group => {
+    const SLIDER_STATE_KEY = 'nyamplay-slider-state';
+    const sliderState = (() => {
+      try {
+        return JSON.parse(sessionStorage.getItem(SLIDER_STATE_KEY) || '{}');
+      } catch (e) {
+        return {};
+      }
+    })();
+
+    const saveSliderState = () => {
+      sliderState.scrollY = window.scrollY;
+      sessionStorage.setItem(SLIDER_STATE_KEY, JSON.stringify(sliderState));
+    };
+
+    document.querySelectorAll('[data-theme-group]').forEach((group, groupIndex) => {
       const track = group.querySelector('.games-grid');
       const cards = [...group.querySelectorAll('.game-card')];
       const dotsWrap = group.querySelector('.theme-dots');
       const prevBtn = group.querySelector('.theme-prev');
       const nextBtn = group.querySelector('.theme-next');
+      const stateKey = `theme-${groupIndex}`;
 
       const isMobile = () => window.matchMedia('(max-width: 820px)').matches;
       const getPerPage = () => isMobile() ? 1 : 2;
@@ -1022,12 +1037,19 @@
         return Math.max(0, Math.min(getPageCount() - 1, Math.round(track.scrollLeft / step)));
       };
 
+      const rememberCurrentPage = () => {
+        sliderState[stateKey] = getCurrentPage();
+        saveSliderState();
+      };
+
       const goToPage = (page, behavior = 'smooth') => {
         const targetPage = Math.max(0, Math.min(getPageCount() - 1, page));
         track.scrollTo({
           left: targetPage * getPageStep(),
           behavior
         });
+        sliderState[stateKey] = targetPage;
+        saveSliderState();
       };
 
       const buildDots = () => {
@@ -1067,8 +1089,18 @@
       });
 
       track.addEventListener('scroll', () => {
-        requestAnimationFrame(updateControls);
+        requestAnimationFrame(() => {
+          updateControls();
+          rememberCurrentPage();
+        });
       }, { passive:true });
+
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          rememberCurrentPage();
+          saveSliderState();
+        });
+      });
 
       /* 모바일: 세로 스크롤에는 반응하지 않고, 확실한 좌우 스와이프 때만 1페이지 이동 */
       let touchStartX = 0;
@@ -1108,13 +1140,31 @@
       }, { passive:true });
 
       window.addEventListener('resize', () => {
+        const savedPage = Number.isFinite(sliderState[stateKey]) ? sliderState[stateKey] : getCurrentPage();
         buildDots();
-        track.scrollLeft = 0;
-        updateControls();
+        requestAnimationFrame(() => {
+          goToPage(savedPage, 'auto');
+          updateControls();
+        });
       });
 
       buildDots();
-      updateControls();
+
+      const savedPage = Number.isFinite(sliderState[stateKey]) ? sliderState[stateKey] : 0;
+      requestAnimationFrame(() => {
+        goToPage(savedPage, 'auto');
+        updateControls();
+      });
+    });
+
+    window.addEventListener('pagehide', saveSliderState);
+
+    window.addEventListener('pageshow', () => {
+      requestAnimationFrame(() => {
+        if (Number.isFinite(sliderState.scrollY)) {
+          window.scrollTo({ top: sliderState.scrollY, behavior: 'auto' });
+        }
+      });
     });
 
     const backToTopBtn = document.querySelector('.back-to-top');
