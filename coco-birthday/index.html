@@ -69,8 +69,9 @@
     .hotspot::before { content:''; position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,255,255,.22); box-shadow:0 0 14px rgba(255,255,255,.16); opacity:.35; animation:soft-glint 2.8s ease-in-out infinite; }
     .hotspot:hover, .hotspot:focus-visible, .hotspot.activating { transform:scale(1.08); outline:0; border-color:rgba(255,255,255,.92); background:radial-gradient(circle,rgba(255,239,159,.46),rgba(255,215,94,.12) 48%,transparent 70%); box-shadow:0 0 0 8px rgba(255,215,94,.2),0 0 30px rgba(255,239,159,.78); }
     .hotspot:hover::before, .hotspot:focus-visible::before, .hotspot.activating::before { inset:4%; border-color:rgba(255,255,255,.9); opacity:1; animation:tap-spark .42s ease-out; }
-    .hotspot.done::before { border-color:rgba(255,255,255,.25); box-shadow:0 0 16px rgba(15,119,116,.2); }
-    .hotspot.done:hover, .hotspot.done:focus-visible { background:radial-gradient(circle,rgba(122,222,209,.34),rgba(15,119,116,.08) 52%,transparent 72%); box-shadow:0 0 0 8px rgba(15,119,116,.14),0 0 26px rgba(122,222,209,.5); }
+    .hotspot.done { border-color:rgba(15,119,116,.58); background:radial-gradient(circle,rgba(122,222,209,.42),rgba(15,119,116,.16) 50%,rgba(15,119,116,.05) 72%); box-shadow:0 0 0 6px rgba(15,119,116,.12),0 0 20px rgba(122,222,209,.36); }
+    .hotspot.done::before { border-color:rgba(255,255,255,.72); box-shadow:0 0 16px rgba(15,119,116,.32); opacity:.9; animation:none; }
+    .hotspot.done:hover, .hotspot.done:focus-visible { background:radial-gradient(circle,rgba(122,222,209,.52),rgba(15,119,116,.2) 52%,rgba(15,119,116,.07) 72%); box-shadow:0 0 0 8px rgba(15,119,116,.16),0 0 26px rgba(122,222,209,.5); }
     .hotspot::after { content:attr(data-label); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); white-space:nowrap; padding:6px 10px; border-radius:9px; background:rgba(9,61,61,.92); color:#fff; font-size:.74rem; opacity:0; pointer-events:none; transition:.2s; }
     .hotspot:hover::after, .hotspot:focus-visible::after { opacity:1; }
     @keyframes soft-glint { 50% { opacity:.7; box-shadow:0 0 19px rgba(255,255,255,.38); } }
@@ -331,7 +332,7 @@
       c.spots.forEach(s=>{
         const done=state.found.includes(foundKey(s.id));
         const b=document.createElement('button');b.className='hotspot'+(done?' done':'');b.style.left=`calc(${s.x}% - 30px)`;b.style.top=`calc(${s.y}% - 30px)`;b.dataset.label=s.label;b.setAttribute('aria-label',`${s.label}${done?' · 조사 완료':''}`);b.onclick=()=>activateHotspot(b,s);hs.appendChild(b);
-        const m=document.createElement('button');m.textContent=`${s.label}${done?' · 완료':''}`;m.onclick=()=>inspect(s);ma.appendChild(m);
+        const m=document.createElement('button');m.className=done?'done':'';m.textContent=`${s.label}${done?' · 완료':''}`;m.onclick=()=>inspect(s);ma.appendChild(m);
       });
       renderHeader();
     }
@@ -350,6 +351,11 @@
     }
     function inspect(s){
       if(dialog.open)return;
+      if(state.found.includes(foundKey(s.id))){
+        beep(620);
+        showToast(s.type==='code'||s.type==='sequence'?'이미 푼 퍼즐이다냥!':'이미 조사한 곳이다냥!');
+        return;
+      }
       beep(520);
       if(s.type==='code') return codePuzzle(s);
       if(s.id==='table'&&!state.found.includes('2-garland')){showToast('가랜드를 먼저 완성해야 한다냥!');return;}
