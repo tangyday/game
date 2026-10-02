@@ -79,8 +79,9 @@
     .hotspot::before { content:''; position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,255,255,.22); box-shadow:0 0 14px rgba(255,255,255,.16); opacity:.35; animation:soft-glint 2.8s ease-in-out infinite; }
     .hotspot:hover, .hotspot:focus-visible, .hotspot.activating { transform:scale(1.08); outline:0; border-color:rgba(255,255,255,.92); background:radial-gradient(circle,rgba(255,239,159,.46),rgba(255,215,94,.12) 48%,transparent 70%); box-shadow:0 0 0 8px rgba(255,215,94,.2),0 0 30px rgba(255,239,159,.78); }
     .hotspot:hover::before, .hotspot:focus-visible::before, .hotspot.activating::before { inset:4%; border-color:rgba(255,255,255,.9); opacity:1; animation:tap-spark .42s ease-out; }
-    .hotspot.done::before { border-color:rgba(255,255,255,.25); box-shadow:0 0 16px rgba(15,119,116,.2); }
-    .hotspot.done:hover, .hotspot.done:focus-visible { background:radial-gradient(circle,rgba(122,222,209,.34),rgba(15,119,116,.08) 52%,transparent 72%); box-shadow:0 0 0 8px rgba(15,119,116,.14),0 0 26px rgba(122,222,209,.5); }
+    .hotspot.done { border-color:rgba(74,178,157,.78); background:radial-gradient(circle,rgba(124,224,205,.58),rgba(38,151,132,.24) 48%,rgba(20,122,109,.08) 72%); box-shadow:0 0 0 6px rgba(71,180,157,.18),0 0 24px rgba(71,180,157,.42); }
+    .hotspot.done::before { inset:10%; border-color:rgba(255,255,255,.75); box-shadow:0 0 18px rgba(15,119,116,.28); opacity:.9; animation:none; }
+    .hotspot.done:hover, .hotspot.done:focus-visible { background:radial-gradient(circle,rgba(124,224,205,.7),rgba(38,151,132,.3) 50%,rgba(20,122,109,.1) 72%); box-shadow:0 0 0 8px rgba(15,119,116,.18),0 0 28px rgba(122,222,209,.58); }
     .hotspot::after { content:attr(data-label); position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); white-space:nowrap; padding:6px 10px; border-radius:9px; background:rgba(9,61,61,.92); color:#fff; font-size:.74rem; opacity:0; pointer-events:none; transition:.2s; }
     .hotspot:hover::after, .hotspot:focus-visible::after { opacity:1; }
     @keyframes soft-glint { 50% { opacity:.7; box-shadow:0 0 19px rgba(255,255,255,.38); } }
@@ -330,7 +331,7 @@
         const hs = $("#hotspots"), ma = $("#mobileActions");
         hs.innerHTML = ""; ma.innerHTML = "";
         c.spots.forEach(s => {
-          const done = has(s.id);
+          const done = (s.type === "code" || s.type === "sequence") && has(s.id);
           const b = document.createElement("button");
           b.className = "hotspot" + (done ? " done" : "");
           b.style.left = "calc(" + s.x + "% - 30px)";
@@ -370,6 +371,12 @@
       }
       function inspect(s){
         if(dialog.open) return;
+        const solvedPuzzle = (s.type === "code" || s.type === "sequence") && has(s.id);
+        if(solvedPuzzle){
+          tone(680,.06);
+          showToast("이미 푼 퍼즐이에요! 🐾");
+          return;
+        }
         tone(520,.07);
         if(s.type === "code") return codePuzzle(s);
         if(s.type === "sequence") return sequencePuzzle(s);
