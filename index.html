@@ -522,6 +522,69 @@
       }
     }
 
+
+    .theme-group-title{
+      display:none;
+    }
+    .theme-dots{
+      display:none;
+    }
+
+    @media (max-width: 820px){
+      .theme-group{
+        margin-top:26px;
+      }
+      .theme-group:first-of-type{
+        margin-top:0;
+      }
+      .theme-group-title{
+        display:block;
+        margin:0 0 12px 2px;
+        color:#8ea1ff;
+        font-size:10px;
+        font-weight:800;
+        letter-spacing:.14em;
+        text-transform:uppercase;
+      }
+      .theme-group .games-grid{
+        display:flex;
+        gap:14px;
+        overflow-x:auto;
+        scroll-snap-type:x mandatory;
+        scroll-behavior:smooth;
+        scrollbar-width:none;
+        -ms-overflow-style:none;
+        padding-bottom:2px;
+      }
+      .theme-group .games-grid::-webkit-scrollbar{
+        display:none;
+      }
+      .theme-group .game-card{
+        flex:0 0 86%;
+        scroll-snap-align:start;
+      }
+      .theme-dots{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:7px;
+        margin-top:14px;
+      }
+      .theme-dot{
+        width:7px;
+        height:7px;
+        border:0;
+        border-radius:999px;
+        padding:0;
+        background:rgba(255,255,255,.28);
+        transition:width .2s ease, background .2s ease;
+      }
+      .theme-dot[aria-current="true"]{
+        width:20px;
+        background:var(--accent-2);
+      }
+    }
+
     @media (prefers-reduced-motion: reduce){
       *{
         scroll-behavior:auto !important;
@@ -620,7 +683,9 @@
           <span class="section-count">07 GAMES</span>
         </div>
 
-        <div class="games-grid">
+        <div class="theme-group" data-theme-group>
+          <div class="theme-group-title">HOME ADVENTURES</div>
+          <div class="games-grid">
           <a class="game-card" href="https://nyamplay.pages.dev/coco-birthday/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="coco-birthday/images/og.png" alt="코코의 몰래 생일파티 대작전 게임 썸네일" />
@@ -681,7 +746,6 @@
             </div>
           </a>
 
-
           <a class="game-card" href="https://nyamplay.pages.dev/rooftop-mission/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="rooftop-mission/images/og-rooftop-tuna-party.png" alt="옥상 참치 대작전 게임 썸네일" />
@@ -696,7 +760,13 @@
               <span class="play-btn" aria-hidden="true"></span>
             </div>
           </a>
+          </div>
+          <div class="theme-dots" aria-label="HOME ADVENTURES 페이지"></div>
+        </div>
 
+        <div class="theme-group" data-theme-group>
+          <div class="theme-group-title">FANTASY ADVENTURES</div>
+          <div class="games-grid">
           <a class="game-card" href="https://nyamplay.pages.dev/magical-cat/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="magical-cat/images/og-magic-school.png" alt="마법학교 대소동 게임 썸네일" />
@@ -712,7 +782,6 @@
             </div>
           </a>
 
-
           <a class="game-card" href="https://nyamplay.pages.dev/space-station/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="images/og-space-station.png" alt="우주정거장 대작전 게임 썸네일" />
@@ -727,6 +796,8 @@
               <span class="play-btn" aria-hidden="true"></span>
             </div>
           </a>
+          </div>
+          <div class="theme-dots" aria-label="FANTASY ADVENTURES 페이지"></div>
         </div>
       </div>
     </section>
@@ -741,5 +812,44 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.querySelectorAll('[data-theme-group]').forEach(group => {
+      const track = group.querySelector('.games-grid');
+      const cards = [...group.querySelectorAll('.game-card')];
+      const dotsWrap = group.querySelector('.theme-dots');
+
+      cards.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'theme-dot';
+        dot.setAttribute('aria-label', `${i + 1}번째 게임`);
+        if(i === 0) dot.setAttribute('aria-current', 'true');
+        dot.addEventListener('click', () => {
+          cards[i].scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'});
+        });
+        dotsWrap.appendChild(dot);
+      });
+
+      const dots = [...dotsWrap.children];
+      const updateDots = () => {
+        const left = track.scrollLeft;
+        let active = 0;
+        let best = Infinity;
+        cards.forEach((card, i) => {
+          const diff = Math.abs(card.offsetLeft - track.offsetLeft - left);
+          if(diff < best){ best = diff; active = i; }
+        });
+        dots.forEach((dot, i) => {
+          if(i === active) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      };
+
+      track.addEventListener('scroll', () => requestAnimationFrame(updateDots), {passive:true});
+      window.addEventListener('resize', updateDots);
+    });
+  </script>
+
 </body>
 </html>
