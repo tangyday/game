@@ -725,65 +725,6 @@
       }
     }
 
-
-    /* PC: 썸네일 영역 밖의 심플한 좌우 화살표 */
-    .theme-slider{
-      position:relative;
-    }
-
-    @media (min-width:821px){
-      .theme-slider .theme-arrows{
-        position:absolute;
-        top:50%;
-        left:-72px;
-        right:-72px;
-        bottom:auto;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        transform:translateY(-50%);
-        pointer-events:none;
-        z-index:5;
-      }
-
-      .theme-slider .theme-prev,
-      .theme-slider .theme-next{
-        width:46px;
-        height:46px;
-        flex:0 0 46px;
-        border:0;
-        border-radius:0;
-        background:transparent;
-        color:#c9d3fa;
-        font-size:32px;
-        font-weight:400;
-        box-shadow:none;
-        backdrop-filter:none;
-        -webkit-backdrop-filter:none;
-        pointer-events:auto;
-      }
-
-      .theme-slider .theme-prev:hover,
-      .theme-slider .theme-next:hover{
-        background:transparent;
-        color:#fff;
-      }
-
-      .theme-slider .theme-prev:disabled,
-      .theme-slider .theme-next:disabled{
-        opacity:.24;
-        pointer-events:none;
-      }
-    }
-
-    /* PC 폭이 좁아지면 게임 목록 양옆에 화살표 공간 확보 */
-    @media (min-width:821px) and (max-width:1299px){
-      .theme-slider{
-        margin-left:72px;
-        margin-right:72px;
-      }
-    }
-
     @media (prefers-reduced-motion: reduce){
       *{
         scroll-behavior:auto !important;
@@ -884,8 +825,7 @@
 
         <div class="theme-group" data-theme-group>
           <div class="theme-group-title">HOME ADVENTURE</div>
-          <div class="theme-slider">
-           <div class="games-grid">
+          <div class="games-grid">
           <a class="game-card" href="https://nyamplay.pages.dev/coco-birthday/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="coco-birthday/images/og.png" alt="코코의 몰래 생일파티 대작전 게임 썸네일" />
@@ -975,22 +915,19 @@
               <span class="play-btn" aria-hidden="true"></span>
             </div>
           </a>
-           </div>
-           <div class="theme-arrows">
+          </div>
+          <div class="theme-nav">
+            <div class="theme-dots" aria-label="HOME ADVENTURE 페이지"></div>
+            <div class="theme-arrows">
               <button class="theme-prev" type="button" aria-label="HOME ADVENTURE 이전 페이지">&lt;</button>
               <button class="theme-next" type="button" aria-label="HOME ADVENTURE 다음 페이지">&gt;</button>
             </div>
-         </div>
-          <div class="theme-nav">
-            <div class="theme-dots" aria-label="HOME ADVENTURE 페이지"></div>
-            
           </div>
         </div>
 
         <div class="theme-group" data-theme-group>
           <div class="theme-group-title">FANTASY ADVENTURE</div>
-          <div class="theme-slider">
-           <div class="games-grid">
+          <div class="games-grid">
           <a class="game-card" href="https://nyamplay.pages.dev/magic-school/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="magic-school/images/og-magic-school.png" alt="마법학교 대소동 게임 썸네일" />
@@ -1050,22 +987,19 @@
               <span class="play-btn" aria-hidden="true"></span>
             </div>
           </a>
-           </div>
-           <div class="theme-arrows">
+          </div>
+          <div class="theme-nav">
+            <div class="theme-dots" aria-label="FANTASY ADVENTURE 페이지"></div>
+            <div class="theme-arrows">
               <button class="theme-prev" type="button" aria-label="FANTASY ADVENTURE 이전 페이지">&lt;</button>
               <button class="theme-next" type="button" aria-label="FANTASY ADVENTURE 다음 페이지">&gt;</button>
             </div>
-         </div>
-          <div class="theme-nav">
-            <div class="theme-dots" aria-label="FANTASY ADVENTURE 페이지"></div>
-            
           </div>
         </div>
 
         <div class="theme-group" data-theme-group>
           <div class="theme-group-title">KOREA TRAVEL</div>
-          <div class="theme-slider">
-           <div class="games-grid">
+          <div class="games-grid">
           <a class="game-card" href="https://nyamplay.pages.dev/seoul-mission/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="seoul-mission/images/og-seoul-mission.png" alt="코코나나 서울 미션 게임 썸네일" />
@@ -1110,22 +1044,19 @@
               <span class="play-btn" aria-hidden="true"></span>
             </div>
           </a>
-           </div>
-           <div class="theme-arrows">
+          </div>
+          <div class="theme-nav">
+            <div class="theme-dots" aria-label="KOREA TRAVEL 페이지"></div>
+            <div class="theme-arrows">
               <button class="theme-prev" type="button" aria-label="KOREA TRAVEL 이전 페이지">&lt;</button>
               <button class="theme-next" type="button" aria-label="KOREA TRAVEL 다음 페이지">&gt;</button>
             </div>
-         </div>
-          <div class="theme-nav">
-            <div class="theme-dots" aria-label="KOREA TRAVEL 페이지"></div>
-            
           </div>
         </div>
 
         <div class="theme-group" data-theme-group>
           <div class="theme-group-title">WORLD TRAVEL</div>
-          <div class="theme-slider">
-           <div class="games-grid">
+          <div class="games-grid">
           <a class="game-card" href="https://nyamplay.pages.dev/japan-mission/" target="_blank" rel="noopener noreferrer">
             <div class="thumb-wrap">
               <img src="japan-mission/images/og-japan-mission.png" alt="코코나나 일본 미션 게임 썸네일" />
@@ -1200,15 +1131,13 @@
               <span class="play-btn" aria-hidden="true"></span>
             </div>
           </a>
-           </div>
-           <div class="theme-arrows">
+          </div>
+          <div class="theme-nav">
+            <div class="theme-dots" aria-label="WORLD TRAVEL 페이지"></div>
+            <div class="theme-arrows">
               <button class="theme-prev" type="button" aria-label="WORLD TRAVEL 이전 페이지">&lt;</button>
               <button class="theme-next" type="button" aria-label="WORLD TRAVEL 다음 페이지">&gt;</button>
             </div>
-         </div>
-          <div class="theme-nav">
-            <div class="theme-dots" aria-label="WORLD TRAVEL 페이지"></div>
-            
           </div>
         </div>
       </div>
