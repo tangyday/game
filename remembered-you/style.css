@@ -532,3 +532,6 @@
     margin:4px 0 5px !important;
   }
 }
+
+/* Avoid title font swap on first launch; dialog and menu still appear immediately. */
+#panel-title.font-loading { visibility: hidden; }

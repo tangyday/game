@@ -20,7 +20,38 @@ window.MEMORY_STORY={
 
 (()=>{'use strict';
 const $=s=>document.querySelector(s),KEY='remembered-you-room1-v1',STORY=window.MEMORY_STORY;
- // Popups open immediately; local font files preload independently.
+ // Open the dialog immediately. Reveal only its title once its exact glyphs are ready.
+ // This prevents first-launch fallback-font flashes without delaying the rest of the UI.
+ let titleRequest=0;
+ function preparePanelTitle(title){
+   const heading=$('#panel-title');
+   const request=++titleRequest;
+   if(!document.fonts || !document.fonts.load){
+     heading.classList.remove('font-loading');
+     return;
+   }
+   const font='700 28px "Gowun Batang"';
+   if(document.fonts.check(font,title)){
+     heading.classList.remove('font-loading');
+     return;
+   }
+   heading.classList.add('font-loading');
+   let released=false;
+   const reveal=()=>{
+     if(released || request!==titleRequest)return;
+     released=true;
+     heading.classList.remove('font-loading');
+   };
+   // A missing font should never leave the dialog title invisible forever.
+   const fallback=setTimeout(reveal,3000);
+   document.fonts.load(font,title).then(()=>{
+     clearTimeout(fallback);
+     reveal();
+   },()=>{
+     clearTimeout(fallback);
+     reveal();
+   });
+ }
  function showPanelWithFont(panelElement){
    if(!panelElement.open)panelElement.showModal();
  }
@@ -53,6 +84,7 @@ function panel(tag,title,html,label='돌아가기',fn=null,wide=false){
   p.classList.toggle('wide',wide);
   $('#panel-tag').textContent=tag;
   $('#panel-title').textContent=title;
+  preparePanelTitle(title);
   $('#panel-body').innerHTML=html;
   const action=$('#panel-action');
   action.textContent=label;
@@ -136,6 +168,7 @@ function showLine(){
   p.classList.add('wide','memory-popup');
   $('#panel-tag').textContent='기억';
   $('#panel-title').textContent=m.title;
+  preparePanelTitle(m.title);
   $('#panel-body').innerHTML=`
     ${visual}
     <div class="memory-popup-dialogue ${speaker==='시스템'?'system':''}">
@@ -252,4 +285,25 @@ $('#restart').onclick=()=>panel('다시 시작','첫 페이지로 돌아갈까�
 const context=document.modelContext;if(context?.registerTool){const lifecycle=new AbortController();try{Promise.resolve(context.registerTool({name:'read_memory_room_progress',description:'Read unlocked memory chapters and current objective without changing progress.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true},execute(){return {...state,objective:$('#objective').textContent};}},{signal:lifecycle.signal})).catch(()=>{});}catch{}window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
 
 
-render();if(state.ended&&state.chapter===5)endCard();else if(state.chapter===1)intro();else if(!state.introduced)intro();})();
+// Wait for the locally hosted typefaces before opening the first dialog.
+// Unlike the previous version, the dialog itself stays closed during font loading.
+// The page and header remain visible thanks to font-display: swap in style.css.
+async function beginAfterFonts(){
+  if(document.fonts && document.fonts.load){
+    try{
+      await Promise.all([
+        document.fonts.load('700 28px "Gowun Batang"', '아직 남아 있는 저녁 빈 일기장 언니의 쪽지'),
+        document.fonts.load('400 26px "Gowun Batang"', '언니의 기억'),
+        document.fonts.load('400 16px "Noto Sans KR"', '기억 지도 발견한 기억 소리 꺼짐'),
+        document.fonts.load('600 16px "Noto Sans KR"', '다음 기억으로')
+      ]);
+    }catch(error){
+      // Do not prevent gameplay if a font request fails; keep fallback usable.
+      console.warn('로컬 폰트를 모두 준비하지 못했습니다.',error);
+    }
+  }
+  if(state.ended && state.chapter===5)endCard();
+  else if(state.chapter===1 || !state.introduced)intro();
+}
+render();
+beginAfterFonts();})();
