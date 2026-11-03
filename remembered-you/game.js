@@ -20,26 +20,9 @@ window.MEMORY_STORY={
 
 (()=>{'use strict';
 const $=s=>document.querySelector(s),KEY='remembered-you-room1-v1',STORY=window.MEMORY_STORY;
- // Local font loading: wait for the actual Korean characters in each title.
- // The files are served by the same GitHub Pages origin, with no Google Fonts requests.
- let popupOpenVersion = 0;
- const startupFontsReady = document.fonts ? Promise.all([
-   document.fonts.load('400 28px "Gowun Batang"', '아직 남아 있는 저녁 기억의 조각'),
-   document.fonts.load('400 16px "Noto Sans KR"', '기억을 살펴보세요')
- ]).catch(() => []) : Promise.resolve([]);
+ // Popups open immediately; local font files preload independently.
  function showPanelWithFont(panelElement){
-   const version = ++popupOpenVersion;
-   const title = (panelElement.querySelector('#panel-title')?.textContent || '').trim();
-   const titleReady = document.fonts && title
-     ? document.fonts.load('400 28px "Gowun Batang"', title).catch(() => [])
-     : Promise.resolve([]);
-   // Prevent text swapping in the first popups. If font files are missing,
-   // the browser will consistently use its fallback instead.
-   Promise.all([startupFontsReady, titleReady]).then(() => {
-     if(version === popupOpenVersion && !panelElement.open){
-       panelElement.showModal();
-     }
-   });
+   if(!panelElement.open)panelElement.showModal();
  }
 
 ['sleep-memory.png','hug-memory.png','award-room.png','glass-room.png'].forEach(src=>{const i=new Image();i.src=src;});
