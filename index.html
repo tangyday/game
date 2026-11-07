@@ -821,6 +821,26 @@
         transition:none !important;
       }
     }
+
+    /* NEW: 다른 컬렉션과 동일한 폭/여백/게임 카드 크기 */
+    .new-feature .section-title{
+      font-size:26px;
+      font-weight:850;
+      letter-spacing:-.04em;
+    }
+    .new-feature .new-pill{
+      padding:5px 9px;
+      border-radius:999px;
+      background:rgba(174,157,255,.12);
+      color:#d6cbff;
+      font-size:10px;
+      font-weight:800;
+      letter-spacing:.09em;
+      white-space:nowrap;
+    }
+    @media(max-width:820px){
+      .new-feature .section-title{font-size:22px;}
+    }
   </style>
 </head>
 
@@ -858,6 +878,79 @@
             취향에 맞는 게임을 골라 플레이해 보세요.
           </p>
         </aside>
+      </div>
+    </section>
+
+    <section class="creator-section new-feature">
+      <div class="site-shell">
+        <div class="section-head">
+          <div class="section-title-wrap">
+            <h2 class="section-title">NEW</h2>
+            <span class="new-pill">JUST IN</span>
+          </div>
+          <span class="section-count">03 GAMES</span>
+        </div>
+
+        <div class="theme-group" data-theme-group>
+          <div class="theme-group-title">RECENTLY ADDED</div>
+          <div class="theme-slider">
+            <div class="games-grid">
+              <a class="game-card" href="https://nyamplay.pages.dev/coco-nana-day/" target="_blank" rel="noopener noreferrer">
+                          <div class="thumb-wrap">
+                            <img src="coco-nana-day/images/og-coco-nana-day.png" alt="코코나나의 하루 게임 썸네일" />
+                          </div>
+              
+                          <div class="card-body">
+                            <div class="card-copy">
+                              <div class="card-kicker">Created by JH</div>
+                              <h3 class="game-title">코코나나의 하루</h3>
+                              <p class="game-description">코코와 나나의 아침부터 저녁까지, 각자의 하루를 함께 따라가는 힐링 방탈출.</p>
+                            </div>
+                            <span class="play-btn" aria-hidden="true"></span>
+                          </div>
+                        </a>
+
+              <a class="game-card" href="https://nyamplay.pages.dev/chiikawa-dream/" target="_blank" rel="noopener noreferrer">
+                          <div class="thumb-wrap">
+                            <img src="chiikawa-dream/images/og-chiikawa-dream.png" alt="코코나나의 꿈 속 하루 게임 썸네일" />
+                          </div>
+              
+                          <div class="card-body">
+                            <div class="card-copy">
+                              <div class="card-kicker">Created by JH</div>
+                              <h3 class="game-title">코코나나의 꿈 속 하루</h3>
+                              <p class="game-description">코코와 나나가 신비로운 꿈속 세계를 탐험하는 판타지 어드벤처.</p>
+                            </div>
+                            <span class="play-btn" aria-hidden="true"></span>
+                          </div>
+                        </a>
+
+              <a class="game-card" href="https://nyamplay.pages.dev/fukue-mission2/" target="_blank" rel="noopener noreferrer">
+                          <div class="thumb-wrap">
+                            <img src="fukue-mission2/images/og-fukue-mission-ja.png" alt="福江島訪問ミッションゲームサムネイル" />
+                          </div>
+              
+                          <div class="card-body">
+                            <div class="card-copy">
+                              <div class="card-kicker">Created by JH</div>
+                              <h3 class="game-title">福江島訪問ミッション</h3>
+                              <p class="game-description">ココとナナが福江島の名所を巡り、ミッションや謎に挑む観光脱出ゲーム。</p>
+                            </div>
+                            <span class="play-btn" aria-hidden="true"></span>
+                          </div>
+                        </a>
+
+            </div>
+            <div class="theme-arrows">
+              <button class="theme-prev" type="button" aria-label="NEW 이전 페이지">&lt;</button>
+              <button class="theme-next" type="button" aria-label="NEW 다음 페이지">&gt;</button>
+            </div>
+          </div>
+          <div class="theme-nav">
+            <div class="theme-dots" aria-label="NEW 페이지"></div>
+          </div>
+        </div>
+
       </div>
     </section>
 
